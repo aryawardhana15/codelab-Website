@@ -8,11 +8,11 @@ export default function MissionCard({ mission }: MissionCardProps) {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'daily':
-        return 'bg-blue-100 text-blue-800';
+        return 'badge-primary'; // Orange
       case 'weekly':
-        return 'bg-purple-100 text-purple-800';
+        return 'badge-secondary'; // Yellow
       case 'achievement':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'badge-info'; // Blue (or keep as accent)
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -33,57 +33,64 @@ export default function MissionCard({ mission }: MissionCardProps) {
 
   return (
     <div
-      className={`rounded-lg p-4 border-2 transition-all ${
-        mission.is_completed
-          ? 'bg-green-50 border-green-400'
-          : 'bg-white border-gray-200 hover:border-blue-400'
-      }`}
+      className={`rounded-2xl p-6 border transition-all duration-300 relative overflow-hidden group ${mission.is_completed
+          ? 'bg-green-50 border-green-200'
+          : 'bg-white border-light-200 hover:border-primary/50 hover:shadow-glow-primary'
+        }`}
     >
-      <div className="flex items-start justify-between mb-3">
+      {/* Background decoration */}
+      {!mission.is_completed && (
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial-primary opacity-0 group-hover:opacity-10 transition-opacity duration-500 -mr-10 -mt-10 rounded-full blur-2xl pointer-events-none"></div>
+      )}
+
+      <div className="flex items-start justify-between mb-4 relative z-10">
         <div className="flex-1">
-          <div className="flex items-center space-x-2 mb-2">
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(mission.type)}`}>
+          <div className="flex items-center space-x-2 mb-3">
+            <span className={`badge ${getTypeColor(mission.type)}`}>
               {getTypeLabel(mission.type)}
             </span>
             {!!mission.is_completed && (
-              <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+              <span className="badge badge-success">
                 Selesai ✓
               </span>
             )}
           </div>
-          <h3 className="font-bold text-gray-900 mb-1">{mission.title}</h3>
-          <p className="text-sm text-gray-600 mb-3">{mission.description}</p>
+          <h3 className="font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-primary transition-colors">{mission.title}</h3>
+          <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed">{mission.description}</p>
         </div>
       </div>
 
       {/* Progress Bar */}
       {!mission.is_completed ? (
-        <div className="mb-3">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-medium text-gray-700">Progress</span>
-            <span className="text-sm text-gray-600">
+        <div className="mb-5 relative z-10">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Progress</span>
+            <span className="text-xs font-bold text-primary">
               {mission.current_progress} / {mission.requirement_count}
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+          <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden shadow-inner">
             <div
-              className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500"
+              className={`h-2.5 rounded-full transition-all duration-1000 ease-out bg-gradient-primary relative ${mission.progress_percentage > 0 ? 'shadow-[0_0_10px_rgba(255,153,51,0.5)]' : ''
+                }`}
               style={{ width: `${Math.min(mission.progress_percentage, 100)}%` }}
-            ></div>
+            >
+              <div className="absolute inset-0 bg-white/20 w-full h-full animate-pulse"></div>
+            </div>
           </div>
         </div>
       ) : null}
 
       {/* Reward */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+      <div className="flex items-center justify-between relative z-10 pt-2 border-t border-gray-50 mt-auto">
+        <div className="flex items-center space-x-2 bg-secondary/10 px-3 py-1.5 rounded-lg">
+          <svg className="w-5 h-5 text-secondary-600" fill="currentColor" viewBox="0 0 20 20">
             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
           </svg>
-          <span className="text-sm font-medium text-gray-900">+{mission.xp_reward} XP</span>
+          <span className="text-sm font-bold text-gray-900">+{mission.xp_reward} XP</span>
         </div>
         {mission.badge_reward && (
-          <div className="flex items-center space-x-1 text-orange-600">
+          <div className="flex items-center space-x-1 text-primary animate-bounce-slow">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -91,14 +98,14 @@ export default function MissionCard({ mission }: MissionCardProps) {
                 clipRule="evenodd"
               />
             </svg>
-            <span className="text-xs font-medium">Badge</span>
+            <span className="text-xs font-bold uppercase tracking-wide">Badge</span>
           </div>
         )}
       </div>
 
       {/* Reset Info */}
       {mission.reset_at && !mission.is_completed ? (
-        <p className="text-xs text-gray-500 mt-2">
+        <p className="text-xs text-light-400 mt-3 text-right italic">
           Reset: {new Date(mission.reset_at).toLocaleDateString('id-ID')}
         </p>
       ) : null}

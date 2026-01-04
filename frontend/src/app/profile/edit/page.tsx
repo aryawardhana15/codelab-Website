@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import Navbar from '@/components/Navbar';
+import BadgeCard from '@/components/BadgeCard';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { UserStats, Badge } from '@/types/gamification';
 import { User, Mail, FileText, Image, Target, Briefcase, Save, X, Trophy, Star, Award, TrendingUp } from 'lucide-react';
@@ -149,44 +150,50 @@ export default function EditProfilePage() {
                   {/* Level & Rank for Pelajar */}
                   {user?.role === 'pelajar' && stats && (
                     <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-                      <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
-                        <div className="flex items-center gap-2">
-                          <Target className="h-5 w-5 text-white" />
+                      <div className="bg-white shadow-lg rounded-xl px-5 py-3 border border-white/50 transform hover:scale-105 transition-transform">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-primary-50 rounded-lg">
+                            <Target className="h-5 w-5 text-primary" />
+                          </div>
                           <div>
-                            <p className="text-xs text-white/90">Level</p>
-                            <p className="text-xl font-black text-white">{stats.current_level}</p>
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Level</p>
+                            <p className="text-xl font-black text-gray-900">{stats.current_level}</p>
                           </div>
                         </div>
                       </div>
 
-                      <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
-                        <div className="flex items-center gap-2">
-                          <Star className="h-5 w-5 text-white" />
+                      <div className="bg-white shadow-lg rounded-xl px-5 py-3 border border-white/50 transform hover:scale-105 transition-transform">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-secondary-50 rounded-lg">
+                            <Star className="h-5 w-5 text-secondary-600" />
+                          </div>
                           <div>
-                            <p className="text-xs text-white/90">XP</p>
-                            <p className="text-xl font-black text-white">{stats.total_xp.toLocaleString()}</p>
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">XP</p>
+                            <p className="text-xl font-black text-gray-900">{stats.total_xp.toLocaleString()}</p>
                           </div>
                         </div>
                       </div>
 
                       {stats.rank > 0 && (
-                        <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl">{getRankEmoji(stats.rank)}</span>
+                        <div className="bg-white shadow-lg rounded-xl px-5 py-3 border border-white/50 transform hover:scale-105 transition-transform">
+                          <div className="flex items-center gap-3">
+                            <span className="text-3xl filter drop-shadow-sm">{getRankEmoji(stats.rank)}</span>
                             <div>
-                              <p className="text-xs text-white/90">Ranking</p>
-                              <p className="text-xl font-black text-white">#{stats.rank}</p>
+                              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Ranking</p>
+                              <p className="text-xl font-black text-gray-900">#{stats.rank}</p>
                             </div>
                           </div>
                         </div>
                       )}
 
-                      <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
-                        <div className="flex items-center gap-2">
-                          <Trophy className="h-5 w-5 text-white" />
+                      <div className="bg-white shadow-lg rounded-xl px-5 py-3 border border-white/50 transform hover:scale-105 transition-transform">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-red-50 rounded-lg">
+                            <Trophy className="h-5 w-5 text-red-500" />
+                          </div>
                           <div>
-                            <p className="text-xs text-white/90">Badges</p>
-                            <p className="text-xl font-black text-white">{earnedBadges.length}</p>
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Badges</p>
+                            <p className="text-xl font-black text-gray-900">{earnedBadges.length}</p>
                           </div>
                         </div>
                       </div>
@@ -246,32 +253,31 @@ export default function EditProfilePage() {
           {/* Badges Section for Pelajar */}
           {user?.role === 'pelajar' && earnedBadges.length > 0 && (
             <div className="card mb-8">
-              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Award className="h-6 w-6 text-primary" />
-                Badges yang Didapat
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+                  <Award className="h-6 w-6" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">
+                  Badges yang Didapat
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {earnedBadges.slice(0, 12).map((badge) => (
-                  <div
-                    key={badge.badge_id}
-                    className="relative group cursor-pointer transform hover:scale-110 transition-all duration-300"
-                  >
-                    <div className="bg-gradient-primary rounded-xl p-4 shadow-md">
-                      <div className="text-4xl text-center mb-2">🎖️</div>
-                      <p className="text-xs font-bold text-center text-white line-clamp-2">
-                        {badge.badge_name}
-                      </p>
-                    </div>
-                    <div className="absolute -top-2 -right-2 bg-success rounded-full p-1 shadow-lg">
-                      <span className="text-xs text-white">✓</span>
-                    </div>
-                  </div>
+                  <BadgeCard key={badge.badge_id} badge={badge} />
                 ))}
               </div>
               {earnedBadges.length > 12 && (
-                <p className="text-center text-sm text-gray-600 mt-4 font-medium">
-                  +{earnedBadges.length - 12} badges lainnya! 🎉
-                </p>
+                <div className="mt-6 text-center">
+                  <p className="text-sm text-gray-600 font-medium mb-3">
+                    +{earnedBadges.length - 12} badges lainnya! 🎉
+                  </p>
+                  <button
+                    onClick={() => router.push('/gamification/badges')}
+                    className="btn btn-primary btn-sm"
+                  >
+                    Lihat Semua Badges
+                  </button>
+                </div>
               )}
             </div>
           )}
