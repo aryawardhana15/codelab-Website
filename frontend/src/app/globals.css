@@ -2,7 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========================================
+   CODELAB DESIGN SYSTEM - GLOBALS
+   ======================================== */
+
 @layer base {
+  /* Root Variables */
+  :root {
+    --color-primary: #FF9933;
+    --color-secondary: #FFD700;
+    --color-light: #FFFFFF;
+    --color-light-gray: #F9FAFB;
+  }
+
   body {
     font-family: var(--font-poppins), system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -19,9 +31,199 @@
     font-family: var(--font-poppins), system-ui, sans-serif;
     font-weight: 500;
   }
+
+  /* Focus styles */
+  *:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 }
 
+/* ========================================
+   COMPONENT STYLES
+   ======================================== */
+@layer components {
+  /* ---- BUTTONS ---- */
+  .btn {
+    @apply inline-flex items-center justify-center px-6 py-3 font-medium rounded-xl transition-all duration-300;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-primary text-white hover:bg-gradient-primary-hover hover:shadow-glow-primary hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white hover:bg-secondary-600 hover:shadow-glow-secondary;
+  }
+
+  .btn-light {
+    @apply bg-white text-gray-900 hover:bg-light-50 border border-light-200;
+  }
+
+  .btn-outline {
+    @apply border-2 border-primary text-primary bg-transparent hover:bg-primary hover:text-white;
+  }
+
+  .btn-outline-dark {
+    @apply border-2 border-gray-900 text-gray-900 bg-transparent hover:bg-gray-900 hover:text-white;
+  }
+
+  .btn-ghost {
+    @apply text-primary hover:bg-primary/10;
+  }
+
+  .btn-sm {
+    @apply px-4 py-2 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-8 py-4 text-lg;
+  }
+
+  .btn-icon {
+    @apply p-3 aspect-square;
+  }
+
+  /* ---- CARDS ---- */
+  .card {
+    @apply bg-white rounded-2xl p-6 shadow-card transition-all duration-300 border border-light-200;
+  }
+
+  .card-hover {
+    @apply hover:shadow-card-hover hover:-translate-y-1;
+  }
+
+  .card-glow {
+    @apply hover:shadow-glow-primary;
+  }
+
+  .card-bordered {
+    @apply border border-light-300;
+  }
+
+  .card-glass {
+    @apply bg-white/80 backdrop-blur-md border border-light-200/50;
+  }
+
+  /* ---- INPUTS ---- */
+  .input {
+    @apply w-full px-4 py-3 bg-white border border-light-300 rounded-xl text-gray-900 placeholder-light-400 focus:border-primary focus:ring-1 focus:ring-primary transition-colors duration-200;
+  }
+
+  .input-error {
+    @apply border-error focus:border-error focus:ring-error;
+  }
+
+  .input-success {
+    @apply border-success focus:border-success focus:ring-success;
+  }
+
+  .input-label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+  }
+
+  .input-helper {
+    @apply text-sm text-light-500 mt-1;
+  }
+
+  .input-error-text {
+    @apply text-sm text-error mt-1;
+  }
+
+  /* ---- SELECT ---- */
+  .select {
+    @apply w-full px-4 py-3 bg-white border border-light-300 rounded-xl text-gray-900 focus:border-primary focus:ring-1 focus:ring-primary transition-colors duration-200 cursor-pointer appearance-none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.25rem 1.25rem;
+    padding-right: 2.5rem;
+  }
+
+  /* ---- BADGES ---- */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply bg-primary/20 text-primary;
+  }
+
+  .badge-secondary {
+    @apply bg-secondary/20 text-secondary;
+  }
+
+  .badge-success {
+    @apply bg-success/20 text-success;
+  }
+
+  .badge-warning {
+    @apply bg-warning/20 text-warning;
+  }
+
+  .badge-error {
+    @apply bg-error/20 text-error;
+  }
+
+  .badge-info {
+    @apply bg-info/20 text-info;
+  }
+
+  /* ---- GRADIENT TEXT ---- */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-primary;
+  }
+
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent bg-gradient-gold;
+  }
+
+  /* ---- DIVIDERS ---- */
+  .divider {
+    @apply border-t border-light-200;
+  }
+
+  .divider-vertical {
+    @apply border-l border-light-200 h-full;
+  }
+
+  /* ---- CONTAINERS ---- */
+  .container-app {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* ---- SECTION ---- */
+  .section {
+    @apply py-16 md:py-24;
+  }
+
+  .section-header {
+    @apply text-center mb-12;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-gray-900 mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-light-600 max-w-2xl mx-auto;
+  }
+
+  /* ---- LINKS ---- */
+  .link {
+    @apply text-primary hover:text-primary-600 transition-colors duration-200 underline-offset-4 hover:underline;
+  }
+
+  .link-muted {
+    @apply text-light-500 hover:text-gray-900 transition-colors duration-200;
+  }
+}
+
+/* ========================================
+   UTILITY STYLES
+   ======================================== */
 @layer utilities {
+  /* Animations */
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -36,5 +238,77 @@
   .animate-fadeIn {
     animation: fadeIn 0.3s ease-out;
   }
+
+  /* Scrollbar Styling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #404040 transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #404040;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: #555555;
+  }
+
+  /* Text Selection */
+  ::selection {
+    background-color: rgba(255, 153, 51, 0.3);
+    color: white;
+  }
+
+  /* Gradient Border */
+  .border-gradient {
+    position: relative;
+  }
+
+  .border-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    background: linear-gradient(180deg, #FF9933 0%, #FFD700 100%);
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+  }
+
+  /* Glass Effect */
+  .glass {
+    @apply bg-white/60 backdrop-blur-xl border border-light-200/50;
+  }
+
+  /* Glow Effects */
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(255, 153, 51, 0.3), 0 0 40px rgba(255, 153, 51, 0.1);
+  }
+
+  .glow-secondary {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.1);
+  }
 }
+
 
