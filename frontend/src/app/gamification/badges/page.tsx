@@ -9,6 +9,7 @@ import BadgeCard from '@/components/BadgeCard';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Badge } from '@/types/gamification';
 import Link from 'next/link';
+import { Award, BarChart3, Target, Trophy, Lock, CheckCircle } from 'lucide-react';
 
 export default function BadgesPage() {
   const { user } = useAuth();
@@ -40,34 +41,40 @@ export default function BadgesPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-light-50">
+        <div className="text-center">
+          <div className="relative">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-light-200 border-t-primary mx-auto"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Award className="h-6 w-6 text-primary" />
+            </div>
+          </div>
+          <p className="mt-4 text-primary font-medium">Loading Badges...</p>
+        </div>
       </div>
     );
   }
 
   return (
     <ProtectedRoute allowedRoles={['pelajar']}>
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-50">
+      <div className="min-h-screen bg-light-50">
         <Navbar />
 
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {/* Header - Fun Design */}
+          {/* Header */}
           <div className="px-4 py-6 sm:px-0 mb-6">
-            <div className="relative overflow-hidden bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 rounded-3xl p-8 shadow-2xl">
+            <div className="relative overflow-hidden bg-gradient-primary rounded-3xl p-8 shadow-glow-primary">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24"></div>
-              
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/20 rounded-full -ml-24 -mb-24"></div>
+
               <div className="relative z-10">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
                   <div>
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                        <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                        </svg>
+                        <Award className="w-6 h-6 text-white" />
                       </div>
-                      <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+                      <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
                         Badges
                       </h1>
                     </div>
@@ -78,38 +85,45 @@ export default function BadgesPage() {
                   <div className="flex flex-wrap gap-3">
                     <Link
                       href="/gamification/stats"
-                      className="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white font-black rounded-xl hover:bg-white/30 transition-all transform hover:scale-105 border-2 border-white/30"
+                      className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
                     >
-                      📊 Stats
+                      <BarChart3 className="w-4 h-4 mr-2" />
+                      Stats
                     </Link>
                     <Link
                       href="/gamification/missions"
-                      className="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white font-black rounded-xl hover:bg-white/30 transition-all transform hover:scale-105 border-2 border-white/30"
+                      className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
                     >
-                      ✅ Missions
+                      <Target className="w-4 h-4 mr-2" />
+                      Missions
                     </Link>
                     <Link
                       href="/gamification/leaderboard"
-                      className="px-5 py-2.5 bg-white text-orange-600 font-black rounded-xl hover:bg-white/90 transition-all transform hover:scale-105 shadow-lg"
+                      className="btn bg-white text-primary hover:bg-white/90 shadow-lg font-bold"
                     >
-                      🥇 Leaderboard
+                      <Trophy className="w-4 h-4 mr-2" />
+                      Leaderboard
                     </Link>
                   </div>
                 </div>
 
-                {/* Stats - Fun Design */}
+                {/* Stats */}
                 <div className="flex flex-wrap items-center gap-4">
                   <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-3 border-2 border-white/30">
                     <span className="text-sm text-white/90 font-medium">Total: </span>
-                    <span className="text-2xl font-black text-white">{badges.length}</span>
+                    <span className="text-2xl font-bold text-white">{badges.length}</span>
                   </div>
-                  <div className="bg-green-500/80 backdrop-blur-sm rounded-2xl px-6 py-3 border-2 border-white/30">
-                    <span className="text-sm text-white/90 font-medium">✅ Didapat: </span>
-                    <span className="text-2xl font-black text-white">{earnedBadges.length}</span>
+                  <div className="bg-success/80 backdrop-blur-sm rounded-2xl px-6 py-3 border-2 border-white/30">
+                    <span className="text-sm text-white/90 font-medium flex items-center gap-1">
+                      <CheckCircle className="w-4 h-4" /> Didapat:
+                    </span>
+                    <span className="text-2xl font-bold text-white">{earnedBadges.length}</span>
                   </div>
                   <div className="bg-gray-500/80 backdrop-blur-sm rounded-2xl px-6 py-3 border-2 border-white/30">
-                    <span className="text-sm text-white/90 font-medium">🔒 Terkunci: </span>
-                    <span className="text-2xl font-black text-white">{lockedBadges.length}</span>
+                    <span className="text-sm text-white/90 font-medium flex items-center gap-1">
+                      <Lock className="w-4 h-4" /> Terkunci:
+                    </span>
+                    <span className="text-2xl font-bold text-white">{lockedBadges.length}</span>
                   </div>
                 </div>
               </div>
@@ -120,8 +134,8 @@ export default function BadgesPage() {
           {earnedBadges.length > 0 && (
             <div className="px-4 sm:px-0 mb-8">
               <div className="flex items-center gap-3 mb-6">
-                <span className="text-3xl">✨</span>
-                <h2 className="text-2xl font-black text-gray-900">Badges yang Didapat</h2>
+                <CheckCircle className="h-6 w-6 text-success" />
+                <h2 className="text-2xl font-bold text-gray-900">Badges yang Didapat</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {earnedBadges.map((badge) => (
@@ -135,8 +149,8 @@ export default function BadgesPage() {
           {lockedBadges.length > 0 && (
             <div className="px-4 sm:px-0">
               <div className="flex items-center gap-3 mb-6">
-                <span className="text-3xl">🔒</span>
-                <h2 className="text-2xl font-black text-gray-900">Badges Terkunci</h2>
+                <Lock className="h-6 w-6 text-gray-500" />
+                <h2 className="text-2xl font-bold text-gray-900">Badges Terkunci</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {lockedBadges.map((badge) => (
@@ -148,8 +162,10 @@ export default function BadgesPage() {
 
           {badges.length === 0 && (
             <div className="px-4 sm:px-0">
-              <div className="bg-white rounded-3xl shadow-2xl p-12 text-center border-4 border-white/50">
-                <div className="text-6xl mb-4">🏆</div>
+              <div className="card p-12 text-center">
+                <div className="inline-block p-6 bg-light-100 rounded-full mb-4">
+                  <Trophy className="w-12 h-12 text-gray-400" />
+                </div>
                 <p className="text-xl text-gray-600 font-bold">Belum ada badges tersedia</p>
                 <p className="text-sm text-gray-500 mt-2">Mulai belajar untuk dapatkan badges!</p>
               </div>
@@ -160,4 +176,3 @@ export default function BadgesPage() {
     </ProtectedRoute>
   );
 }
-

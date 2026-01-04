@@ -8,6 +8,15 @@ import api from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { CreateForumInput } from '@/types/forum';
+import {
+  ArrowLeft,
+  MessageSquare,
+  Type,
+  AlignLeft,
+  Hash,
+  Loader2,
+  Send
+} from 'lucide-react';
 
 export default function CreateForumPage() {
   const router = useRouter();
@@ -35,7 +44,7 @@ export default function CreateForumPage() {
 
   return (
     <ProtectedRoute allowedRoles={['pelajar', 'mentor']}>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="min-h-screen bg-light-50">
         <Navbar />
 
         <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -43,124 +52,101 @@ export default function CreateForumPage() {
           <div className="mb-8">
             <button
               onClick={() => router.push(`/courses/${courseId}/forum`)}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors group"
+              className="inline-flex items-center text-gray-500 hover:text-primary mb-4 transition-colors font-medium text-sm group"
             >
-              <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span className="font-medium">Kembali ke Forum</span>
+              <ArrowLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
+              Kembali ke Forum
             </button>
-            
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+
+            <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                  <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
+                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+                  <MessageSquare className="w-8 h-8 text-primary" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-1">Buat Thread Baru</h1>
-                  <p className="text-gray-600">Bagikan pertanyaan atau diskusi dengan komunitas</p>
+                  <h1 className="text-2xl font-bold text-gray-900 mb-1">Buat Thread Baru</h1>
+                  <p className="text-gray-600 font-medium">Bagikan pertanyaan atau diskusi dengan komunitas</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Form Section */}
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+          <form onSubmit={handleSubmit(onSubmit)} className="card p-8">
             <div className="mb-6">
-              <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                </svg>
+              <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
+                <Type className="w-4 h-4 text-primary" />
                 Judul Thread *
               </label>
               <input
                 {...register('title', { required: 'Judul wajib diisi' })}
                 type="text"
-                className="block w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-gray-900 placeholder-gray-400"
-                placeholder="Masukkan judul thread..."
+                className={`input ${errors.title ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
+                placeholder="Contoh: Bagaimana cara menggunakan loops di Python?"
               />
               {errors.title && (
-                <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
+                <p className="mt-1.5 text-sm text-red-600 font-medium">
                   {errors.title.message}
                 </p>
               )}
             </div>
 
             <div className="mb-6">
-              <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
+              <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
+                <AlignLeft className="w-4 h-4 text-primary" />
                 Konten *
               </label>
               <textarea
                 {...register('content', { required: 'Konten wajib diisi' })}
                 rows={12}
-                className="block w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-gray-900 placeholder-gray-400 resize-none"
-                placeholder="Tulis konten thread Anda di sini..."
+                className={`input resize-y min-h-[200px] ${errors.content ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
+                placeholder="Jelaskan pertanyaan atau topik diskusi Anda secara detail..."
               />
               {errors.content && (
-                <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
+                <p className="mt-1.5 text-sm text-red-600 font-medium">
                   {errors.content.message}
                 </p>
               )}
             </div>
 
             <div className="mb-8">
-              <label className="block text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
+              <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center gap-2">
+                <Hash className="w-4 h-4 text-primary" />
                 Tags (Opsional)
               </label>
               <input
                 {...register('tags')}
                 type="text"
-                className="block w-full px-4 py-3 border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-gray-900 placeholder-gray-400"
-                placeholder="Contoh: pertanyaan, diskusi, bantuan"
+                className="input"
+                placeholder="Contoh: python, error, tutorial"
               />
-              <p className="mt-2 text-sm text-gray-500 flex items-center gap-1">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Pisahkan tags dengan koma
+              <p className="mt-2 text-xs text-gray-500">
+                Pisahkan beberapa tag dengan koma (,)
               </p>
             </div>
 
-            <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+            <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
               <button
                 type="button"
                 onClick={() => router.push(`/courses/${courseId}/forum`)}
-                className="px-6 py-3 border-2 border-gray-300 rounded-xl shadow-sm text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 transition-all duration-300"
+                className="btn btn-outline"
+                disabled={isSubmitting}
               >
                 Batal
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-xl shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-300 font-semibold flex items-center gap-2"
+                className="btn btn-primary min-w-[140px]"
               >
                 {isSubmitting ? (
                   <>
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Menyimpan...
                   </>
                 ) : (
                   <>
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                    <Send className="w-4 h-4 mr-2" />
                     Buat Thread
                   </>
                 )}
@@ -172,4 +158,3 @@ export default function CreateForumPage() {
     </ProtectedRoute>
   );
 }
-

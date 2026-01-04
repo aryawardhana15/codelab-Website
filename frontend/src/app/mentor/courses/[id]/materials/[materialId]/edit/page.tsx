@@ -9,6 +9,18 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { CreateMaterialInput } from '@/types/material';
+import {
+  ArrowLeft,
+  FileText,
+  Video,
+  File,
+  BookOpen,
+  AlertCircle,
+  Save,
+  Loader2,
+  Info
+} from 'lucide-react';
+import Link from 'next/link';
 
 export default function EditMaterialPage() {
   const router = useRouter();
@@ -20,7 +32,7 @@ export default function EditMaterialPage() {
   const [isFetching, setIsFetching] = useState(true);
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<CreateMaterialInput>();
-  
+
   const watchVideo = watch('video_url');
   const watchContent = watch('content');
   const watchFile = watch('file_url');
@@ -35,7 +47,7 @@ export default function EditMaterialPage() {
     try {
       setIsFetching(true);
       const response = await api.get(`/materials/${materialId}`);
-      
+
       if (response.data.success) {
         const material = response.data.data;
         setValue('title', material.title);
@@ -68,29 +80,14 @@ export default function EditMaterialPage() {
     }
   };
 
-  const getContentTypeCount = () => {
-    let count = 0;
-    if (watchContent) count++;
-    if (watchVideo) count++;
-    if (watchFile) count++;
-    return count;
-  };
-
   if (isFetching) {
     return (
       <ProtectedRoute allowedRoles={['mentor']}>
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="min-h-screen bg-light-50">
           <Navbar />
-          <div className="flex flex-col justify-center items-center py-12">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-600"></div>
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-            </div>
-            <p className="mt-4 text-green-600 font-medium animate-pulse">Memuat materi...</p>
+          <div className="flex flex-col justify-center items-center h-[calc(100vh-64px)]">
+            <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
+            <p className="text-gray-500 font-medium">Memuat materi...</p>
           </div>
         </div>
       </ProtectedRoute>
@@ -99,69 +96,56 @@ export default function EditMaterialPage() {
 
   return (
     <ProtectedRoute allowedRoles={['mentor']}>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="min-h-screen bg-light-50">
         <Navbar />
 
-        <div className="max-w-5xl mx-auto py-8 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
-            {/* Header */}
-            <div className="mb-8 relative">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-green-200 to-emerald-200 rounded-full filter blur-3xl opacity-30 animate-pulse"></div>
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-br from-blue-200 to-cyan-200 rounded-full filter blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
-              
-              <button
-                onClick={() => router.push(`/mentor/courses/${courseId}/materials`)}
-                className="group inline-flex items-center text-gray-600 hover:text-green-600 mb-4 transition-colors relative z-10"
-              >
-                <svg className="h-5 w-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Kembali ke Materi
-              </button>
-              
-              <div className="relative z-10">
-                <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full text-white text-sm font-medium mb-3 shadow-lg">
-                  <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                  Edit Mode
-                </div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                  Edit Materi ✏️
-                </h1>
-                <p className="mt-2 text-gray-600 text-lg">Perbarui konten materi pembelajaran</p>
+        <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="mb-8">
+            <Link
+              href={`/mentor/courses/${courseId}/materials`}
+              className="inline-flex items-center text-gray-500 hover:text-primary mb-4 transition-colors font-medium text-sm"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              Kembali ke Daftar Materi
+            </Link>
+
+            <div className="flex items-center gap-3">
+              <div className="bg-primary/10 p-3 rounded-xl">
+                <BookOpen className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Edit Materi</h1>
+                <p className="text-gray-600">Perbarui konten materi pembelajaran.</p>
               </div>
             </div>
+          </div>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* Basic Info Card */}
-              <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-green-100">
-                <div className="flex items-center mb-6">
-                  <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl">
-                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h2 className="ml-3 text-xl font-bold text-gray-900">Informasi Dasar</h2>
-                </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
+            {/* Basic Info Card */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+              <div className="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
+                <FileText className="w-5 h-5 text-primary" />
+                <h2 className="text-lg font-bold text-gray-900">Informasi Dasar</h2>
+              </div>
+
+              <div className="space-y-6">
                 {/* Title */}
-                <div className="mb-6">
+                <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Judul Materi <span className="text-red-500">*</span>
                   </label>
                   <input
                     {...register('title', { required: 'Judul materi wajib diisi' })}
                     type="text"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-                    placeholder="Masukkan judul materi..."
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400"
+                    placeholder="Contoh: Pengenalan Aljabar Linear"
                   />
                   {errors.title && (
-                    <p className="mt-2 text-sm text-red-600 flex items-center">
-                      <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
+                    <p className="mt-2 text-sm text-red-500 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
                       {errors.title.message}
                     </p>
                   )}
@@ -170,196 +154,114 @@ export default function EditMaterialPage() {
                 {/* Description */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Deskripsi Singkat 📝
+                    Deskripsi Singkat
                   </label>
                   <textarea
                     {...register('description')}
                     rows={3}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all resize-none"
-                    placeholder="Ringkasan materi ini..."
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none placeholder:text-gray-400"
+                    placeholder="Ringkasan tentang materi ini..."
                   />
                 </div>
               </div>
+            </div>
 
-              {/* Content Type Summary */}
-              {getContentTypeCount() > 0 && (
-                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl shadow-lg p-6 border-2 border-blue-200">
-                  <div className="flex items-center">
-                    <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl">
-                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div className="ml-4">
-                      <h3 className="text-lg font-bold text-gray-900">
-                        {getContentTypeCount()} Tipe Konten Aktif
-                      </h3>
-                      <div className="flex gap-2 mt-2">
-                        {watchContent && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-700">
-                            📝 Text
-                          </span>
-                        )}
-                        {watchVideo && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
-                            🎥 Video
-                          </span>
-                        )}
-                        {watchFile && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">
-                            📄 File
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Content Section */}
-              <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-purple-100">
-                <div className="flex items-center mb-6">
-                  <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl">
-                    <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <h2 className="ml-3 text-xl font-bold text-gray-900">Konten Materi</h2>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Text Content */}
-                  <div className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border-2 border-purple-200">
-                    <div className="flex items-center mb-4">
-                      <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
-                        <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                      </div>
-                      <label className="ml-3 text-sm font-bold text-gray-700">
-                        📝 Konten Text
-                      </label>
-                    </div>
-                    <textarea
-                      {...register('content')}
-                      rows={10}
-                      className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none bg-white"
-                      placeholder="Tulis konten materi di sini... (mendukung markdown)"
-                    />
-                    <p className="mt-2 text-xs text-purple-700 flex items-center">
-                      <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Anda bisa menggunakan markdown untuk formatting text
-                    </p>
-                  </div>
-
-                  {/* Video URL */}
-                  <div className="p-6 bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl border-2 border-red-200">
-                    <div className="flex items-center mb-4">
-                      <div className="p-2 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg">
-                        <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                      <label className="ml-3 text-sm font-bold text-gray-700">
-                        🎥 Video URL (YouTube/Vimeo)
-                      </label>
-                    </div>
-                    <input
-                      {...register('video_url')}
-                      type="url"
-                      className="w-full px-4 py-3 border-2 border-red-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all bg-white"
-                      placeholder="https://www.youtube.com/watch?v=..."
-                    />
-                    <p className="mt-2 text-xs text-red-700 flex items-center">
-                      <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Paste link video YouTube atau Vimeo
-                    </p>
-                  </div>
-
-                  {/* File URL */}
-                  <div className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border-2 border-blue-200">
-                    <div className="flex items-center mb-4">
-                      <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg">
-                        <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                      </div>
-                      <label className="ml-3 text-sm font-bold text-gray-700">
-                        📄 File Attachment URL (Google Drive/Dropbox)
-                      </label>
-                    </div>
-                    <input
-                      {...register('file_url')}
-                      type="url"
-                      className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all bg-white"
-                      placeholder="https://drive.google.com/..."
-                    />
-                    <p className="mt-2 text-xs text-blue-700 flex items-center">
-                      <svg className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Link ke file PDF, PPT, DOC, dll
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 p-4 bg-gradient-to-br from-yellow-50 to-amber-50 border-2 border-yellow-200 rounded-xl">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-yellow-800">
-                        💡 Tips: Anda dapat menambahkan satu atau lebih jenis konten (text, video, file) untuk materi yang lebih lengkap!
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            {/* Content Section */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+              <div className="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
+                <BookOpen className="w-5 h-5 text-primary" />
+                <h2 className="text-lg font-bold text-gray-900">Konten Materi</h2>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex justify-end space-x-4 pt-6">
-                <button
-                  type="button"
-                  onClick={() => router.push(`/mentor/courses/${courseId}/materials`)}
-                  className="px-6 py-3 border-2 border-gray-300 rounded-xl font-medium text-gray-700 bg-white hover:bg-gray-50 transition-all"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="group relative px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                >
-                  <span className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                  <span className="relative flex items-center">
-                    {isLoading ? (
-                      <>
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Menyimpan...
-                      </>
-                    ) : (
-                      <>
-                        <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        Update Materi
-                      </>
-                    )}
-                  </span>
-                </button>
+              <div className="space-y-6">
+
+                {/* Tips Alert */}
+                <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3">
+                  <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                  <p className="text-sm text-blue-700">
+                    Anda dapat menambahkan kombinasi teks, video, atau file untuk membuat materi yang lengkap.
+                  </p>
+                </div>
+
+                {/* Text Content */}
+                <div className="p-5 bg-gray-50 rounded-xl border border-gray-100">
+                  <div className="flex items-center gap-2 mb-3">
+                    <FileText className="w-5 h-5 text-gray-600" />
+                    <label className="text-sm font-bold text-gray-700">
+                      Konten Teks (Markdown)
+                    </label>
+                  </div>
+                  <textarea
+                    {...register('content')}
+                    rows={8}
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                    placeholder="Tulis konten pembelajaran di sini..."
+                  />
+                </div>
+
+                {/* Video URL */}
+                <div className="p-5 bg-gray-50 rounded-xl border border-gray-100">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Video className="w-5 h-5 text-red-500" />
+                    <label className="text-sm font-bold text-gray-700">
+                      Video URL (YouTube/Vimeo)
+                    </label>
+                  </div>
+                  <input
+                    {...register('video_url')}
+                    type="url"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                  />
+                </div>
+
+                {/* File URL */}
+                <div className="p-5 bg-gray-50 rounded-xl border border-gray-100">
+                  <div className="flex items-center gap-2 mb-3">
+                    <File className="w-5 h-5 text-blue-500" />
+                    <label className="text-sm font-bold text-gray-700">
+                      File Attachment URL
+                    </label>
+                  </div>
+                  <input
+                    {...register('file_url')}
+                    type="url"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400"
+                    placeholder="https://drive.google.com/..."
+                  />
+                </div>
+
               </div>
-            </form>
-          </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex justify-end gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => router.push(`/mentor/courses/${courseId}/materials`)}
+                className="px-6 py-3 border border-gray-200 rounded-xl font-semibold text-gray-700 bg-white hover:bg-gray-50 transition-all"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="btn btn-primary px-8 py-3 rounded-xl font-bold shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Menyimpan...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-5 h-5" />
+                    Simpan Perubahan
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </ProtectedRoute>

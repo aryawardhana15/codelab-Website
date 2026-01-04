@@ -7,6 +7,7 @@ import api from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { UserStats, Badge } from '@/types/gamification';
+import { User, Mail, FileText, Image, Target, Briefcase, Save, X, Trophy, Star, Award, TrendingUp } from 'lucide-react';
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -78,7 +79,7 @@ export default function EditProfilePage() {
 
     try {
       const response = await api.put('/auth/profile', formData);
-      
+
       if (response.data.success) {
         setSuccess('Profile berhasil diperbarui! 🎉');
         updateUser(response.data.data);
@@ -104,35 +105,35 @@ export default function EditProfilePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="min-h-screen bg-light-50">
         <Navbar />
-        
+
         <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-          {/* Profile Header - Fun Design */}
-          <div className="relative mb-8 overflow-hidden bg-[#1758E6] rounded-xl p-8 shadow-lg border border-gray-100">
+          {/* Profile Header */}
+          <div className="relative mb-8 overflow-hidden bg-gradient-primary rounded-3xl p-8 shadow-glow-primary">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/20 rounded-full -ml-24 -mb-24"></div>
             <div className="absolute top-4 right-4 text-6xl opacity-20">✨</div>
-            
+
             <div className="relative z-10">
               <div className="flex flex-col md:flex-row items-center gap-6">
                 {/* Avatar */}
                 <div className="relative">
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 p-1 shadow-xl">
+                  <div className="w-32 h-32 rounded-full bg-white/20 p-1 shadow-xl backdrop-blur-sm">
                     {user?.photo_url ? (
-                      <img 
-                        src={user.photo_url} 
-                        alt={user.name} 
+                      <img
+                        src={user.photo_url}
+                        alt={user.name}
                         className="w-full h-full rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-4xl font-black text-[#1758E6]">
+                      <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-4xl font-black text-primary">
                         {user?.name?.charAt(0).toUpperCase() || 'U'}
                       </div>
                     )}
                   </div>
-                  <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full p-2 shadow-lg">
-                    <span className="text-2xl">👤</span>
+                  <div className="absolute -bottom-2 -right-2 bg-white rounded-full p-2 shadow-lg">
+                    <User className="h-5 w-5 text-primary" />
                   </div>
                 </div>
 
@@ -144,30 +145,30 @@ export default function EditProfilePage() {
                   <p className="text-xl text-white/90 mb-4 capitalize">
                     {user?.role === 'pelajar' ? '🎓 Pelajar' : user?.role === 'mentor' ? '👨‍🏫 Mentor' : '👑 Admin'}
                   </p>
-                  
+
                   {/* Level & Rank for Pelajar */}
                   {user?.role === 'pelajar' && stats && (
                     <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                       <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
                         <div className="flex items-center gap-2">
-                          <span className="text-2xl">🎯</span>
+                          <Target className="h-5 w-5 text-white" />
                           <div>
                             <p className="text-xs text-white/90">Level</p>
                             <p className="text-xl font-black text-white">{stats.current_level}</p>
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
                         <div className="flex items-center gap-2">
-                          <span className="text-2xl">⭐</span>
+                          <Star className="h-5 w-5 text-white" />
                           <div>
                             <p className="text-xs text-white/90">XP</p>
                             <p className="text-xl font-black text-white">{stats.total_xp.toLocaleString()}</p>
                           </div>
                         </div>
                       </div>
-                      
+
                       {stats.rank > 0 && (
                         <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
                           <div className="flex items-center gap-2">
@@ -179,10 +180,10 @@ export default function EditProfilePage() {
                           </div>
                         </div>
                       )}
-                      
+
                       <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/30">
                         <div className="flex items-center gap-2">
-                          <span className="text-2xl">🏆</span>
+                          <Trophy className="h-5 w-5 text-white" />
                           <div>
                             <p className="text-xs text-white/90">Badges</p>
                             <p className="text-xl font-black text-white">{earnedBadges.length}</p>
@@ -196,9 +197,19 @@ export default function EditProfilePage() {
                 {/* Edit Button */}
                 <button
                   onClick={() => setShowEditForm(!showEditForm)}
-                  className="px-6 py-3 bg-white/20 backdrop-blur-sm text-white font-bold rounded-xl hover:bg-white/30 transition-all transform hover:scale-105 border border-white/30 shadow-lg"
+                  className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
                 >
-                  {showEditForm ? '❌ Tutup' : '✏️ Edit Profile'}
+                  {showEditForm ? (
+                    <>
+                      <X className="h-5 w-5 mr-2" />
+                      Tutup
+                    </>
+                  ) : (
+                    <>
+                      <FileText className="h-5 w-5 mr-2" />
+                      Edit Profile
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -206,24 +217,25 @@ export default function EditProfilePage() {
 
           {/* Level Progress Bar for Pelajar */}
           {user?.role === 'pelajar' && stats && (
-            <div className="bg-white rounded-2xl border border-gray-300 p-6 shadow-sm mb-8">
+            <div className="card mb-8">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-bold text-[#222C7B] flex items-center gap-2">
-                  <span className="text-2xl">📊</span> Progress Level
+                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  Progress Level
                 </h3>
-                <span className="text-sm font-semibold text-[#222C7B]">
+                <span className="badge badge-primary">
                   Level {stats.current_level}: {stats.level_name}
                 </span>
               </div>
-              <div className="relative h-6 bg-gray-200 rounded-full overflow-hidden">
-                <div 
-                  className="absolute top-0 left-0 h-full bg-[#319BFF] transition-all duration-1000 ease-out"
+              <div className="relative h-6 bg-light-200 rounded-full overflow-hidden">
+                <div
+                  className="absolute top-0 left-0 h-full bg-gradient-primary transition-all duration-1000 ease-out"
                   style={{ width: `${Math.min(stats.level_progress, 100)}%` }}
                 >
                   <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-xs font-bold text-[#222C7B] z-10">
+                  <span className="text-xs font-bold text-gray-700 z-10">
                     {stats.level_progress}% menuju Level {stats.current_level + 1}
                   </span>
                 </div>
@@ -233,9 +245,10 @@ export default function EditProfilePage() {
 
           {/* Badges Section for Pelajar */}
           {user?.role === 'pelajar' && earnedBadges.length > 0 && (
-            <div className="bg-white rounded-2xl border border-gray-300 p-6 shadow-sm mb-8">
-              <h3 className="text-xl font-bold text-[#222C7B] mb-4 flex items-center gap-2">
-                <span className="text-2xl">🏆</span> Badges yang Didapat
+            <div className="card mb-8">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Award className="h-6 w-6 text-primary" />
+                Badges yang Didapat
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {earnedBadges.slice(0, 12).map((badge) => (
@@ -243,20 +256,20 @@ export default function EditProfilePage() {
                     key={badge.badge_id}
                     className="relative group cursor-pointer transform hover:scale-110 transition-all duration-300"
                   >
-                    <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-4 shadow-md border border-blue-300">
+                    <div className="bg-gradient-primary rounded-xl p-4 shadow-md">
                       <div className="text-4xl text-center mb-2">🎖️</div>
                       <p className="text-xs font-bold text-center text-white line-clamp-2">
                         {badge.badge_name}
                       </p>
                     </div>
-                    <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1 shadow-lg">
+                    <div className="absolute -top-2 -right-2 bg-success rounded-full p-1 shadow-lg">
                       <span className="text-xs text-white">✓</span>
                     </div>
                   </div>
                 ))}
               </div>
               {earnedBadges.length > 12 && (
-                <p className="text-center text-sm text-[#222C7B] mt-4 font-medium">
+                <p className="text-center text-sm text-gray-600 mt-4 font-medium">
                   +{earnedBadges.length - 12} badges lainnya! 🎉
                 </p>
               )}
@@ -265,31 +278,33 @@ export default function EditProfilePage() {
 
           {/* Edit Form */}
           {showEditForm && (
-            <div className="bg-white rounded-2xl border border-gray-300 shadow-sm p-8 animate-fadeIn">
+            <div className="card animate-fadeIn">
               <div className="mb-6">
-                <h2 className="text-3xl font-bold text-[#222C7B] mb-2 flex items-center gap-2">
-                  <span className="text-3xl">✏️</span> Edit Profile
+                <h2 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
+                  <FileText className="h-8 w-8 text-primary" />
+                  Edit Profile
                 </h2>
-                <p className="text-[#222C7B]">Perbarui informasi profil Anda</p>
+                <p className="text-gray-600">Perbarui informasi profil Anda</p>
               </div>
 
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
-                  <p className="text-red-800 text-sm font-medium">{error}</p>
+                <div className="mb-6 p-4 bg-error/10 border-2 border-error/30 rounded-xl">
+                  <p className="text-error text-sm font-medium">{error}</p>
                 </div>
               )}
 
               {success && (
-                <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl">
-                  <p className="text-green-800 text-sm font-medium">{success}</p>
+                <div className="mb-6 p-4 bg-success/10 border-2 border-success/30 rounded-xl">
+                  <p className="text-success text-sm font-medium">{success}</p>
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name */}
                 <div>
-                  <label htmlFor="name" className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                    <span>👤</span> Nama Lengkap
+                  <label htmlFor="name" className="input-label flex items-center gap-2">
+                    <User className="h-4 w-4 text-primary" />
+                    Nama Lengkap
                   </label>
                   <input
                     type="text"
@@ -298,15 +313,16 @@ export default function EditProfilePage() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#1758E6] focus:border-[#1758E6] outline-none transition-all"
+                    className="input"
                     placeholder="Masukkan nama lengkap"
                   />
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                    <span>📧</span> Email
+                  <label htmlFor="email" className="input-label flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-primary" />
+                    Email
                   </label>
                   <input
                     type="email"
@@ -315,15 +331,16 @@ export default function EditProfilePage() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#1758E6] focus:border-[#1758E6] outline-none transition-all"
+                    className="input"
                     placeholder="Masukkan email"
                   />
                 </div>
 
                 {/* Bio */}
                 <div>
-                  <label htmlFor="bio" className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                    <span>📝</span> Bio
+                  <label htmlFor="bio" className="input-label flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-primary" />
+                    Bio
                   </label>
                   <textarea
                     id="bio"
@@ -331,15 +348,16 @@ export default function EditProfilePage() {
                     value={formData.bio}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all resize-none"
+                    className="input resize-none"
                     placeholder="Ceritakan tentang diri Anda..."
                   />
                 </div>
 
                 {/* Photo URL */}
                 <div>
-                  <label htmlFor="photo_url" className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                    <span>🖼️</span> URL Foto Profil
+                  <label htmlFor="photo_url" className="input-label flex items-center gap-2">
+                    <Image className="h-4 w-4 text-primary" />
+                    URL Foto Profil
                   </label>
                   <input
                     type="url"
@@ -347,7 +365,7 @@ export default function EditProfilePage() {
                     name="photo_url"
                     value={formData.photo_url}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#1758E6] focus:border-[#1758E6] outline-none transition-all"
+                    className="input"
                     placeholder="https://example.com/photo.jpg"
                   />
                 </div>
@@ -355,8 +373,9 @@ export default function EditProfilePage() {
                 {/* Expertise (for mentor) */}
                 {user?.role === 'mentor' && (
                   <div>
-                    <label htmlFor="expertise" className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                      <span>🎯</span> Keahlian
+                    <label htmlFor="expertise" className="input-label flex items-center gap-2">
+                      <Target className="h-4 w-4 text-primary" />
+                      Keahlian
                     </label>
                     <textarea
                       id="expertise"
@@ -364,7 +383,7 @@ export default function EditProfilePage() {
                       value={formData.expertise}
                       onChange={handleChange}
                       rows={3}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all resize-none"
+                      className="input resize-none"
                       placeholder="Daftar keahlian Anda..."
                     />
                   </div>
@@ -373,8 +392,9 @@ export default function EditProfilePage() {
                 {/* Experience (for mentor) */}
                 {user?.role === 'mentor' && (
                   <div>
-                    <label htmlFor="experience" className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2">
-                      <span>💼</span> Pengalaman
+                    <label htmlFor="experience" className="input-label flex items-center gap-2">
+                      <Briefcase className="h-4 w-4 text-primary" />
+                      Pengalaman
                     </label>
                     <textarea
                       id="experience"
@@ -382,7 +402,7 @@ export default function EditProfilePage() {
                       value={formData.experience}
                       onChange={handleChange}
                       rows={4}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all resize-none"
+                      className="input resize-none"
                       placeholder="Ceritakan pengalaman Anda..."
                     />
                   </div>
@@ -397,16 +417,18 @@ export default function EditProfilePage() {
                       setError('');
                       setSuccess('');
                     }}
-                    className="flex-1 px-6 py-3 border border-gray-300 text-[#222C7B] rounded-xl hover:bg-gray-50 transition-all font-bold"
+                    className="btn btn-light flex-1"
                   >
+                    <X className="h-5 w-5 mr-2" />
                     Batal
                   </button>
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="flex-1 px-6 py-3 bg-[#1758E6] text-white rounded-xl hover:bg-[#1247CC] transition-all font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transform hover:scale-105"
+                    className="btn btn-primary flex-1 disabled:opacity-50"
                   >
-                    {isLoading ? '💾 Menyimpan...' : '💾 Simpan Perubahan'}
+                    <Save className="h-5 w-5 mr-2" />
+                    {isLoading ? 'Menyimpan...' : 'Simpan Perubahan'}
                   </button>
                 </div>
               </form>
@@ -415,11 +437,12 @@ export default function EditProfilePage() {
 
           {/* Bio Display (when not editing) */}
           {!showEditForm && user?.bio && (
-            <div className="bg-white rounded-2xl border border-gray-300 p-6 shadow-sm">
-              <h3 className="text-lg font-bold text-[#222C7B] mb-3 flex items-center gap-2">
-                <span className="text-2xl">📖</span> Tentang Saya
+            <div className="card">
+              <h3 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                Tentang Saya
               </h3>
-              <p className="text-[#222C7B] leading-relaxed">{user.bio}</p>
+              <p className="text-gray-700 leading-relaxed">{user.bio}</p>
             </div>
           )}
         </div>

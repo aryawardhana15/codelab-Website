@@ -10,6 +10,7 @@ import CourseCard from '@/components/CourseCard';
 import CourseFilters from '@/components/CourseFilters';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Course, CourseFilters as Filters, Pagination } from '@/types/course';
+import { Search, BookOpen, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
 export default function CoursesPage() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function CoursesPage() {
     try {
       setIsLoading(true);
       const params = new URLSearchParams();
-      
+
       if (filters.search) params.append('search', filters.search);
       if (filters.category) params.append('category', filters.category);
       if (filters.difficulty) params.append('difficulty', filters.difficulty);
@@ -36,18 +37,16 @@ export default function CoursesPage() {
       params.append('limit', '12');
 
       const response = await api.get(`/courses?${params.toString()}`);
-      
+
       if (response.data.success) {
         setCourses(response.data.data);
         setPagination(response.data.pagination);
       }
     } catch (error: any) {
-      // Don't show error toast for network errors, just log
       if (error.response) {
         toast.error(error.response?.data?.message || 'Gagal memuat kursus');
       } else {
         console.error('Network error:', error);
-        // Set empty courses instead of showing error
         setCourses([]);
         setPagination(null);
       }
@@ -70,10 +69,9 @@ export default function CoursesPage() {
 
     try {
       const response = await api.post(`/courses/${courseId}/enroll`);
-      
+
       if (response.data.success) {
         toast.success(response.data.message);
-        // Refresh courses to update enrollment status
         fetchCourses(pagination?.currentPage || 1);
       }
     } catch (error: any) {
@@ -92,35 +90,15 @@ export default function CoursesPage() {
 
   return (
     <ProtectedRoute allowedRoles={['pelajar']}>
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50">
+      <div className="min-h-screen bg-light-50">
         <Navbar />
 
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {/* Header - Fun Design */}
-          {/* <div className="px-4 py-6 sm:px-0 mb-6">
-            <div className="relative overflow-hidden bg-gradient-to-r from-indigo-500 via-blue-500 to-purple-500 rounded-3xl p-8 shadow-2xl">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24"></div>
-              
-              <div className="relative z-10">
-                <div className="flex items-center gap-3">
-                  <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                    <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h1 className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">
-                      Jelajahi Kursus
-                    </h1>
-                    <p className="text-xl text-white/90 font-medium">
-                      Temukan kursus yang sesuai dengan minat dan tujuan belajarmu
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
+        <div className="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="px-4 sm:px-0 mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Jelajahi Kursus</h1>
+            <p className="text-gray-600">Temukan kursus terbaik untuk meningkatkan skill kamu.</p>
+          </div>
 
           {/* Filters */}
           <div className="px-4 sm:px-0">
@@ -129,23 +107,30 @@ export default function CoursesPage() {
 
           {/* Loading State */}
           {isLoading && (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="flex flex-col justify-center items-center py-20">
+              <div className="animate-spin text-primary mb-4">
+                <Loader2 className="w-12 h-12" />
+              </div>
+              <p className="text-gray-500 font-medium">Memuat kursus...</p>
             </div>
           )}
 
-          {/* Empty State - Fun Design */}
+          {/* Empty State */}
           {!isLoading && courses.length === 0 && (
-            <div className="text-center py-16">
-              <div className="relative inline-block mb-6">
-                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center">
-                  <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
+            <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300 mx-4 sm:mx-0">
+              <div className="inline-flex p-4 bg-orange-50 rounded-full mb-4">
+                <Search className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-2xl font-black text-gray-800 mb-2">Tidak ada kursus ditemukan</h3>
-              <p className="text-lg text-gray-600 mb-8">Coba ubah filter pencarianmu atau cek lagi nanti!</p>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Tidak ada kursus ditemukan</h3>
+              <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                Coba ubah kata kunci pencarian atau filter untuk menemukan kursus yang kamu cari.
+              </p>
+              <button
+                onClick={() => setFilters({})}
+                className="btn btn-primary"
+              >
+                Reset Filter
+              </button>
             </div>
           )}
 
@@ -153,7 +138,7 @@ export default function CoursesPage() {
           {!isLoading && courses.length > 0 && (
             <>
               <div className="px-4 sm:px-0">
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {courses.map((course) => (
                     <CourseCard
                       key={course.id}
@@ -166,24 +151,36 @@ export default function CoursesPage() {
 
               {/* Pagination */}
               {pagination && pagination.totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 mt-8">
+                <div className="flex justify-center items-center gap-2 mt-10 px-4 sm:px-0">
                   <button
                     onClick={() => handlePageChange(pagination.currentPage - 1)}
                     disabled={pagination.currentPage === 1}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    Previous
+                    <ChevronLeft className="h-5 w-5 text-gray-600" />
                   </button>
-                  
-                  <span className="text-sm text-gray-700">
-                    Page {pagination.currentPage} of {pagination.totalPages}
-                  </span>
+
+                  <div className="flex gap-2">
+                    {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`w-10 h-10 rounded-lg font-medium transition-all ${pagination.currentPage === page
+                            ? 'bg-primary text-white shadow-lg shadow-primary/30'
+                            : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                          }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  </div>
+
                   <button
                     onClick={() => handlePageChange(pagination.currentPage + 1)}
                     disabled={pagination.currentPage === pagination.totalPages}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    Next
+                    <ChevronRight className="h-5 w-5 text-gray-600" />
                   </button>
                 </div>
               )}
@@ -194,4 +191,3 @@ export default function CoursesPage() {
     </ProtectedRoute>
   );
 }
-

@@ -6,11 +6,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const envContent = `PORT=5000
+const envContent = `PORT=50001
 DB_HOST=localhost
 DB_USER=root
-DB_PASSWORD=hafiz1180
-DB_NAME=codelab_db
+DB_PASSWORD=password_anda
+DB_NAME=codelab
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 JWT_EXPIRES_IN=7d
 `;

@@ -7,6 +7,19 @@ import api from '@/lib/api';
 import Navbar from '@/components/Navbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Assignment, QuizQuestion, SubmitQuizInput } from '@/types/assignment';
+import {
+  Clock,
+  ArrowLeft,
+  CheckCircle,
+  AlertCircle,
+  HelpCircle,
+  Award,
+  ChevronRight,
+  Target,
+  Loader2,
+  Calendar,
+  Send
+} from 'lucide-react';
 
 export default function TakeQuizPage() {
   const router = useRouter();
@@ -107,10 +120,11 @@ export default function TakeQuizPage() {
   if (isLoading) {
     return (
       <ProtectedRoute allowedRoles={['pelajar']}>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-light-50">
           <Navbar />
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="flex flex-col justify-center items-center h-[calc(100vh-64px)]">
+            <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
+            <p className="text-gray-500 font-medium">Memuat kuis...</p>
           </div>
         </div>
       </ProtectedRoute>
@@ -120,33 +134,46 @@ export default function TakeQuizPage() {
   if (showResult && result) {
     return (
       <ProtectedRoute allowedRoles={['pelajar']}>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-light-50">
           <Navbar />
 
-          <div className="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-            <div className="px-4 py-6 sm:px-0">
-              <div className="bg-white shadow rounded-lg p-8 text-center">
-                <div className="mb-6">
-                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-                    <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Kuis Selesai!</h2>
-                  <p className="text-lg text-gray-600 mb-4">
-                    Score: <span className="font-bold text-blue-600">{result.score}/{result.totalQuestions * 10}</span>
+          <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div className="card p-8 text-center max-w-lg mx-auto">
+              <div className="mb-8">
+                <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-50 mb-6 border border-green-100 shadow-sm animate-bounce-short">
+                  <Award className="h-10 w-10 text-green-600" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">Kuis Selesai!</h2>
+                <p className="text-gray-500 mb-8">
+                  Kamu telah menyelesaikan kuis ini. Berikut adalah hasilmu:
+                </p>
+
+                <div className="bg-gradient-to-br from-light-50 to-white border border-gray-100 rounded-2xl p-6 mb-6 shadow-inner">
+                  <p className="text-sm text-gray-500 font-medium uppercase tracking-wider mb-2">Nilai Akhir</p>
+                  <p className="text-5xl font-extrabold text-primary mb-2">
+                    {result.score}
+                    <span className="text-lg text-gray-400 font-medium">/{result.totalQuestions * 10}</span>
                   </p>
-                  <p className="text-sm text-gray-500">
-                    Persentase: {result.percentage}%
+                  <div className="w-full bg-gray-100 rounded-full h-2.5 mt-2">
+                    <div
+                      className={`h-2.5 rounded-full ${result.percentage >= 80 ? 'bg-green-500' :
+                          result.percentage >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}
+                      style={{ width: `${result.percentage}%` }}
+                    ></div>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2 font-medium">
+                    Akurasi Jawaban: {result.percentage}%
                   </p>
                 </div>
-                <button
-                  onClick={() => router.push(`/courses/${courseId}/assignments`)}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
-                >
-                  Kembali ke Assignments
-                </button>
               </div>
+              <button
+                onClick={() => router.push(`/courses/${courseId}/assignments`)}
+                className="btn btn-primary w-full"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Kembali ke Daftar Tugas
+              </button>
             </div>
           </div>
         </div>
@@ -156,56 +183,72 @@ export default function TakeQuizPage() {
 
   return (
     <ProtectedRoute allowedRoles={['pelajar']}>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-light-50">
         <Navbar />
 
-        <div className="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
-            <div className="mb-6">
-              <button
-                onClick={() => router.push(`/courses/${courseId}/assignments`)}
-                className="text-gray-500 hover:text-gray-700 mb-4"
-              >
-                ← Kembali
-              </button>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Kuis: {assignment?.title}
-              </h1>
-              {assignment?.deadline && (
-                <p className="mt-2 text-sm text-gray-600">
-                  Deadline: {formatDate(assignment.deadline)}
-                </p>
-              )}
-            </div>
+        <div className="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="mb-6">
+            <button
+              onClick={() => router.push(`/courses/${courseId}/assignments`)}
+              className="inline-flex items-center text-gray-500 hover:text-primary mb-4 transition-colors font-medium text-sm group"
+            >
+              <ArrowLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
+              Batal & Kembali
+            </button>
 
-            {assignment?.description && (
-              <div className="bg-white shadow rounded-lg p-6 mb-6">
-                <h2 className="text-lg font-medium text-gray-900 mb-2">Deskripsi Kuis</h2>
-                <p className="text-gray-700 whitespace-pre-wrap">
-                  {assignment.description}
-                </p>
-                <p className="mt-4 text-sm text-gray-600">
-                  Max Score: {assignment.max_score} | Total Pertanyaan: {questions.length}
-                </p>
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">
+                  {assignment?.title}
+                </h1>
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  {assignment?.deadline && (
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      Deadline: {formatDate(assignment.deadline)}
+                    </span>
+                  )}
+                  <span className="flex items-center gap-1">
+                    <Target className="w-4 h-4 text-gray-400" />
+                    Max Score: {assignment?.max_score}
+                  </span>
+                </div>
               </div>
-            )}
+            </div>
+          </div>
 
-            <div className="bg-white shadow rounded-lg p-6">
-              <div className="space-y-8">
-                {questions.map((question, index) => (
-                  <div key={question.id} className="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">
-                      {index + 1}. {question.question_text}
+          {assignment?.description && (
+            <div className="bg-blue-50/50 border border-blue-100 rounded-2xl p-6 mb-8 text-blue-900">
+              <h2 className="text-sm font-bold uppercase tracking-wide text-blue-700 mb-2 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                Petunjuk Pengerjaan
+              </h2>
+              <p className="text-blue-800/80 whitespace-pre-wrap text-sm leading-relaxed">
+                {assignment.description}
+              </p>
+            </div>
+          )}
+
+          <div className="space-y-6">
+            {questions.map((question, index) => (
+              <div key={question.id} className="card p-6 border-l-4 border-l-primary hover:border-l-primary-600 transition-all">
+                <div className="flex gap-4">
+                  <span className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold text-sm">
+                    {index + 1}
+                  </span>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 leading-relaxed">
+                      {question.question_text}
                     </h3>
                     <div className="space-y-3">
                       {(['a', 'b', 'c', 'd'] as const).map((option) => (
                         <label
                           key={option}
-                          className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-colors ${
-                            answers[question.id] === option
-                              ? 'border-blue-500 bg-blue-50'
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
+                          className={`flex items-center p-4 border rounded-xl cursor-pointer transition-all duration-200 group ${answers[question.id] === option
+                              ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                            }`}
                         >
                           <input
                             type="radio"
@@ -213,31 +256,59 @@ export default function TakeQuizPage() {
                             value={option}
                             checked={answers[question.id] === option}
                             onChange={() => handleAnswerChange(question.id, option)}
-                            className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                            className="w-4 h-4 text-primary focus:ring-primary border-gray-300"
                           />
-                          <span className="font-medium mr-2">{option.toUpperCase()}.</span>
-                          <span>{question[`option_${option}` as keyof QuizQuestion] as string}</span>
+                          <div className="ml-3 flex-1 flex items-start gap-3">
+                            <span className={`text-sm font-bold uppercase w-6 ${answers[question.id] === option ? 'text-primary' : 'text-gray-400 group-hover:text-gray-600'
+                              }`}>
+                              {option}.
+                            </span>
+                            <span className={`text-sm ${answers[question.id] === option ? 'text-gray-900 font-medium' : 'text-gray-600'
+                              }`}>
+                              {question[`option_${option}` as keyof QuizQuestion] as string}
+                            </span>
+                          </div>
                         </label>
                       ))}
                     </div>
                   </div>
-                ))}
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-600">
-                    Terjawab: {Object.keys(answers).length} / {questions.length}
-                  </p>
-                  <button
-                    onClick={handleSubmit}
-                    disabled={isSubmitting || Object.keys(answers).length !== questions.length}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? 'Mengirim...' : 'Submit Kuis'}
-                  </button>
                 </div>
               </div>
+            ))}
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-gray-100 sticky bottom-0 bg-light-50/90 backdrop-blur-sm pb-8 z-10">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-medium text-gray-500">
+                <span className="text-primary font-bold">{Object.keys(answers).length}</span> dari <span className="text-gray-900 font-bold">{questions.length}</span> soal terjawab
+              </div>
+
+              <div className="w-1/3 mx-4 hidden sm:block">
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div
+                    className="bg-primary h-1.5 rounded-full transition-all duration-500"
+                    style={{ width: `${(Object.keys(answers).length / questions.length) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting || Object.keys(answers).length !== questions.length}
+                className="btn btn-primary min-w-[160px]"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Mengirim...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4 mr-2" />
+                    Submit Kuis
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
@@ -245,4 +316,3 @@ export default function TakeQuizPage() {
     </ProtectedRoute>
   );
 }
-

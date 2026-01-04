@@ -33,7 +33,7 @@ export default function StudentCharts({ monthlyEnrollments, studentsPerCourse, a
   const barChartData = studentsPerCourse.map(course => ({
     ...course,
     title: course.title.length > 20 ? course.title.substring(0, 20) + '...' : course.title,
-    student_count: parseInt(course.student_count) || 0
+    student_count: course.student_count
   }));
 
   return (
@@ -49,28 +49,28 @@ export default function StudentCharts({ monthlyEnrollments, studentsPerCourse, a
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={monthlyEnrollments}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis 
-              dataKey="month" 
+            <XAxis
+              dataKey="month"
               stroke="#6b7280"
               style={{ fontSize: '12px' }}
             />
-            <YAxis 
+            <YAxis
               stroke="#6b7280"
               style={{ fontSize: '12px' }}
             />
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: 'white', 
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'white',
                 border: '1px solid #e5e7eb',
                 borderRadius: '8px',
                 padding: '8px'
               }}
             />
             <Legend />
-            <Line 
-              type="monotone" 
-              dataKey="count" 
-              stroke="#9333ea" 
+            <Line
+              type="monotone"
+              dataKey="count"
+              stroke="#9333ea"
               strokeWidth={3}
               dot={{ fill: '#9333ea', r: 5 }}
               activeDot={{ r: 7 }}
@@ -96,8 +96,11 @@ export default function StudentCharts({ monthlyEnrollments, studentsPerCourse, a
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-              outerRadius={100}
+              label={(props) => {
+                const { name, percent } = props as unknown as { name: string; percent: number };
+                return `${name}: ${(percent * 100).toFixed(0)}%`;
+              }}
+              outerRadius={80}
               fill="#8884d8"
               dataKey="value"
             >
@@ -105,9 +108,9 @@ export default function StudentCharts({ monthlyEnrollments, studentsPerCourse, a
                 <Cell key={`cell-${index}`} fill={index === 0 ? '#10b981' : '#ef4444'} />
               ))}
             </Pie>
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: 'white', 
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'white',
                 border: '1px solid #e5e7eb',
                 borderRadius: '8px',
                 padding: '8px'
@@ -139,30 +142,30 @@ export default function StudentCharts({ monthlyEnrollments, studentsPerCourse, a
           <ResponsiveContainer width="100%" height={400}>
             <BarChart data={barChartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis 
-                dataKey="title" 
+              <XAxis
+                dataKey="title"
                 angle={-45}
                 textAnchor="end"
                 height={100}
                 stroke="#6b7280"
                 style={{ fontSize: '11px' }}
               />
-              <YAxis 
+              <YAxis
                 stroke="#6b7280"
                 style={{ fontSize: '12px' }}
               />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'white', 
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'white',
                   border: '1px solid #e5e7eb',
                   borderRadius: '8px',
                   padding: '8px'
                 }}
               />
               <Legend />
-              <Bar 
-                dataKey="student_count" 
-                fill="#3b82f6" 
+              <Bar
+                dataKey="student_count"
+                fill="#3b82f6"
                 radius={[8, 8, 0, 0]}
                 name="Jumlah Pelajar"
               />
