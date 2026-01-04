@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Code, ArrowRight, CheckCircle } from 'lucide-react';
 import { loginBranding } from '../data/loginData';
 
@@ -18,8 +19,13 @@ export default function LoginBranding() {
             <div className="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-3 mb-8">
-                    <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-                        <Code className="w-10 h-10 text-primary" />
+                    <div className="relative w-20 h-20">
+                        <Image
+                            src="/codelab-icon-transparent.png"
+                            alt="Codelab Logo"
+                            fill
+                            className="object-contain"
+                        />
                     </div>
                     <span className="text-4xl font-bold">Codelab</span>
                 </Link>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail, Lock, Eye, EyeOff, LogIn, Code } from 'lucide-react';
 import { useLogin } from '../hooks/useLogin';
 import { loginFormConfig } from '../data/loginData';
@@ -22,8 +23,13 @@ export default function LoginForm() {
                 {/* Mobile Logo */}
                 <div className="lg:hidden flex justify-center mb-8">
                     <Link href="/" className="flex items-center gap-2">
-                        <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center">
-                            <Code className="w-7 h-7 text-white" />
+                        <div className="relative w-12 h-12">
+                            <Image
+                                src="/codelab-icon-transparent.png"
+                                alt="Codelab Logo"
+                                fill
+                                className="object-contain"
+                            />
                         </div>
                         <span className="text-2xl font-bold text-gray-900">Codelab</span>
                     </Link>

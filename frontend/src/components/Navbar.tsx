@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
 import { Home, BookOpen, FolderOpen, Award, Users, ShieldCheck, MessageSquare, Bell, LogOut } from 'lucide-react';
@@ -60,11 +61,13 @@ export default function Navbar() {
               onClick={() => router.push('/dashboard')}
               className="flex items-center gap-2 group"
             >
-              <div className="relative">
-                <div className="w-12 h-10 rounded-xl flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                  <img src="/logo_edutopia.png" alt="Codelab Logo" className="w-12 h-10" />
-                </div>
-                <div className="absolute inset-0 bg-gradient-primary rounded-xl opacity-0 group-hover:opacity-20 blur-lg transition-opacity duration-300"></div>
+              <div className="relative w-10 h-10">
+                <Image
+                  src="/codelab-icon-transparent.png"
+                  alt="Codelab Logo"
+                  fill
+                  className="object-contain"
+                />
               </div>
               <span className="text-xl font-bold text-gradient">
                 Codelab
