@@ -56,6 +56,10 @@
     @apply bg-secondary text-white hover:bg-secondary-600 hover:shadow-glow-secondary;
   }
 
+  .btn-success {
+    @apply bg-gradient-to-r from-success-dark to-success text-white hover:from-success hover:to-success-light hover:shadow-lg hover:scale-[1.02] active:scale-[0.98];
+  }
+
   .btn-light {
     @apply bg-white text-gray-900 hover:bg-light-50 border border-light-200;
   }

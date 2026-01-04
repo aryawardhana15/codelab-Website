@@ -1,8 +1,40 @@
 'use client';
 
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, BookOpen, Code, Lightbulb, CheckCircle, Users, Monitor, Bug, Settings, Send, MessageSquare, Handshake, UserCheck, FileCheck, CheckCircle2, Share2, Video, GraduationCap, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, MotionValue } from 'framer-motion';
+import { programs } from '@/shared/data/landingData';
+
+// Program Icons mapping
+const ProgramIcons = {
+    book: <BookOpen className="w-8 h-8" />,
+    code: <Code className="w-8 h-8" />,
+    event: <Lightbulb className="w-8 h-8" />,
+};
+
+// Service icons for Program 2
+const ServiceIcons: Record<string, React.ReactNode> = {
+    '💻': <Monitor className="w-10 h-10 text-primary" />,
+    '🐛': <Bug className="w-10 h-10 text-primary" />,
+    '⚙️': <Settings className="w-10 h-10 text-primary" />,
+};
+
+// Workflow icons for Program 2
+const WorkflowIcons: Record<string, React.ReactNode> = {
+    '📩': <Send className="w-5 h-5" />,
+    '🗣️': <MessageSquare className="w-5 h-5" />,
+    '🤝': <Handshake className="w-5 h-5" />,
+    '👨‍💻': <UserCheck className="w-5 h-5" />,
+    '📝': <FileCheck className="w-5 h-5" />,
+    '✅': <CheckCircle2 className="w-5 h-5" />,
+};
+
+// Event icons for Program 3
+const EventIcons: Record<string, React.ReactNode> = {
+    '📱': <Share2 className="w-8 h-8 text-primary" />,
+    '🎥': <Video className="w-8 h-8 text-primary" />,
+    '🎓': <GraduationCap className="w-8 h-8 text-primary" />,
+};
 
 const stats = [
     { value: '500+', label: 'Alumni Sukses' },
@@ -49,6 +81,7 @@ const ParallaxObject = ({
 
 export default function HeroSection() {
     const [mounted, setMounted] = useState(false);
+    const [activeProgram, setActiveProgram] = useState(0);
 
     // Mouse position values
     const mouseX = useMotionValue(0);
@@ -203,7 +236,7 @@ export default function HeroSection() {
     }
 
     return (
-        <section className="relative min-h-full flex items-center overflow-x-hidden bg-gradient-to-br from-[#FDF8F3] via-[#FFF8E7] to-[#FDF8F3]">
+        <section className="relative overflow-x-hidden bg-gradient-to-b from-[#FDF8F3] via-[#FFF8E7] to-[#FFF8E7]">
             {/* Smooth Cursor Followers */}
             <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
                 <motion.div
@@ -362,7 +395,7 @@ export default function HeroSection() {
                 />
             </div>
 
-            <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 py-20">
+            <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 min-h-screen flex items-center pt-20 pb-16">
                 <div className="max-w-4xl mx-auto text-center">
                     {/* Badge */}
                     <motion.div
@@ -490,6 +523,214 @@ export default function HeroSection() {
                         ))}
                     </div>
                 </div>
+            </div>
+
+            {/* Programs Section - Seamlessly integrated */}
+            <div id="programs" className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 pb-20">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1.4 }}
+                    className="text-center mb-12"
+                >
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-sm font-medium text-orange-600 mb-4">Program Kami</span>
+                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                        Solusi Lengkap untuk <span className="bg-gradient-to-r from-[#F9A825] to-[#F97316] bg-clip-text text-transparent">Karir IT</span> Kamu
+                    </h2>
+                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Dari belajar coding, jasa development, hingga event & komunitas - semua ada di Codelab.
+                    </p>
+                </motion.div>
+
+                {/* Program Tabs */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1.6 }}
+                    className="flex flex-wrap justify-center gap-4 mb-12"
+                >
+                    {programs.map((program, index) => (
+                        <button
+                            key={program.id}
+                            onClick={() => setActiveProgram(index)}
+                            className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all ${activeProgram === index
+                                ? 'bg-gradient-to-r from-[#F9A825] to-[#F97316] text-white shadow-lg shadow-orange-500/30'
+                                : 'bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white border border-gray-200'
+                                }`}
+                        >
+                            {ProgramIcons[program.icon as keyof typeof ProgramIcons]}
+                            {program.title}
+                        </button>
+                    ))}
+                </motion.div>
+
+                {/* Program Content */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1.8 }}
+                    className="max-w-5xl mx-auto"
+                >
+                    {programs.map((program, index) => (
+                        <div
+                            key={program.id}
+                            className={`transition-all duration-500 ${activeProgram === index ? 'opacity-100' : 'opacity-0 hidden'
+                                }`}
+                        >
+                            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-orange-100">
+                                {/* Header */}
+                                <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
+                                    <div className="w-16 h-16 bg-gradient-to-r from-[#F9A825] to-[#F97316] rounded-2xl flex items-center justify-center text-white">
+                                        {ProgramIcons[program.icon as keyof typeof ProgramIcons]}
+                                    </div>
+                                    <div>
+                                        <span className="text-sm text-orange-500 font-medium">{program.subtitle}</span>
+                                        <h3 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+                                            {ProgramIcons[program.icon as keyof typeof ProgramIcons]}
+                                            {program.title}
+                                        </h3>
+                                        <p className="text-gray-500">{program.focus}</p>
+                                    </div>
+                                </div>
+
+                                <p className="text-lg text-gray-600 mb-8">{program.description}</p>
+
+                                {/* Program 1: Learning */}
+                                {program.id === 'codelab-learning' && (
+                                    <>
+                                        {/* Features */}
+                                        <div className="mb-8">
+                                            <h4 className="text-xl font-bold text-gray-900 mb-4">Kenapa Belajar di Codelab?</h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                {program.features?.map((feature, i) => (
+                                                    <div key={i} className="flex items-start gap-3 p-4 bg-orange-50/50 rounded-xl">
+                                                        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
+                                                            <CheckCircle className="w-5 h-5 text-green-600" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-gray-900">{feature.text}</p>
+                                                            <p className="text-sm text-gray-600">{feature.desc}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Classes */}
+                                        <div className="mb-8">
+                                            <h4 className="text-xl font-bold text-gray-900 mb-4">Pilihan Kelas Kami</h4>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                {program.classes?.map((cls, i) => (
+                                                    <div key={i} className="p-4 border border-gray-200 rounded-xl hover:border-orange-500 transition-colors flex items-start gap-3">
+                                                        <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center shrink-0">
+                                                            <Users className="w-4 h-4 text-orange-500" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-orange-500">{cls.name}</p>
+                                                            <p className="text-sm text-gray-600">{cls.desc}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* Program 2: Solutions */}
+                                {program.id === 'coding-solutions' && (
+                                    <>
+                                        {/* Services */}
+                                        <div className="mb-8">
+                                            <h4 className="text-xl font-bold text-gray-900 mb-4">Layanan Unggulan</h4>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                {program.features?.map((feature, i) => (
+                                                    <div key={i} className="text-center p-6 bg-orange-50/50 rounded-xl">
+                                                        <div className="w-16 h-16 mx-auto mb-3 bg-orange-100 rounded-2xl flex items-center justify-center">
+                                                            {ServiceIcons[feature.icon] || <Code className="w-10 h-10 text-orange-500" />}
+                                                        </div>
+                                                        <p className="font-semibold text-gray-900 mb-2">{feature.text}</p>
+                                                        <p className="text-sm text-gray-600">{feature.desc}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Benefits */}
+                                        <div className="mb-8">
+                                            <h4 className="text-xl font-bold text-gray-900 mb-4">Keunggulan Jasa Kami</h4>
+                                            <div className="flex flex-wrap gap-3">
+                                                {program.benefits?.map((benefit, i) => (
+                                                    <span key={i} className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                                                        <CheckCircle className="w-4 h-4" />
+                                                        {benefit}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Workflow */}
+                                        <div className="mb-8">
+                                            <h4 className="text-xl font-bold text-gray-900 mb-4">Alur Pemesanan</h4>
+                                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                                                {program.workflow?.map((step, i) => (
+                                                    <div key={i} className="text-center">
+                                                        <div className="w-12 h-12 mx-auto mb-2 bg-gradient-to-r from-[#F9A825] to-[#F97316] rounded-full flex items-center justify-center text-white">
+                                                            {WorkflowIcons[step.step] || <CheckCircle2 className="w-5 h-5" />}
+                                                        </div>
+                                                        <p className="font-semibold text-gray-900 text-sm">{step.title}</p>
+                                                        <p className="text-xs text-gray-500 mt-1">{step.desc}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* Program 3: Event */}
+                                {program.id === 'codelab-event' && (
+                                    <div className="mb-8">
+                                        <h4 className="text-xl font-bold text-gray-900 mb-4">Apa yang Bisa Kamu Ikuti?</h4>
+                                        <div className="space-y-4">
+                                            {program.events?.map((event, i) => (
+                                                <div key={i} className="p-6 bg-orange-50/50 rounded-xl border-l-4 border-orange-500">
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center shrink-0">
+                                                            {EventIcons[event.icon] || <Lightbulb className="w-8 h-8 text-orange-500" />}
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="font-bold text-gray-900 text-lg">{event.name}</h5>
+                                                            <p className="text-gray-600 mb-2">{event.desc}</p>
+                                                            {event.format && (
+                                                                <p className="text-sm text-orange-500 font-medium">Format: {event.format}</p>
+                                                            )}
+                                                            {event.highlight && (
+                                                                <span className="inline-flex items-center gap-1 mt-2 px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                                                                    <TrendingUp className="w-4 h-4" />
+                                                                    {event.highlight}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* CTA */}
+                                <a
+                                    href={program.ctaLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white text-sm transition-all duration-300 w-full sm:w-auto justify-center bg-gradient-to-r from-[#F9A825] to-[#F97316] hover:shadow-lg hover:shadow-orange-500/30"
+                                >
+                                    {program.cta}
+                                    <ArrowRight className="w-5 h-5" />
+                                </a>
+                            </div>
+                        </div>
+                    ))}
+                </motion.div>
             </div>
 
             <style jsx>{`

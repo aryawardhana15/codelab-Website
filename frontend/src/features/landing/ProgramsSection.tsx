@@ -65,7 +65,7 @@ export default function ProgramsSection() {
     const [activeProgram, setActiveProgram] = useState(0);
 
     return (
-        <section id="programs" className="p-16 pb-20 bg-light-50">
+        <section id="programs" className="py-16 pb-20 bg-gradient-to-b from-[#FFF8E7] via-[#FDF8F3] to-[#F9FAFB]">
             <div className="container-app">
                 <div className="text-center mb-12">
                     <span className="badge badge-primary mb-4">Program Kami</span>

@@ -9,6 +9,7 @@ import XPBar from '@/components/XPBar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { UserStats, XPHistory } from '@/types/gamification';
 import Link from 'next/link';
+import { BarChart3, Zap, Trophy, Target, Award, Clock, TrendingUp } from 'lucide-react';
 
 export default function GamificationStatsPage() {
   const { user } = useAuth();
@@ -59,34 +60,40 @@ export default function GamificationStatsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-light-50">
+        <div className="text-center">
+          <div className="relative">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-light-200 border-t-primary mx-auto"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <BarChart3 className="h-6 w-6 text-primary" />
+            </div>
+          </div>
+          <p className="mt-4 text-primary font-medium">Loading Stats...</p>
+        </div>
       </div>
     );
   }
 
   return (
     <ProtectedRoute allowedRoles={['pelajar']}>
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-50">
+      <div className="min-h-screen bg-light-50">
         <Navbar />
 
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {/* Header - Fun Design */}
+          {/* Header */}
           <div className="px-4 py-6 sm:px-0 mb-6">
-            <div className="relative overflow-hidden bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 rounded-3xl p-8 shadow-2xl">
+            <div className="relative overflow-hidden bg-gradient-primary rounded-3xl p-8 shadow-glow-primary">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24"></div>
-              
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-secondary/20 rounded-full -ml-24 -mb-24"></div>
+
               <div className="relative z-10">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                        <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
+                        <BarChart3 className="w-6 h-6 text-white" />
                       </div>
-                      <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+                      <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
                         Statistik Pencapaian
                       </h1>
                     </div>
@@ -97,21 +104,24 @@ export default function GamificationStatsPage() {
                   <div className="flex flex-wrap gap-3">
                     <Link
                       href="/gamification/badges"
-                      className="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white font-black rounded-xl hover:bg-white/30 transition-all transform hover:scale-105 border-2 border-white/30"
+                      className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
                     >
-                      🏆 Badges
+                      <Trophy className="w-4 h-4 mr-2" />
+                      Badges
                     </Link>
                     <Link
                       href="/gamification/missions"
-                      className="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white font-black rounded-xl hover:bg-white/30 transition-all transform hover:scale-105 border-2 border-white/30"
+                      className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
                     >
-                      ✅ Missions
+                      <Target className="w-4 h-4 mr-2" />
+                      Missions
                     </Link>
                     <Link
                       href="/gamification/leaderboard"
-                      className="px-5 py-2.5 bg-white text-orange-600 font-black rounded-xl hover:bg-white/90 transition-all transform hover:scale-105 shadow-lg"
+                      className="btn bg-white text-primary hover:bg-white/90 shadow-lg font-bold"
                     >
-                      🥇 Leaderboard
+                      <Award className="w-4 h-4 mr-2" />
+                      Leaderboard
                     </Link>
                   </div>
                 </div>
@@ -121,15 +131,15 @@ export default function GamificationStatsPage() {
 
           {stats && (
             <>
-              {/* XP and Level Card - Fun Design */}
+              {/* XP and Level Card */}
               <div className="px-4 sm:px-0 mb-6">
-                <div className="relative bg-[#1758E6] rounded-3xl shadow-2xl p-8 border-4 border-white/50 overflow-hidden">
+                <div className="card bg-gradient-primary overflow-hidden shadow-glow-primary">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
-                  
-                  <div className="relative z-10">
+
+                  <div className="relative z-10 p-8">
                     <div className="flex items-center gap-3 mb-6">
-                      <span className="text-4xl">⭐</span>
-                      <h2 className="text-3xl font-black text-white">Level & XP</h2>
+                      <Zap className="w-8 h-8 text-white" />
+                      <h2 className="text-3xl font-bold text-white">Level & XP</h2>
                     </div>
                     <XPBar
                       currentXP={stats.total_xp}
@@ -143,24 +153,24 @@ export default function GamificationStatsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                       <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-5 border-2 border-white/30">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-3xl">⚡</span>
+                          <Zap className="w-6 h-6 text-white" />
                           <p className="text-sm text-white/90 font-medium">Total XP</p>
                         </div>
-                        <p className="text-3xl font-black text-white">{stats.total_xp.toLocaleString()}</p>
+                        <p className="text-3xl font-bold text-white">{stats.total_xp.toLocaleString()}</p>
                       </div>
                       <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-5 border-2 border-white/30">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-3xl">🏆</span>
+                          <Trophy className="w-6 h-6 text-white" />
                           <p className="text-sm text-white/90 font-medium">Total Badges</p>
                         </div>
-                        <p className="text-3xl font-black text-white">{stats.total_badges}</p>
+                        <p className="text-3xl font-bold text-white">{stats.total_badges}</p>
                       </div>
                       <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-5 border-2 border-white/30">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-3xl">✅</span>
+                          <Target className="w-6 h-6 text-white" />
                           <p className="text-sm text-white/90 font-medium">Misi Selesai</p>
                         </div>
-                        <p className="text-3xl font-black text-white">{stats.completed_missions}</p>
+                        <p className="text-3xl font-bold text-white">{stats.completed_missions}</p>
                       </div>
                     </div>
 
@@ -168,10 +178,10 @@ export default function GamificationStatsPage() {
                       <div className="mt-6 pt-6 border-t-2 border-white/30">
                         <div className="flex items-center justify-between bg-white/20 backdrop-blur-sm rounded-2xl p-4 border-2 border-white/30">
                           <div className="flex items-center gap-2">
-                            <span className="text-3xl">🥇</span>
+                            <Award className="w-6 h-6 text-white" />
                             <span className="text-lg text-white/90 font-bold">Peringkat Global</span>
                           </div>
-                          <span className="text-3xl font-black text-white">#{stats.rank}</span>
+                          <span className="text-3xl font-bold text-white">#{stats.rank}</span>
                         </div>
                       </div>
                     )}
@@ -179,35 +189,36 @@ export default function GamificationStatsPage() {
                 </div>
               </div>
 
-              {/* Recent XP History - Fun Design */}
+              {/* Recent XP History */}
               <div className="px-4 sm:px-0">
-                <div className="bg-white rounded-3xl shadow-2xl border-4 border-white/50 overflow-hidden">
-                  <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-6">
+                <div className="card overflow-hidden border-2 border-primary-100">
+                  <div className="bg-gradient-to-r from-success to-success-light px-8 py-6">
                     <div className="flex items-center gap-3">
-                      <span className="text-4xl">📜</span>
-                      <h2 className="text-2xl font-black text-white">Riwayat XP Terbaru</h2>
+                      <TrendingUp className="w-8 h-8 text-white" />
+                      <h2 className="text-2xl font-bold text-white">Riwayat XP Terbaru</h2>
                     </div>
                   </div>
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-light-200">
                     {xpHistory.length > 0 ? (
-                      xpHistory.map((entry, index) => (
-                        <div key={entry.id} className="px-8 py-5 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all">
+                      xpHistory.map((entry) => (
+                        <div key={entry.id} className="px-8 py-5 hover:bg-gradient-to-r hover:from-primary-50/50 hover:to-secondary-50/50 transition-all">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-white font-black shadow-lg">
-                                <span className="text-xl">+</span>
+                              <div className="w-12 h-12 bg-gradient-to-br from-success to-success-light rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                                <Zap className="w-6 h-6" />
                               </div>
                               <div>
-                                <p className="text-base font-black text-gray-900">
+                                <p className="text-base font-bold text-gray-900">
                                   {formatReason(entry.reason)}
                                 </p>
-                                <p className="text-xs text-gray-500 font-medium mt-1">
+                                <p className="text-xs text-gray-500 font-medium mt-1 flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
                                   {new Date(entry.created_at).toLocaleString('id-ID')}
                                 </p>
                               </div>
                             </div>
-                            <div className="px-5 py-2 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-lg">
-                              <span className="text-xl font-black text-white">
+                            <div className="px-5 py-2 bg-gradient-to-r from-success to-success-light rounded-2xl shadow-lg">
+                              <span className="text-xl font-bold text-white">
                                 +{entry.xp_amount} XP
                               </span>
                             </div>
@@ -216,21 +227,22 @@ export default function GamificationStatsPage() {
                       ))
                     ) : (
                       <div className="px-8 py-12 text-center">
-                        <div className="text-6xl mb-4">📝</div>
+                        <div className="inline-block p-6 bg-light-100 rounded-full mb-4">
+                          <TrendingUp className="w-12 h-12 text-gray-400" />
+                        </div>
                         <p className="text-lg text-gray-600 font-medium">Belum ada riwayat XP</p>
                         <p className="text-sm text-gray-500 mt-2">Mulai belajar untuk dapatkan XP!</p>
                       </div>
                     )}
                   </div>
                   {xpHistory.length > 0 && (
-                    <div className="px-8 py-6 bg-gradient-to-r from-gray-50 to-gray-100 border-t-2 border-gray-200 text-center">
+                    <div className="px-8 py-6 bg-light-50 border-t-2 border-light-200 text-center">
                       <Link
                         href="/gamification/xp-history"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-black rounded-2xl hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg"
+                        className="btn btn-primary"
                       >
-                        <span>📚</span>
+                        <TrendingUp className="w-4 h-4 mr-2" />
                         Lihat Semua Riwayat XP
-                        <span>→</span>
                       </Link>
                     </div>
                   )}
@@ -243,4 +255,3 @@ export default function GamificationStatsPage() {
     </ProtectedRoute>
   );
 }
-

@@ -42,15 +42,20 @@ export function useLogin(): UseLoginReturn {
         // Save to context and localStorage
         login(response.data.data.user, response.data.data.token);
 
+        // Small delay to ensure localStorage is saved before redirect
+        await new Promise(resolve => setTimeout(resolve, 100));
+
         // Redirect based on role
         const { role } = response.data.data.user;
+        let redirectPath = '/dashboard';
         if (role === 'admin') {
-          router.push('/admin/dashboard');
+          redirectPath = '/admin/dashboard';
         } else if (role === 'mentor') {
-          router.push('/mentor/dashboard');
-        } else {
-          router.push('/dashboard');
+          redirectPath = '/mentor/dashboard';
         }
+        
+        router.push(redirectPath);
+        router.refresh();
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Login gagal');

@@ -8,13 +8,18 @@ import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Course } from '@/types/course';
+import {
+  ArrowLeft, BookOpen, Clock, Users, Star, Award,
+  CheckCircle, Play, Lock, ChevronRight, User as UserIcon,
+  Sparkles
+} from 'lucide-react';
 
 export default function CourseDetailPage() {
   const router = useRouter();
   const params = useParams();
   const { user } = useAuth();
   const courseId = parseInt(params.id as string);
-  
+
   const [course, setCourse] = useState<Course | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -65,18 +70,13 @@ export default function CourseDetailPage() {
   if (isLoading) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="min-h-screen bg-light-50">
           <Navbar />
-          <div className="flex flex-col justify-center items-center py-12">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600"></div>
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <svg className="h-6 w-6 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
-                </svg>
-              </div>
+          <div className="flex flex-col justify-center items-center py-20">
+            <div className="animate-spin text-primary mb-4">
+              <Sparkles className="w-12 h-12" />
             </div>
-            <p className="mt-4 text-indigo-600 font-medium animate-pulse">Memuat detail kursus...</p>
+            <p className="text-gray-500 font-medium">Memuat detail kursus...</p>
           </div>
         </div>
       </ProtectedRoute>
@@ -88,23 +88,23 @@ export default function CourseDetailPage() {
   }
 
   const difficultyConfig = {
-    beginner: { 
-      gradient: 'from-green-500 to-emerald-600', 
-      bg: 'from-green-50 to-emerald-50',
-      text: '🌱 Pemula',
-      stars: '⭐'
+    beginner: {
+      bg: 'bg-success/10',
+      text: 'text-success',
+      label: 'Pemula',
+      border: 'border-success/20'
     },
-    intermediate: { 
-      gradient: 'from-yellow-500 to-orange-600', 
-      bg: 'from-yellow-50 to-orange-50',
-      text: '🌿 Menengah',
-      stars: '⭐⭐'
+    intermediate: {
+      bg: 'bg-secondary/10',
+      text: 'text-secondary-700',
+      label: 'Menengah',
+      border: 'border-secondary/20'
     },
-    advanced: { 
-      gradient: 'from-red-500 to-pink-600', 
-      bg: 'from-red-50 to-pink-50',
-      text: '🌳 Mahir',
-      stars: '⭐⭐⭐'
+    advanced: {
+      bg: 'bg-error/10',
+      text: 'text-error',
+      label: 'Mahir',
+      border: 'border-error/20'
     }
   };
 
@@ -112,198 +112,137 @@ export default function CourseDetailPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <div className="min-h-screen bg-light-50">
         <Navbar />
 
-        <div className="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
-          <div className="px-4 sm:px-0">
-            {/* Back Button */}
-            <button
-              onClick={() => router.back()}
-              className="group mb-6 inline-flex items-center text-gray-600 hover:text-indigo-600 transition-colors"
-            >
-              <svg className="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              <span className="font-medium">Kembali</span>
-            </button>
+        {/* Hero Section */}
+        <div className="relative bg-white pb-12 pt-6 lg:pt-10 overflow-hidden border-b border-gray-100">
+          {/* Decorative Background */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-radial-primary opacity-5 blur-[120px] rounded-full pointer-events-none -mr-32 -mt-32"></div>
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-radial-primary opacity-5 blur-[100px] rounded-full pointer-events-none -ml-32 -mb-32"></div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Main Content */}
-              <div className="lg:col-span-2 space-y-6">
-                {/* Course Header Card */}
-                <div className="bg-white rounded-2xl overflow-hidden border border-gray-300">
-                  {/* Thumbnail */}
-                  {course.thumbnail_url && (
-                    <div className="relative h-64 bg-gradient-to-br from-indigo-500 to-purple-600">
-                      <img 
-                        src={course.thumbnail_url} 
-                        alt={course.title}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                    </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-sm text-gray-500 mb-8">
+              <button onClick={() => router.push('/courses')} className="hover:text-primary transition-colors">Courses</button>
+              <ChevronRight className="w-4 h-4" />
+              <span className="text-gray-900 font-medium truncate">{course.title}</span>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+              {/* Left Content */}
+              <div className="lg:col-span-2">
+                <div className="flex flex-wrap gap-3 mb-6">
+                  {course.category && (
+                    <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary-50 text-primary-700 border border-primary-100">
+                      {course.category}
+                    </span>
                   )}
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${config.bg} ${config.text} ${config.border}`}>
+                    {config.label}
+                  </span>
+                  {course.education_level && (
+                    <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100">
+                      {course.education_level}
+                    </span>
+                  )}
+                </div>
 
-                  <div className="p-8">
-                    {/* Tags */}
-                    <div className="flex flex-wrap items-center gap-2 mb-4">
-                      {course.category && (
-                        <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-blue-500 text-white">
-                          📚 {course.category}
-                        </span>
-                      )}
-                      <span className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-gradient-to-r ${config.gradient} text-white`}>
-                        {config.text}
-                      </span>
-                      {course.education_level && (
-                        <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-cyan-500 text-white">
-                          🎓 {course.education_level}
-                        </span>
-                      )}
+                <h1 className="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+                  {course.title}
+                </h1>
+
+                <p className="text-lg text-gray-600 mb-8 leading-relaxed whitespace-pre-line">
+                  {course.description || 'Tidak ada deskripsi tersedia.'}
+                </p>
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                    <div className="flex items-center gap-2 mb-1 text-gray-500 text-sm">
+                      <Users className="w-4 h-4" />
+                      <span>Pelajar</span>
                     </div>
+                    <p className="text-xl font-bold text-gray-900">{course.enrollment_count || 0}</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                    <div className="flex items-center gap-2 mb-1 text-gray-500 text-sm">
+                      <BookOpen className="w-4 h-4" />
+                      <span>Materi</span>
+                    </div>
+                    <p className="text-xl font-bold text-gray-900">{course.materials_count || 0}</p>
+                  </div>
+                  {/* Add more stats if available */}
+                </div>
 
-                    {/* Title */}
-                    <h1 className="text-4xl font-bold bg-blue-600 bg-clip-text text-transparent mb-4">
-                      {course.title}
-                    </h1>
-
-                    {/* Price */}
-                    <div className="mb-6">
-                      {course.price > 0 ? (
-                        <div className="inline-flex items-center px-6 py-3 bg-green-500 rounded-2xl">
-                          <span className="text-sm font-medium text-white mr-2">Harga:</span>
-                          <span className="text-2xl font-bold text-white">
-                            Rp {Number(course.price).toLocaleString('id-ID')}
-                          </span>
-                        </div>
+                {/* Mentor Section - Horizontal */}
+                <div className="flex items-center p-4 bg-white rounded-2xl shadow-sm border border-gray-100 mb-8">
+                  <div className="w-16 h-16 rounded-full p-0.5 bg-gradient-primary shrink-0 mr-4">
+                    <div className="w-full h-full rounded-full bg-white overflow-hidden p-0.5">
+                      {course.mentor?.photo_url ? (
+                        <img src={course.mentor.photo_url} alt={course.mentor.name} className="w-full h-full object-cover rounded-full" />
                       ) : (
-                        <div className="inline-flex items-center px-6 py-3 bg-green-500 rounded-2xl">
-                          <svg className="h-6 w-6 text-white mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span className="text-2xl font-bold text-white">GRATIS</span>
+                        <div className="w-full h-full bg-primary-50 flex items-center justify-center text-xl font-bold text-primary rounded-full">
+                          {(course.mentor?.name || course.mentor_name || 'M').charAt(0).toUpperCase()}
                         </div>
                       )}
                     </div>
                   </div>
-                </div>
-
-                {/* Description Card */}
-                <div className="bg-white rounded-2xl p-8 border border-gray-300">
-                  <div className="flex items-center mb-6">
-                    {/* <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl">
-                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div> */}
-                    <h2 className="ml-3 text-2xl font-bold text-blue-900">Deskripsi Kursus</h2>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-                    {course.description || 'Tidak ada deskripsi tersedia.'}
-                  </p>
-                </div>
-
-                {/* Stats Card */}
-                <div className="bg-white rounded-2xl p-8 border border-gray-300">
-                  <div className="grid grid-cols-3 gap-6">
-                    <div className="text-center p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl border-2 border-blue-200">
-                      <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full mb-3">
-                        <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                      </div>
-                      <div className="text-3xl font-bold text-gray-900 mb-1">{course.enrollment_count || 0}</div>
-                      <div className="text-sm font-medium text-gray-600">Pelajar</div>
-                    </div>
-
-                    <div className="text-center p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border-2 border-green-200">
-                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-3">
-                        <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                      </div>
-                      <div className="text-3xl font-bold text-gray-900 mb-1">{course.materials_count || 0}</div>
-                      <div className="text-sm font-medium text-gray-600">Materi</div>
-                    </div>
-
-                    <div className="text-center p-6 bg-gradient-to-br ${config.bg} rounded-2xl border-2 ${config.gradient.replace('from-', 'border-').split(' ')[0].replace('to-', '')}">
-                      <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br ${config.gradient} rounded-full mb-3`}>
-                        <span className="text-2xl">{config.stars.split('')[0]}</span>
-                      </div>
-                      <div className="text-3xl font-bold text-gray-900 mb-1">{config.stars}</div>
-                      <div className="text-sm font-medium text-gray-600">Level</div>
-                    </div>
+                  <div>
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Mentor Instruktur</p>
+                    <h3 className="text-lg font-bold text-gray-900">{course.mentor?.name || course.mentor_name || 'Unknown'}</h3>
+                    {course.mentor?.expertise && (
+                      <p className="text-sm text-gray-500">{course.mentor.expertise}</p>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* Sidebar */}
+              {/* Right Content - Sticky Card */}
               <div className="lg:col-span-1">
-                <div className="sticky top-6 space-y-6">
-                  {/* Mentor Card */}
-                  <div className="bg-white rounded-2xl p-6 border border-gray-300">
-                    <div className="flex items-center mb-6">
-                      <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg">
-                        <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                <div className="sticky top-24">
+                  <div className="bg-white rounded-3xl shadow-card overflow-hidden border border-gray-100 relative">
+                    {/* Thumbnail */}
+                    <div className="aspect-video relative bg-gray-100 overflow-hidden group">
+                      {course.thumbnail_url ? (
+                        <img
+                          src={course.thumbnail_url}
+                          alt={course.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
+                          <BookOpen className="w-16 h-16 text-primary-200" />
+                        </div>
+                      )}
+                      {/* Overlay Gradient */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80"></div>
+
+                      {/* Price Tag Floating */}
+                      <div className="absolute bottom-4 left-4 right-4 bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+                        <span className="text-xs text-white/80 uppercase font-bold tracking-wider block mb-1">Total Biaya</span>
+                        <span className="text-2xl font-black text-white">
+                          {course.price > 0 ? `Rp ${Number(course.price).toLocaleString('id-ID')}` : 'GRATIS'}
+                        </span>
                       </div>
-                      <h3 className="ml-2 text-lg font-bold text-gray-900">Mentor</h3>
                     </div>
 
-                    <div className="flex items-center">
-                      <div className="relative">
-                        {course.mentor?.photo_url ? (
-                          <img 
-                            src={course.mentor.photo_url} 
-                            alt={course.mentor.name} 
-                            className="w-16 h-16 rounded-full object-cover border-4 border-indigo-200"
-                          />
-                        ) : (
-                          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center border-4 border-indigo-200">
-                            <span className="text-2xl font-bold text-white">
-                              {(course.mentor?.name || course.mentor_name || 'M').charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                        )}
-                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
-                      </div>
-                      <div className="ml-4">
-                        <p className="font-bold text-gray-900">{course.mentor?.name || course.mentor_name || 'Unknown'}</p>
-                        {course.mentor?.expertise && (
-                          <p className="text-sm text-gray-600 mt-1">{course.mentor.expertise}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Action Card */}
-                  <div className="bg-white rounded-2xl p-6 border border-gray-300">
-                    <div className="space-y-3">
+                    <div className="p-6 space-y-4">
                       {course.isEnrolled ? (
                         <>
                           <button
                             onClick={() => router.push(`/courses/${course.id}/learn`)}
-                            className="w-full group relative px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+                            className="w-full btn btn-primary py-4 text-lg justify-center shadow-glow-primary hover:shadow-glow-primary-lg"
                           >
-                            <span className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                            <span className="relative flex items-center justify-center">
-                              <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                              </svg>
-                              Lanjutkan Belajar
-                            </span>
+                            <Play className="w-5 h-5 mr-2 fill-current" />
+                            Lanjut Belajar
                           </button>
                           <button
                             onClick={() => router.push('/my-courses')}
-                            className="w-full px-6 py-4 bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all"
+                            className="w-full btn btn-light py-3 justify-center text-gray-600"
                           >
-                            Lihat di Kursus Saya
+                            Lihat Kursus Saya
                           </button>
                         </>
                       ) : (
@@ -311,50 +250,34 @@ export default function CourseDetailPage() {
                           <button
                             onClick={handleEnroll}
                             disabled={user?.role !== 'pelajar'}
-                            className="w-full group relative px-6 py-4 bg-blue-600 text-white font-bold rounded-xl hover:shadow-xl transform hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                            className="w-full btn btn-primary py-4 text-lg justify-center shadow-glow-primary hover:shadow-glow-primary-lg disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                            <span className="relative flex items-center justify-center">
-                              {user?.role === 'pelajar' ? (
-                                <>
-                                  <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                  </svg>
-                                  Gabung Kursus
-                                </>
-                              ) : (
-                                <>
-                                  <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                  </svg>
-                                  Hanya untuk Pelajar
-                                </>
-                              )}
-                            </span>
+                            <UserIcon className="w-5 h-5 mr-2" />
+                            {user?.role === 'pelajar' ? 'Gabung Sekarang' : 'Login sebagai Pelajar'}
                           </button>
                           {user?.role !== 'pelajar' && (
-                            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-xl">
-                              <p className="text-xs text-yellow-800 text-center">
-                                💡 Login sebagai pelajar untuk bergabung
-                              </p>
-                            </div>
+                            <p className="text-xs text-center text-orange-500 font-medium">
+                              Anda harus login sebagai pelajar untuk mendaftar.
+                            </p>
                           )}
                         </>
                       )}
-                    </div>
-                  </div>
 
-                  {/* Info Card */}
-                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-                    <div className="flex items-start">
-                      <svg className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <div className="ml-3">
-                        <h4 className="text-sm font-bold text-gray-900 mb-1">Yang Akan Anda Pelajari</h4>
-                        <p className="text-xs text-gray-700">
-                          Akses ke semua materi pembelajaran dan dapat berkomunikasi dengan mentor
-                        </p>
+                      <div className="pt-4 border-t border-gray-100">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3 text-sm text-gray-600">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span>Akses selamanya</span>
+                          </div>
+                          <div className="flex items-center gap-3 text-sm text-gray-600">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span>Sertifikat penyelesaian</span>
+                          </div>
+                          <div className="flex items-center gap-3 text-sm text-gray-600">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span>{course.materials_count || 0} Materi video & teks</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>

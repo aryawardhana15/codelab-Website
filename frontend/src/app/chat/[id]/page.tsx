@@ -9,6 +9,7 @@ import Navbar from '@/components/Navbar';
 import ChatBubble from '@/components/ChatBubble';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Message } from '@/types/chat';
+import { Send, ArrowLeft, Loader2, Info, Sparkles } from 'lucide-react';
 
 interface ChatInfo {
   id: number;
@@ -25,7 +26,7 @@ export default function ChatRoomPage() {
   const chatId = params?.id;
   const courseName = searchParams?.get('course');
   const { user } = useAuth();
-  
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatInfo, setChatInfo] = useState<ChatInfo | null>(null);
   const [newMessage, setNewMessage] = useState('');
@@ -70,12 +71,12 @@ export default function ChatRoomPage() {
   const fetchMessages = async (silent: boolean = false) => {
     try {
       if (!silent) setIsLoading(true);
-      
+
       const response = await api.get(`/chats/${chatId}/messages`);
-      
+
       if (response.data.success) {
         setMessages(response.data.data);
-        
+
         // Mark as read
         await api.put(`/chats/${chatId}/read`);
       }
@@ -157,16 +158,9 @@ export default function ChatRoomPage() {
   if (isLoading) {
     return (
       <ProtectedRoute>
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
-          <Navbar />
-          <div className="flex flex-col justify-center items-center py-12">
-            <div className="relative">
-              <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-200 border-t-purple-600"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl">📚</span>
-              </div>
-            </div>
-            <p className="mt-4 text-purple-600 font-medium animate-pulse">Memuat percakapan...</p>
+        <div className="min-h-screen bg-light-50 flex justify-center items-center">
+          <div className="animate-spin text-primary">
+            <Sparkles className="w-12 h-12" />
           </div>
         </div>
       </ProtectedRoute>
@@ -175,157 +169,134 @@ export default function ChatRoomPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex flex-col">
+      <div className="min-h-screen bg-light-50 flex flex-col">
         <Navbar />
 
-        {/* Chat Header dengan dekorasi lucu */}
-        <div className="bg-white border-b-4 border-purple-200 px-4 py-4 shadow-md relative overflow-hidden">
-          {/* Dekorasi background */}
-          <div className="absolute top-0 left-0 w-full h-full opacity-5">
-            <div className="absolute top-2 left-10 text-4xl">📖</div>
-            <div className="absolute top-3 right-20 text-3xl">✏️</div>
-            <div className="absolute bottom-2 left-1/4 text-3xl">🎓</div>
-            <div className="absolute bottom-3 right-1/3 text-4xl">💡</div>
-          </div>
-          
-          <div className="flex items-center relative z-10">
-            <button
-              onClick={() => {
-                if (user?.role === 'pelajar') {
-                  router.push(chatInfo?.course_id ? '/my-courses' : '/chat/mentors');
-                } else {
-                  router.push('/mentor/chat');
-                }
-              }}
-              className="mr-3 p-2 rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200 transition-all duration-300 hover:scale-110"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            
-            {/* Avatar lucu */}
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-300 to-orange-400 flex items-center justify-center text-2xl shadow-lg mr-3 border-3 border-white">
-              {user?.role === 'pelajar' ? '👨‍🏫' : '👨‍🎓'}
+        {/* Chat Header */}
+        <div className="bg-white border-b border-gray-100 px-4 py-4 shadow-sm sticky top-0 z-30">
+          <div className="max-w-4xl mx-auto flex items-center justify-between">
+            <div className="flex items-center">
+              <button
+                onClick={() => {
+                  if (user?.role === 'pelajar') {
+                    router.push(chatInfo?.course_id ? '/my-courses' : '/chat/mentors');
+                  } else {
+                    router.push('/mentor/chat');
+                  }
+                }}
+                className="mr-3 p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
+                title="Kembali"
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-white shadow-sm">
+                  {user?.role === 'pelajar' ?
+                    <span className="font-bold text-lg">M</span> :
+                    <span className="font-bold text-lg">P</span>
+                  }
+                </div>
+
+                <div>
+                  <h2 className="text-base font-bold text-gray-900 leading-tight">
+                    {chatInfo?.course_title
+                      ? `${chatInfo.course_title}`
+                      : user?.role === 'pelajar'
+                        ? `${chatInfo?.mentor_name || 'Mentor'}`
+                        : `${chatInfo?.pelajar_name || 'Pelajar'}`
+                    }
+                  </h2>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    <p className="text-xs text-gray-500">
+                      {user?.role === 'pelajar'
+                        ? chatInfo?.mentor_name || 'Mentor'
+                        : chatInfo?.pelajar_name || 'Pelajar'
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div className="flex-1">
-              <h2 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
-                {chatInfo?.course_title 
-                  ? `📚 ${chatInfo.course_title}` 
-                  : user?.role === 'pelajar' 
-                    ? `Chat dengan ${chatInfo?.mentor_name || 'Mentor'}`
-                    : `Chat dengan ${chatInfo?.pelajar_name || 'Pelajar'}`
-                }
-              </h2>
-              <p className="text-sm text-gray-600 flex items-center gap-1">
-                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                {user?.role === 'pelajar' 
-                  ? chatInfo?.mentor_name || 'Mentor'
-                  : chatInfo?.pelajar_name || 'Pelajar'
-                }
-              </p>
-            </div>
-            
-            {/* Fun facts bubble */}
-            <div className="hidden md:flex items-center gap-2 bg-yellow-50 border-2 border-yellow-200 rounded-full px-4 py-2">
-              <span className="text-xl">💡</span>
-              <span className="text-xs font-medium text-yellow-700">Belajar sambil ngobrol!</span>
+
+            {/* Info Badge */}
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full border border-gray-100">
+              <Info className="w-4 h-4 text-gray-400" />
+              <span className="text-xs text-gray-500">Privat & Aman</span>
             </div>
           </div>
         </div>
 
-        {/* Messages Container dengan pattern background */}
-        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 relative" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}>
-          {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full">
-              {/* Ilustrasi lucu untuk empty state */}
-              <div className="relative mb-6">
-                <div className="w-32 h-32 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full flex items-center justify-center shadow-lg">
-                  <span className="text-6xl">💬</span>
+        {/* Messages Container */}
+        <div className="flex-1 overflow-y-auto bg-gray-50/50">
+          <div className="max-w-4xl mx-auto w-full px-4 py-6 space-y-4">
+            {messages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20">
+                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                  <span className="text-4xl opacity-50">👋</span>
                 </div>
+
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Belum ada pesan</h3>
+                <p className="text-gray-500 text-center max-w-sm">
+                  Mulai percakapan dengan menyapa atau menanyakan pertanyaan Anda.
+                </p>
               </div>
-              
-              <div className="bg-white rounded-3xl p-8 shadow-xl border-4 border-purple-100 max-w-md text-center">
-                <p className="text-xl font-bold text-gray-800 mb-2">Belum ada pesan nih! 🤔</p>
-                <p className="text-gray-600 mb-4">Yuk mulai percakapan seru dan penuh ilmu!</p>
-                
-                {/* Tips belajar lucu */}
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border-2 border-purple-200">
-                  <p className="text-sm font-semibold text-purple-700 mb-2">💡 Tips Belajar Efektif:</p>
-                  <p className="text-xs text-gray-700">Jangan malu bertanya! Setiap pertanyaan adalah langkah menuju pemahaman yang lebih baik 🚀</p>
+            ) : (
+              <>
+                <div className="text-center py-4">
+                  <span className="text-xs font-medium text-gray-400 bg-gray-100 px-3 py-1 rounded-full">
+                    Awal Percakapan
+                  </span>
                 </div>
-              </div>
-            </div>
-          ) : (
-            <>
-              {messages.map((message) => (
-                <ChatBubble
-                  key={message.id}
-                  message={message}
-                  isSentByCurrentUser={message.sender_id === user?.id}
-                  onEdit={handleEditMessage}
-                  onDelete={handleDeleteMessage}
+                {messages.map((message) => (
+                  <ChatBubble
+                    key={message.id}
+                    message={message}
+                    isSentByCurrentUser={message.sender_id === user?.id}
+                    onEdit={handleEditMessage}
+                    onDelete={handleDeleteMessage}
+                  />
+                ))}
+                <div ref={messagesEndRef} />
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Message Input */}
+        <div className="bg-white border-t border-gray-100 p-4 sticky bottom-0 z-30">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-end gap-3 bg-white p-1">
+              <div className="flex-1 relative">
+                <textarea
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Ketik pesan Anda..."
+                  rows={1}
+                  className="block w-full px-4 py-3.5 pr-10 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all text-sm shadow-sm bg-gray-50/50 focus:bg-white"
+                  style={{ minHeight: '52px', maxHeight: '120px' }}
                 />
-              ))}
-              <div ref={messagesEndRef} />
-            </>
-          )}
-        </div>
-
-        {/* Message Input dengan desain menarik */}
-        <div className="bg-white border-t-4 border-purple-200 px-4 py-4 shadow-lg">
-          {/* Motivasi singkat */}
-          <div className="mb-3 flex items-center justify-center gap-2 text-xs text-gray-600">
-            <span>🌟</span>
-            <span>Komunikasi yang baik adalah kunci pembelajaran yang efektif!</span>
-            <span>🌟</span>
-          </div>
-          
-          <div className="flex items-end space-x-3">
-            <div className="flex-1 relative">
-              <textarea
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ketik pertanyaan atau pesan di sini... 💭"
-                rows={1}
-                className="block w-full px-5 py-3 pr-12 border-3 border-purple-200 rounded-3xl resize-none focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-400 shadow-sm transition-all duration-300 bg-gradient-to-r from-white to-purple-50"
-                style={{ minHeight: '48px', maxHeight: '120px' }}
-              />
-              {/* Emoji dekoratif */}
-              <div className="absolute right-4 bottom-3 text-xl opacity-30">
-                ✍️
               </div>
+
+              <button
+                onClick={handleSendMessage}
+                disabled={isSending || !newMessage.trim()}
+                className="flex-shrink-0 w-12 h-[52px] flex items-center justify-center bg-primary text-white rounded-xl hover:bg-primary-600 focus:outline-none focus:ring-4 focus:ring-primary-100 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 transition-all duration-200 hover:scale-105 active:scale-95"
+              >
+                {isSending ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className="w-5 h-5 ml-0.5" />
+                )}
+              </button>
             </div>
-            
-            <button
-              onClick={handleSendMessage}
-              disabled={isSending || !newMessage.trim()}
-              className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-purple-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transition-all duration-300 hover:scale-110 disabled:hover:scale-100"
-            >
-              {isSending ? (
-                <svg className="animate-spin h-6 w-6" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              ) : (
-                <span className="text-2xl">🚀</span>
-              )}
-            </button>
-          </div>
-          
-          <div className="mt-3 flex items-center justify-center gap-4 text-xs">
-            <div className="flex items-center gap-1 text-gray-500">
-              <span className="font-medium">Enter</span>
-              <span>→ Kirim</span>
-            </div>
-            <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-            <div className="flex items-center gap-1 text-gray-500">
-              <span className="font-medium">Shift + Enter</span>
-              <span>→ Baris baru</span>
+
+            <div className="mt-2 text-center">
+              <p className="text-[10px] text-gray-400">
+                Tekan <span className="font-semibold">Enter</span> untuk mengirim
+              </p>
             </div>
           </div>
         </div>
