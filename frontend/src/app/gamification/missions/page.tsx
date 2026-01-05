@@ -81,32 +81,32 @@ export default function MissionsPage() {
                       <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
                         <Target className="w-6 h-6 text-white" />
                       </div>
-                      <h1 className="text-4xl font-bold text-white">Missions</h1>
+                      <h1 className="text-2xl md:text-4xl font-bold text-white">Missions</h1>
                     </div>
-                    <p className="text-xl text-white/90">
+                    <p className="text-sm md:text-xl text-white/90">
                       Selesaikan missions untuk mendapatkan XP dan badges
                     </p>
                   </div>
-                  <div className="flex space-x-3">
+                  <div className="flex flex-wrap gap-2">
                     <Link
                       href="/gamification/stats"
-                      className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
+                      className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30 text-sm py-2 px-3"
                     >
-                      <BarChart3 className="w-4 h-4 mr-2" />
+                      <BarChart3 className="w-4 h-4 mr-1.5" />
                       Stats
                     </Link>
                     <Link
                       href="/gamification/badges"
-                      className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30"
+                      className="btn bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30 text-sm py-2 px-3"
                     >
-                      <Award className="w-4 h-4 mr-2" />
+                      <Award className="w-4 h-4 mr-1.5" />
                       Badges
                     </Link>
                     <Link
                       href="/gamification/leaderboard"
-                      className="btn bg-white text-primary hover:bg-white/90 shadow-lg font-bold"
+                      className="btn bg-white text-primary hover:bg-white/90 shadow-lg font-bold text-sm py-2 px-3"
                     >
-                      <Trophy className="w-4 h-4 mr-2" />
+                      <Trophy className="w-4 h-4 mr-1.5" />
                       Leaderboard
                     </Link>
                   </div>
@@ -115,44 +115,44 @@ export default function MissionsPage() {
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex space-x-2 border-b border-light-200 mb-6">
+            <div className="flex overflow-x-auto scrollbar-hide gap-1 border-b border-light-200 mb-6 pb-0 -mx-4 px-4 md:mx-0 md:px-0">
               <button
                 onClick={() => setFilter('all')}
-                className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors ${filter === 'all'
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                className={`px-3 md:px-4 py-2.5 md:py-3 font-medium text-xs md:text-sm border-b-2 transition-colors whitespace-nowrap flex-shrink-0 ${filter === 'all'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
                   }`}
               >
                 Semua ({missions.length})
               </button>
               <button
                 onClick={() => setFilter('daily')}
-                className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${filter === 'daily'
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                className={`px-3 md:px-4 py-2.5 md:py-3 font-medium text-xs md:text-sm border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 ${filter === 'daily'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
                   }`}
               >
-                <Clock className="w-4 h-4" />
+                <Clock className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 Harian ({completedDaily}/{dailyMissions.length})
               </button>
               <button
                 onClick={() => setFilter('weekly')}
-                className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${filter === 'weekly'
-                    ? 'border-secondary-600 text-secondary-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                className={`px-3 md:px-4 py-2.5 md:py-3 font-medium text-xs md:text-sm border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 ${filter === 'weekly'
+                  ? 'border-secondary-600 text-secondary-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
                   }`}
               >
-                <Calendar className="w-4 h-4" />
+                <Calendar className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 Mingguan ({completedWeekly}/{weeklyMissions.length})
               </button>
               <button
                 onClick={() => setFilter('achievement')}
-                className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors flex items-center gap-2 ${filter === 'achievement'
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                className={`px-3 md:px-4 py-2.5 md:py-3 font-medium text-xs md:text-sm border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 ${filter === 'achievement'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
                   }`}
               >
-                <Star className="w-4 h-4" />
+                <Star className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 Pencapaian ({completedAchievement}/{achievementMissions.length})
               </button>
             </div>
