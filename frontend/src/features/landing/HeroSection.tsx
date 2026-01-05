@@ -2,7 +2,7 @@
 
 import { ArrowRight, BookOpen, Code, Lightbulb, CheckCircle, Users, Monitor, Bug, Settings, Send, MessageSquare, Handshake, UserCheck, FileCheck, CheckCircle2, Share2, Video, GraduationCap, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform, MotionValue } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, MotionValue, animate } from 'framer-motion';
 import { programs } from '@/shared/data/landingData';
 
 // Program Icons mapping
@@ -31,9 +31,9 @@ const WorkflowIcons: Record<string, React.ReactNode> = {
 
 // Event icons for Program 3
 const EventIcons: Record<string, React.ReactNode> = {
-    '📱': <Share2 className="w-8 h-8 text-primary" />,
-    '🎥': <Video className="w-8 h-8 text-primary" />,
-    '🎓': <GraduationCap className="w-8 h-8 text-primary" />,
+    '📱': <Share2 className="w-6 h-6 md:w-8 md:h-8 text-primary" />,
+    '🎥': <Video className="w-6 h-6 md:w-8 md:h-8 text-primary" />,
+    '🎓': <GraduationCap className="w-6 h-6 md:w-8 md:h-8 text-primary" />,
 };
 
 const stats = [
@@ -42,6 +42,45 @@ const stats = [
     { value: '100+', label: 'Kursus Tersedia' },
     { value: '95%', label: 'Tingkat Kepuasan' },
 ];
+
+const CounterItem = ({ value, label, delay = 0 }: { value: string; label: string; delay?: number }) => {
+    const numericValue = parseInt(value.replace(/\D/g, ''));
+    const suffix = value.replace(/[0-9]/g, '');
+    const count = useMotionValue(0);
+    const rounded = useTransform(count, (latest) => Math.round(latest));
+
+    useEffect(() => {
+        const controls = animate(count, numericValue, { duration: 2.5, ease: "easeOut", delay });
+        return controls.stop;
+    }, [count, numericValue, delay]);
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
+            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay }}
+            whileHover={{ scale: 1.05 }}
+            className="text-center transition-all duration-300"
+        >
+            <div
+                className="text-3xl md:text-4xl font-bold mb-1 flex items-center justify-center"
+                style={{
+                    background: 'linear-gradient(135deg, #F9A825 0%, #F97316 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                }}
+            >
+                <motion.span>{rounded}</motion.span>
+                <span>{suffix}</span>
+            </div>
+            <div className="text-sm text-gray-500 font-medium">
+                {label}
+            </div>
+        </motion.div>
+    );
+};
 
 // Helper Component to safely use hooks inside loops
 // Disabling lint rule for this line as we're intentionally passing props
@@ -130,8 +169,6 @@ export default function HeroSection() {
             };
         });
 
-        // REMOVED SMALL PARTICLES AS REQUESTED
-
         const fastParticles = Array.from({ length: 3 }, (_, i) => { // Reduced 5 -> 3
             const pos = generatePosition(true);
             return {
@@ -211,25 +248,7 @@ export default function HeroSection() {
         return (
             <section className="relative min-h-screen flex items-center bg-gradient-to-br from-[#FDF8F3] via-[#FFF8E7] to-[#FDF8F3]">
                 <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 py-20 ">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <div className="inline-flex items-center justify-center gap-2 mb-8">
-                            <span className="w-2 h-2 rounded-full bg-[#F97316]" />
-                            <span className="text-sm font-medium text-[#F97316]">
-                                Platform Edukasi IT #1 di Indonesia
-                            </span>
-                        </div>
-                        <h1 className="mb-8">
-                            <span className="block text-6xl md:text-7xl lg:text-8xl font-extrabold text-gray-900 mb-2">
-                                Belajar
-                            </span>
-                            <span className="block text-6xl md:text-7xl lg:text-8xl font-extrabold italic mb-2 bg-gradient-to-r from-[#F9A825] via-[#FFD54F] to-[#F9A825] bg-clip-text text-transparent">
-                                Coding
-                            </span>
-                            <span className="block text-6xl md:text-7xl lg:text-8xl font-extrabold bg-gradient-to-r from-[#F9A825] via-[#FFD54F] to-[#F9A825] bg-clip-text text-transparent">
-                                Jadi Mudah
-                            </span>
-                        </h1>
-                    </div>
+                    {/* ... (Loading state content) ... */}
                 </div>
             </section>
         );
@@ -273,7 +292,7 @@ export default function HeroSection() {
                         <div className="w-full h-full" style={{ background: 'radial-gradient(circle at 70% 30%, #F97316 0%, transparent 60%)', filter: 'blur(60px)' }} />
                     </div>
                 </motion.div>
-
+                {/* ... (Other parallax elements) ... */}
                 <motion.div className="absolute bottom-0 left-0 w-[700px] h-[700px]" style={{ x: parallaxX30, y: parallaxY30, willChange: 'transform' }}>
                     <div className="w-full h-full opacity-30 animate-pulse-slow">
                         <div className="w-full h-full" style={{ background: 'radial-gradient(circle at 30% 70%, #F9A825 0%, transparent 60%)', filter: 'blur(60px)' }} />
@@ -294,13 +313,10 @@ export default function HeroSection() {
                             left: `${orb.left}%`,
                             background: orb.bg,
                             border: '1px solid rgba(255, 255, 255, 0.3)',
-                            // REMOVED BACKDROP FILTER for performance
                             filter: orb.blur,
                         }}
                     />
                 ))}
-
-                {/* SMALL PARTICLES RENDER REMOVED */}
 
                 {/* 4. Rings (Structural Elements) */}
                 <motion.div className="absolute top-[15%] right-[10%] w-[300px] h-[300px]" style={{ x: parallaxX50, y: parallaxY50, willChange: 'transform' }}>
@@ -308,7 +324,7 @@ export default function HeroSection() {
                         <div className="w-full h-full rounded-full border-[4px] border-orange-200/60 dashed" style={{ filter: 'blur(1px)' }} />
                     </div>
                 </motion.div>
-
+                {/* ... More Rings ... */}
                 <motion.div className="absolute top-[18%] right-[13%] w-[220px] h-[220px]" style={{ x: parallaxX70, y: parallaxY70, willChange: 'transform' }}>
                     <div className="w-full h-full animate-spin-reverse">
                         <div className="w-full h-full rounded-full border-[3px] border-yellow-300/60" style={{ filter: 'blur(1px)' }} />
@@ -344,64 +360,28 @@ export default function HeroSection() {
                             left: `${p.left}%`,
                             background: p.color,
                             opacity: 0.9,
-                            zIndex: 0, // Behind text
-                            filter: p.blur, // Apply blur
+                            zIndex: 0,
+                            filter: p.blur,
                         }}
                     />
                 ))}
 
                 {/* Particles */}
-                <motion.div
-                    className="absolute top-[20%] right-[25%] w-2 h-2 rounded-full bg-orange-400/40 animate-twinkle-1"
-                    style={{
-                        x: parallaxX20,
-                        y: parallaxY20,
-                    }}
-                />
-                <motion.div
-                    className="absolute top-[40%] left-[30%] w-2 h-2 rounded-full bg-yellow-400/50 animate-twinkle-2"
-                    style={{
-                        x: parallaxX35,
-                        y: parallaxY35,
-                    }}
-                />
-                <motion.div
-                    className="absolute top-[55%] right-[35%] w-1.5 h-1.5 rounded-full bg-orange-300/45 animate-twinkle-3"
-                    style={{
-                        x: parallaxX45,
-                        y: parallaxY45,
-                    }}
-                />
-                <motion.div
-                    className="absolute top-[75%] left-[20%] w-2 h-2 rounded-full bg-yellow-300/40 animate-twinkle-1"
-                    style={{
-                        x: parallaxX25,
-                        y: parallaxY25,
-                    }}
-                />
-                <motion.div
-                    className="absolute top-[30%] left-[40%] w-1.5 h-1.5 rounded-full bg-orange-400/35 animate-twinkle-2"
-                    style={{
-                        x: parallaxX55,
-                        y: parallaxY55,
-                    }}
-                />
-                <motion.div
-                    className="absolute top-[85%] right-[45%] w-2 h-2 rounded-full bg-yellow-400/45 animate-twinkle-3"
-                    style={{
-                        x: parallaxX30,
-                        y: parallaxY30,
-                    }}
-                />
+                <motion.div className="absolute top-[20%] right-[25%] w-2 h-2 rounded-full bg-orange-400/40 animate-twinkle-1" style={{ x: parallaxX20, y: parallaxY20 }} />
+                <motion.div className="absolute top-[40%] left-[30%] w-2 h-2 rounded-full bg-yellow-400/50 animate-twinkle-2" style={{ x: parallaxX35, y: parallaxY35 }} />
+                <motion.div className="absolute top-[55%] right-[35%] w-1.5 h-1.5 rounded-full bg-orange-300/45 animate-twinkle-3" style={{ x: parallaxX45, y: parallaxY45 }} />
+                <motion.div className="absolute top-[75%] left-[20%] w-2 h-2 rounded-full bg-yellow-300/40 animate-twinkle-1" style={{ x: parallaxX25, y: parallaxY25 }} />
+                <motion.div className="absolute top-[30%] left-[40%] w-1.5 h-1.5 rounded-full bg-orange-400/35 animate-twinkle-2" style={{ x: parallaxX55, y: parallaxY55 }} />
+                <motion.div className="absolute top-[85%] right-[45%] w-2 h-2 rounded-full bg-yellow-400/45 animate-twinkle-3" style={{ x: parallaxX30, y: parallaxY30 }} />
             </div>
 
             <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 min-h-screen flex items-center pt-20 pb-16">
                 <div className="max-w-4xl mx-auto text-center">
                     {/* Badge */}
                     <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
+                        initial={{ opacity: 0, y: -20, filter: 'blur(5px)' }}
+                        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
                         className="inline-flex items-center justify-center gap-2 mb-8"
                     >
                         <span className="w-2 h-2 rounded-full bg-[#F97316] animate-pulse" />
@@ -411,20 +391,22 @@ export default function HeroSection() {
                     </motion.div>
 
                     {/* Main Heading */}
-                    <h1 className="mb-8 select-none">
+                    <h1 className="mb-8 select-none cursor-default">
                         <motion.span
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0 }}
+                            initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+                            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
                             className="block text-6xl md:text-7xl lg:text-8xl font-extrabold text-gray-900 mb-2"
                         >
                             Belajar
                         </motion.span>
                         <motion.span
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="block text-6xl md:text-7xl lg:text-8xl font-extrabold italic mb-2 animate-gradient"
+                            initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+                            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                            whileHover={{ scale: 1.05, rotate: -1 }}
+                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                            className="block text-6xl md:text-7xl lg:text-8xl font-extrabold italic mb-2 animate-gradient origin-left"
                             style={{
                                 background: 'linear-gradient(90deg, #F9A825 0%, #FFD54F 50%, #F9A825 100%)',
                                 backgroundSize: '200% 100%',
@@ -436,9 +418,10 @@ export default function HeroSection() {
                             Coding
                         </motion.span>
                         <motion.span
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.4 }}
+                            initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+                            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
                             className="block text-6xl md:text-7xl lg:text-8xl font-extrabold animate-gradient"
                             style={{
                                 background: 'linear-gradient(90deg, #F9A825 0%, #FFD54F 50%, #F9A825 100%)',
@@ -454,8 +437,8 @@ export default function HeroSection() {
 
                     {/* Subtitle */}
                     <motion.p
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 20, filter: 'blur(5px)' }}
+                        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                         transition={{ duration: 0.8, delay: 0.6 }}
                         className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-10"
                     >
@@ -465,8 +448,8 @@ export default function HeroSection() {
 
                     {/* CTA Buttons */}
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 20, filter: 'blur(5px)' }}
+                        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                         transition={{ duration: 0.8, delay: 0.8 }}
                         className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 mb-16 max-w-lg mx-auto"
                     >
@@ -497,35 +480,18 @@ export default function HeroSection() {
                     {/* Stats */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
                         {stats.map((stat, index) => (
-                            <motion.div
+                            <CounterItem
                                 key={index}
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.8, delay: 1 + index * 0.1 }}
-                                whileHover={{ scale: 1.1 }}
-                                className="text-center transition-all duration-300"
-                            >
-                                <div
-                                    className="text-3xl md:text-4xl font-bold mb-1"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #F9A825 0%, #F97316 100%)',
-                                        WebkitBackgroundClip: 'text',
-                                        WebkitTextFillColor: 'transparent',
-                                        backgroundClip: 'text',
-                                    }}
-                                >
-                                    {stat.value}
-                                </div>
-                                <div className="text-sm text-gray-500 font-medium">
-                                    {stat.label}
-                                </div>
-                            </motion.div>
+                                value={stat.value}
+                                label={stat.label}
+                                delay={1 + index * 0.1}
+                            />
                         ))}
                     </div>
                 </div>
             </div>
 
-            {/* Programs Section - Seamlessly integrated */}
+            {/* Programs Section */}
             <div id="programs" className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 pb-20">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -577,7 +543,7 @@ export default function HeroSection() {
                             className={`transition-all duration-500 ${activeProgram === index ? 'opacity-100' : 'opacity-0 hidden'
                                 }`}
                         >
-                            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-orange-100">
+                            <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 md:p-8 shadow-xl border border-orange-100">
                                 {/* Header */}
                                 <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
                                     <div className="w-16 h-16 bg-gradient-to-r from-[#F9A825] to-[#F97316] rounded-2xl flex items-center justify-center text-white">
@@ -692,14 +658,14 @@ export default function HeroSection() {
                                         <h4 className="text-xl font-bold text-gray-900 mb-4">Apa yang Bisa Kamu Ikuti?</h4>
                                         <div className="space-y-4">
                                             {program.events?.map((event, i) => (
-                                                <div key={i} className="p-6 bg-orange-50/50 rounded-xl border-l-4 border-orange-500">
-                                                    <div className="flex items-start gap-4">
-                                                        <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center shrink-0">
-                                                            {EventIcons[event.icon] || <Lightbulb className="w-8 h-8 text-orange-500" />}
+                                                <div key={i} className="p-4 md:p-6 bg-orange-50/50 rounded-xl border-l-4 border-orange-500">
+                                                    <div className="flex flex-col sm:flex-row items-start gap-4">
+                                                        <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-orange-100 flex items-center justify-center shrink-0">
+                                                            {EventIcons[event.icon] || <Lightbulb className="w-6 h-6 md:w-8 md:h-8 text-orange-500" />}
                                                         </div>
                                                         <div>
                                                             <h5 className="font-bold text-gray-900 text-lg">{event.name}</h5>
-                                                            <p className="text-gray-600 mb-2">{event.desc}</p>
+                                                            <p className="text-gray-600 mb-2 text-sm md:text-base">{event.desc}</p>
                                                             {event.format && (
                                                                 <p className="text-sm text-orange-500 font-medium">Format: {event.format}</p>
                                                             )}

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { contactInfo, footerLinks } from '@/shared/data/landingData';
 import { motion } from 'framer-motion';
 
@@ -46,8 +47,13 @@ export default function Footer() {
                             whileHover={{ scale: 1.02 }}
                             className="flex items-center gap-2 mb-4"
                         >
-                            <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center">
-                                <span className="text-white font-bold text-lg">C</span>
+                            <div className="relative w-10 h-10">
+                                <Image
+                                    src="/codelab-icon-transparent.png"
+                                    alt="Codelab Logo"
+                                    fill
+                                    className="object-contain"
+                                />
                             </div>
                             <span className="font-bold text-xl text-white">Codelab</span>
                         </motion.div>

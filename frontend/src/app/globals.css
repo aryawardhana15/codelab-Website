@@ -53,7 +53,7 @@
   }
 
   .btn-secondary {
-    @apply bg-secondary text-white hover:bg-secondary-600 hover:shadow-glow-secondary;
+    @apply bg-secondary text-gray-900 hover:bg-secondary-600 hover:shadow-glow-secondary;
   }
 
   .btn-success {
@@ -150,27 +150,27 @@
   }
 
   .badge-primary {
-    @apply bg-primary/20 text-primary;
+    @apply bg-primary-100 text-primary-900;
   }
 
   .badge-secondary {
-    @apply bg-secondary/20 text-secondary;
+    @apply bg-secondary-100 text-secondary-900;
   }
 
   .badge-success {
-    @apply bg-success/20 text-success;
+    @apply bg-green-100 text-green-800;
   }
 
   .badge-warning {
-    @apply bg-warning/20 text-warning;
+    @apply bg-warning-light/30 text-warning-dark;
   }
 
   .badge-error {
-    @apply bg-error/20 text-error;
+    @apply bg-red-100 text-red-900;
   }
 
   .badge-info {
-    @apply bg-info/20 text-info;
+    @apply bg-blue-100 text-blue-900;
   }
 
   /* ---- GRADIENT TEXT ---- */
@@ -314,5 +314,3 @@
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.1);
   }
 }
-
-

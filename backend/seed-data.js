@@ -224,17 +224,30 @@ async function seedDatabase() {
     // =====================
     console.log('🎯 Seeding user missions...');
     
-    const [missionRows] = await connection.execute('SELECT id, type FROM missions');
+    // Insert a specific uncompleted mission for testing
+    await connection.execute(
+      `INSERT INTO missions (title, description, type, requirement_type, requirement_count, xp_reward, badge_reward) 
+       VALUES ('Misi Eksplorasi', 'Jelajahi fitur aplikasi ini sebanyak 5 kali', 'daily', 'login', 5, 50, NULL)
+       ON DUPLICATE KEY UPDATE title=title`
+    );
+
+    const [missionRows] = await connection.execute('SELECT id, title, type FROM missions');
     
     for (const pelajarId of pelajarIds) {
       for (const mission of missionRows) {
-        const isCompleted = Math.random() > 0.5;
-        const progress = isCompleted ? 100 : Math.floor(Math.random() * 80);
+        let isCompleted = Math.random() > 0.5;
+        let progress = isCompleted ? 100 : Math.floor(Math.random() * 80);
         
+        // Force "Misi Eksplorasi" to be uncompleted and 0 progress
+        if (mission.title === 'Misi Eksplorasi') {
+          isCompleted = false;
+          progress = 0;
+        }
+
         await connection.execute(
           `INSERT INTO user_missions (user_id, mission_id, progress, is_completed, completed_at) 
            VALUES (?, ?, ?, ?, ?) 
-           ON DUPLICATE KEY UPDATE progress = VALUES(progress), is_completed = VALUES(is_completed)`,
+           ON DUPLICATE KEY UPDATE progress = VALUES(progress), is_completed = VALUES(is_completed), completed_at = VALUES(completed_at)`,
           [pelajarId, mission.id, progress, isCompleted, isCompleted ? new Date() : null]
         );
       }
