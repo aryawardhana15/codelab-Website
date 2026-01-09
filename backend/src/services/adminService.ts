@@ -73,13 +73,13 @@ export const getDashboardStats = async (): Promise<AdminStats> => {
 
   // Get new users in last 30 days
   const [newUsersResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)'
+    'SELECT COUNT(*) as total FROM users WHERE created_at >= NOW() - INTERVAL \'30 days\''
   );
   const newUsersLast30Days = (newUsersResult as any)[0].total;
 
   // Get new courses in last 30 days
   const [newCoursesResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM courses WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)'
+    'SELECT COUNT(*) as total FROM courses WHERE created_at >= NOW() - INTERVAL \'30 days\''
   );
   const newCoursesLast30Days = (newCoursesResult as any)[0].total;
 
@@ -304,7 +304,7 @@ export const getAllCourses = async (filters: {
   
   if (is_published !== undefined) {
     whereConditions += ` AND c.is_published = ?`;
-    replacements.push(is_published ? 1 : 0);
+    replacements.push(is_published);
   }
   
   if (search) {

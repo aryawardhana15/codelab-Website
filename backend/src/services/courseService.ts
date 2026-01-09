@@ -155,7 +155,7 @@ export const getAllCourses = async (filters: FilterOptions) => {
   const offset = (page - 1) * limit;
 
   // Build conditions array for WHERE clause
-  const conditions: string[] = [`c.is_published = ${is_published ? 1 : 0}`];
+  const conditions: string[] = [`c.is_published = ${is_published ? 'TRUE' : 'FALSE'}`];
   const replacements: any[] = [];
 
   if (search) {
