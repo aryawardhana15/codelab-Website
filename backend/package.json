@@ -1,6 +1,7 @@
 {
   "name": "codelab-backend",
   "version": "1.0.0",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec \"npm run build && node dist/server.js\"",
     "dev:ts-node": "nodemon --exec \"node --max-old-space-size=4096 -r ts-node/register src/server.ts\"",
