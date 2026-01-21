@@ -105,7 +105,7 @@ export const login = async (input: LoginInput): Promise<RegisterResponse> => {
         JOIN missions m ON um.mission_id = m.id
         WHERE um.user_id = ? AND m.requirement_type = 'login'
         AND um.is_completed = TRUE
-        AND DATE(um.completed_at) = CURDATE()`,
+        AND DATE(um.completed_at) = CURRENT_DATE`,
         { replacements: [user.id] }
       );
       

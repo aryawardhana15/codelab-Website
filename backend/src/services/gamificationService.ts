@@ -533,7 +533,7 @@ export const checkAndAwardBadges = async (userId: number) => {
     const [speedLearnerResult] = await sequelize.query(
       `SELECT COUNT(*) as total FROM material_progress 
       WHERE user_id = ? AND is_completed = TRUE 
-      AND DATE(completed_at) = CURDATE()`,
+      AND DATE(completed_at) = CURRENT_DATE`,
       { replacements: [userId] }
     );
     const todayMaterials = (speedLearnerResult as any)[0].total;
@@ -548,7 +548,7 @@ export const checkAndAwardBadges = async (userId: number) => {
       FROM user_missions um
       JOIN missions m ON um.mission_id = m.id
       WHERE um.user_id = ? AND m.requirement_type = 'login'
-      AND um.completed_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+      AND um.completed_at >= CURRENT_DATE - INTERVAL '7 days'
       ORDER BY um.completed_at DESC`,
       { replacements: [userId] }
     );
