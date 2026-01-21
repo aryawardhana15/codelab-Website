@@ -90,28 +90,7 @@ export default function Footer() {
                         </div>
                     </motion.div>
 
-                    {/* Links */}
-                    <motion.div
-                        variants={containerVariants}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                    >
-                        <h4 className="font-bold text-white mb-4">Program</h4>
-                        <ul className="space-y-2 text-light-400">
-                            {footerLinks.program.map((link, i) => (
-                                <motion.li key={i} variants={itemVariants}>
-                                    <motion.a
-                                        href={link.href}
-                                        whileHover={{ x: 5, color: '#F97316' }}
-                                        className="hover:text-primary transition-colors inline-block"
-                                    >
-                                        {link.label}
-                                    </motion.a>
-                                </motion.li>
-                            ))}
-                        </ul>
-                    </motion.div>
+
 
                     <motion.div
                         variants={containerVariants}

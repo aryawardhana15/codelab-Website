@@ -37,10 +37,10 @@ const EventIcons: Record<string, React.ReactNode> = {
 };
 
 const stats = [
-    { value: '500+', label: 'Siswa Sukses' },
-    { value: '50+', label: 'Expert Mentor' },
-    { value: '100+', label: 'Kursus Tersedia' },
-    { value: '95%', label: 'Tingkat Kepuasan' },
+    { value: '20+', label: 'Siswa Sukses' },
+    { value: '10+', label: 'Expert Mentor' },
+    { value: '10+', label: 'Kursus Tersedia' },
+    { value: '85%', label: 'Tingkat Kepuasan' },
 ];
 
 const CounterItem = ({ value, label, delay = 0 }: { value: string; label: string; delay?: number }) => {
