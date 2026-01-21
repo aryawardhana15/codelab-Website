@@ -100,151 +100,133 @@ export default function LeaderboardPage() {
 
           {/* Podium - Top 3 */}
           {topThree.length > 0 && (
-            <div className="mb-6 md:mb-12 px-4">
-              <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-3 md:gap-4 max-w-4xl mx-auto">
-                {/* First Place - First on mobile */}
-                {topThree[0] && (
-                  <div className="w-full max-w-[280px] md:max-w-xs md:flex-1 order-1 md:order-2">
-                    <div className="bg-gradient-to-br from-secondary-100 to-primary-100 rounded-2xl md:rounded-t-2xl md:rounded-b-none p-4 md:p-6 text-center shadow-2xl border-4 border-secondary-400 relative">
-                      <div className="text-4xl md:text-6xl mb-2 md:mb-3">🥇</div>
-                      <div className="relative inline-block mb-4">
-                        {topThree[0].photo_url ? (
-                          <img
-                            className="h-16 w-16 md:h-24 md:w-24 rounded-full border-4 border-white shadow-xl ring-4 ring-secondary-300"
-                            src={topThree[0].photo_url}
-                            alt={topThree[0].name}
-                          />
-                        ) : (
-                          <div className="h-16 w-16 md:h-24 md:w-24 rounded-full bg-gradient-primary flex items-center justify-center border-4 border-white shadow-xl ring-4 ring-secondary-300">
-                            <span className="text-white font-bold text-xl md:text-3xl">
-                              {topThree[0].name.charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                        )}
-                        <div className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 bg-gradient-primary rounded-full px-2 py-0.5 md:px-3 md:py-1 shadow-lg">
-                          <span className="text-[10px] md:text-sm font-bold text-white">#{topThree[0].rank}</span>
-                        </div>
-                      </div>
-                      <h3 className="font-bold text-base md:text-xl text-gray-900 mb-0.5 md:mb-1 truncate px-2">
-                        {topThree[0].name}
-                      </h3>
-                      <div className="text-xs md:text-sm text-gray-700 mb-2 md:mb-3 font-medium">Level {topThree[0].current_level}</div>
-                      <div className="bg-white rounded-lg p-2 md:p-4 shadow-inner inline-block">
-                        <div className="text-xl md:text-3xl font-bold text-gradient">
-                          {topThree[0].total_xp.toLocaleString()}
-                        </div>
-                        <div className="text-[10px] md:text-xs text-gray-500 font-medium">XP</div>
-                      </div>
-                      <div className="flex justify-center gap-4 md:gap-6 mt-2 md:mt-4 text-[10px] md:text-xs text-gray-700">
-                        <div>
-                          <div className="font-bold text-sm md:text-lg text-gray-900">{topThree[0].total_badges}</div>
-                          <div>Badges</div>
-                        </div>
-                        <div>
-                          <div className="font-bold text-sm md:text-lg text-gray-900">{topThree[0].courses_completed}</div>
-                          <div>Kursus</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="hidden md:block bg-gradient-primary h-48 rounded-b-2xl shadow-xl"></div>
-                  </div>
-                )}
+            <div className="mb-6 md:mb-12 px-2 md:px-4">
+              <div className="flex items-end justify-center gap-2 md:gap-4 max-w-4xl mx-auto pb-4">
 
                 {/* Second Place */}
-                {topThree[1] && (
-                  <div className="w-full max-w-[240px] md:max-w-xs md:flex-1 order-2 md:order-1">
-                    <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl md:rounded-t-2xl md:rounded-b-none p-3 md:p-6 text-center shadow-xl border-4 border-gray-300">
-                      <div className="text-3xl md:text-5xl mb-2 md:mb-3">🥈</div>
-                      <div className="relative inline-block mb-3 md:mb-4">
+                <div className="w-[30%] md:flex-1 order-1 flex flex-col items-center">
+                  {topThree[1] && (
+                    <>
+                      <div className="relative mb-2 md:mb-4">
                         {topThree[1].photo_url ? (
                           <img
-                            className="h-12 w-12 md:h-20 md:w-20 rounded-full border-4 border-white shadow-lg"
+                            className="h-12 w-12 md:h-20 md:w-20 rounded-full border-2 md:border-4 border-white shadow-lg object-cover"
                             src={topThree[1].photo_url}
                             alt={topThree[1].name}
                           />
                         ) : (
-                          <div className="h-12 w-12 md:h-20 md:w-20 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center border-4 border-white shadow-lg">
+                          <div className="h-12 w-12 md:h-20 md:w-20 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center border-2 md:border-4 border-white shadow-lg">
                             <span className="text-white font-bold text-lg md:text-2xl">
                               {topThree[1].name.charAt(0).toUpperCase()}
                             </span>
                           </div>
                         )}
-                        <div className="absolute -bottom-1 -right-1 bg-white rounded-full px-1.5 py-0.5 md:px-2.5 md:py-1 shadow-md border-2 border-gray-300">
-                          <span className="text-[10px] md:text-xs font-bold text-gray-700">#{topThree[1].rank}</span>
+                        <div className="absolute -bottom-1 -right-1 bg-white rounded-full px-1.5 py-0.5 md:px-2.5 md:py-1 shadow-md border md:border-2 border-gray-300">
+                          <span className="text-[10px] md:text-xs font-bold text-gray-700">#2</span>
                         </div>
                       </div>
-                      <h3 className="font-bold text-sm md:text-lg text-gray-900 mb-0.5 md:mb-1 truncate px-2">
-                        {topThree[1].name}
-                      </h3>
-                      <div className="text-xs text-gray-600 mb-2 md:mb-3">Level {topThree[1].current_level}</div>
-                      <div className="bg-white rounded-lg p-2 md:p-3 shadow-inner inline-block">
-                        <div className="text-lg md:text-2xl font-bold text-gray-800">
-                          {topThree[1].total_xp.toLocaleString()}
-                        </div>
-                        <div className="text-[10px] md:text-xs text-gray-500">XP</div>
-                      </div>
-                      <div className="flex justify-center gap-3 md:gap-4 mt-2 md:mt-4 text-[10px] md:text-xs text-gray-600">
-                        <div>
-                          <div className="font-semibold text-xs md:text-base text-gray-800">{topThree[1].total_badges}</div>
-                          <div>Badges</div>
-                        </div>
-                        <div>
-                          <div className="font-semibold text-xs md:text-base text-gray-800">{topThree[1].courses_completed}</div>
-                          <div>Kursus</div>
+
+                      <div className="w-full bg-gradient-to-b from-gray-100 to-gray-300 rounded-t-lg md:rounded-t-2xl p-2 md:p-6 text-center shadow-lg border-t-4 border-gray-400 relative h-32 md:h-48 flex flex-col justify-end pb-4">
+                        <div className="text-2xl md:text-5xl absolute -top-4 md:-top-8 left-1/2 -translate-x-1/2 drop-shadow-md">🥈</div>
+
+                        <h3 className="font-bold text-xs md:text-lg text-gray-900 mb-0.5 truncate px-1 w-full">
+                          {topThree[1].name}
+                        </h3>
+                        <div className="text-[10px] md:text-sm text-gray-600 mb-1">Lv.{topThree[1].current_level}</div>
+                        <div className="bg-white/80 rounded md:rounded-lg p-1 md:p-2 shadow-sm inline-block mx-auto min-w-[60px]">
+                          <div className="text-xs md:text-xl font-bold text-gray-800">
+                            {topThree[1].total_xp.toLocaleString()}
+                          </div>
+                          <div className="text-[8px] md:text-[10px] text-gray-500">XP</div>
                         </div>
                       </div>
-                    </div>
-                    <div className="hidden md:block bg-gradient-to-b from-gray-300 to-gray-400 h-32 rounded-b-2xl shadow-lg"></div>
-                  </div>
-                )}
+                    </>
+                  )}
+                </div>
+
+                {/* First Place */}
+                <div className="w-[35%] md:flex-1 order-2 flex flex-col items-center z-10">
+                  {topThree[0] && (
+                    <>
+                      <div className="relative mb-2 md:mb-4">
+                        <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-2xl md:text-4xl animate-bounce">👑</div>
+                        {topThree[0].photo_url ? (
+                          <img
+                            className="h-16 w-16 md:h-28 md:w-28 rounded-full border-2 md:border-4 border-yellow-300 shadow-xl ring-2 md:ring-4 ring-yellow-100 object-cover"
+                            src={topThree[0].photo_url}
+                            alt={topThree[0].name}
+                          />
+                        ) : (
+                          <div className="h-16 w-16 md:h-28 md:w-28 rounded-full bg-gradient-primary flex items-center justify-center border-2 md:border-4 border-yellow-300 shadow-xl ring-2 md:ring-4 ring-yellow-100">
+                            <span className="text-white font-bold text-xl md:text-4xl">
+                              {topThree[0].name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                        <div className="absolute -bottom-1 -right-1 bg-gradient-primary rounded-full px-2 py-0.5 md:px-3 md:py-1 shadow-lg border md:border-2 border-white">
+                          <span className="text-[10px] md:text-sm font-bold text-white">#1</span>
+                        </div>
+                      </div>
+
+                      <div className="w-full bg-gradient-to-b from-yellow-50 to-yellow-200 rounded-t-lg md:rounded-t-2xl p-2 md:p-6 text-center shadow-xl border-t-4 border-yellow-400 relative h-40 md:h-64 flex flex-col justify-end pb-4">
+                        <div className="text-3xl md:text-6xl absolute -top-5 md:-top-10 left-1/2 -translate-x-1/2 drop-shadow-md">🥇</div>
+
+                        <h3 className="font-bold text-sm md:text-xl text-gray-900 mb-0.5 truncate px-1 w-full">
+                          {topThree[0].name}
+                        </h3>
+                        <div className="text-[10px] md:text-sm text-gray-700 mb-1 font-semibold">Lv.{topThree[0].current_level}</div>
+                        <div className="bg-white/90 rounded md:rounded-lg p-1.5 md:p-3 shadow-md inline-block mx-auto min-w-[70px]">
+                          <div className="text-sm md:text-2xl font-bold text-gradient">
+                            {topThree[0].total_xp.toLocaleString()}
+                          </div>
+                          <div className="text-[8px] md:text-[10px] text-gray-500 font-bold">XP</div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
 
                 {/* Third Place */}
-                {topThree[2] && (
-                  <div className="w-full max-w-[240px] md:max-w-xs md:flex-1 order-3">
-                    <div className="bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl md:rounded-t-2xl md:rounded-b-none p-3 md:p-6 text-center shadow-xl border-4 border-primary-300">
-                      <div className="text-3xl md:text-5xl mb-2 md:mb-3">🥉</div>
-                      <div className="relative inline-block mb-3 md:mb-4">
+                <div className="w-[30%] md:flex-1 order-3 flex flex-col items-center">
+                  {topThree[2] && (
+                    <>
+                      <div className="relative mb-2 md:mb-4">
                         {topThree[2].photo_url ? (
                           <img
-                            className="h-12 w-12 md:h-20 md:w-20 rounded-full border-4 border-white shadow-lg"
+                            className="h-12 w-12 md:h-20 md:w-20 rounded-full border-2 md:border-4 border-white shadow-lg object-cover"
                             src={topThree[2].photo_url}
                             alt={topThree[2].name}
                           />
                         ) : (
-                          <div className="h-12 w-12 md:h-20 md:w-20 rounded-full bg-gradient-to-br from-primary to-primary-600 flex items-center justify-center border-4 border-white shadow-lg">
+                          <div className="h-12 w-12 md:h-20 md:w-20 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center border-2 md:border-4 border-white shadow-lg">
                             <span className="text-white font-bold text-lg md:text-2xl">
                               {topThree[2].name.charAt(0).toUpperCase()}
                             </span>
                           </div>
                         )}
-                        <div className="absolute -bottom-1 -right-1 bg-white rounded-full px-1.5 py-0.5 md:px-2.5 md:py-1 shadow-md border-2 border-primary-300">
-                          <span className="text-[10px] md:text-xs font-bold text-primary-700">#{topThree[2].rank}</span>
+                        <div className="absolute -bottom-1 -right-1 bg-white rounded-full px-1.5 py-0.5 md:px-2.5 md:py-1 shadow-md border md:border-2 border-orange-300">
+                          <span className="text-[10px] md:text-xs font-bold text-orange-700">#3</span>
                         </div>
                       </div>
-                      <h3 className="font-bold text-sm md:text-lg text-gray-900 mb-0.5 md:mb-1 truncate px-2">
-                        {topThree[2].name}
-                      </h3>
-                      <div className="text-xs text-gray-600 mb-2 md:mb-3">Level {topThree[2].current_level}</div>
-                      <div className="bg-white rounded-lg p-2 md:p-3 shadow-inner inline-block">
-                        <div className="text-lg md:text-2xl font-bold text-gray-800">
-                          {topThree[2].total_xp.toLocaleString()}
-                        </div>
-                        <div className="text-[10px] md:text-xs text-gray-500">XP</div>
-                      </div>
-                      <div className="flex justify-center gap-3 md:gap-4 mt-2 md:mt-4 text-[10px] md:text-xs text-gray-600">
-                        <div>
-                          <div className="font-semibold text-xs md:text-base text-gray-800">{topThree[2].total_badges}</div>
-                          <div>Badges</div>
-                        </div>
-                        <div>
-                          <div className="font-semibold text-xs md:text-base text-gray-800">{topThree[2].courses_completed}</div>
-                          <div>Kursus</div>
+
+                      <div className="w-full bg-gradient-to-b from-orange-50 to-orange-200 rounded-t-lg md:rounded-t-2xl p-2 md:p-6 text-center shadow-lg border-t-4 border-orange-400 relative h-28 md:h-40 flex flex-col justify-end pb-4">
+                        <div className="text-2xl md:text-5xl absolute -top-4 md:-top-8 left-1/2 -translate-x-1/2 drop-shadow-md">🥉</div>
+
+                        <h3 className="font-bold text-xs md:text-lg text-gray-900 mb-0.5 truncate px-1 w-full">
+                          {topThree[2].name}
+                        </h3>
+                        <div className="text-[10px] md:text-sm text-gray-600 mb-1">Lv.{topThree[2].current_level}</div>
+                        <div className="bg-white/80 rounded md:rounded-lg p-1 md:p-2 shadow-sm inline-block mx-auto min-w-[60px]">
+                          <div className="text-xs md:text-xl font-bold text-gray-800">
+                            {topThree[2].total_xp.toLocaleString()}
+                          </div>
+                          <div className="text-[8px] md:text-[10px] text-gray-500">XP</div>
                         </div>
                       </div>
-                    </div>
-                    <div className="hidden md:block bg-gradient-to-b from-primary-300 to-primary-400 h-24 rounded-b-2xl shadow-lg"></div>
-                  </div>
-                )}
+                    </>
+                  )}
+                </div>
+
               </div>
             </div>
           )}

@@ -99,23 +99,23 @@ const config: Config = {
         'gradient-primary': 'linear-gradient(180deg, #FF9933 0%, #FFD700 100%)',
         'gradient-primary-hover': 'linear-gradient(180deg, #FF8C00 0%, #FFC107 100%)',
         'gradient-primary-horizontal': 'linear-gradient(90deg, #FF9933 0%, #FFD700 100%)',
-        
+
         // Orange Gradients
         'gradient-orange': 'linear-gradient(180deg, #E67E22 0%, #FFB84D 100%)',
         'gradient-orange-reverse': 'linear-gradient(180deg, #FFB84D 0%, #E67E22 100%)',
-        
+
         // Yellow/Gold Gradients
         'gradient-gold': 'linear-gradient(180deg, #F4B400 0%, #FFE082 100%)',
         'gradient-gold-reverse': 'linear-gradient(180deg, #FFE082 0%, #F4B400 100%)',
-        
+
         // Light Gradients
         'gradient-light': 'linear-gradient(180deg, #F9FAFB 0%, #FFFFFF 100%)',
         'gradient-light-gray': 'linear-gradient(180deg, #E5E7EB 0%, #F9FAFB 100%)',
-        
+
         // Radial Gradients
         'gradient-radial-primary': 'radial-gradient(circle, #FF9933 0%, #FFD700 100%)',
         'gradient-radial-light': 'radial-gradient(circle, #F9FAFB 0%, #FFFFFF 100%)',
-        
+
         // Diagonal Gradients
         'gradient-diagonal': 'linear-gradient(135deg, #FF9933 0%, #FFD700 100%)',
         'gradient-diagonal-light': 'linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%)',
@@ -218,7 +218,9 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }
 
 export default config

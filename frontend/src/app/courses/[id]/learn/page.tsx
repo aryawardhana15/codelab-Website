@@ -6,13 +6,14 @@ import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
+import ReactMarkdown from 'react-markdown';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AIPracticeModal from '@/components/AIPracticeModal';
 import { Material } from '@/types/material';
 import { Course } from '@/types/course';
 import {
   ChevronLeft, ChevronRight, PlayCircle, FileText, CheckCircle,
-  MessageSquare, Layout, Sparkles, Download, ArrowLeft, Trophy
+  MessageSquare, Layout, Sparkles, Download, ArrowLeft, Trophy, Lock
 } from 'lucide-react';
 
 export default function LearnCoursePage() {
@@ -26,6 +27,8 @@ export default function LearnCoursePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isMarkingComplete, setIsMarkingComplete] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [isUnlocking, setIsUnlocking] = useState(false);
 
   useEffect(() => {
     if (courseId) {
@@ -66,32 +69,126 @@ export default function LearnCoursePage() {
     }
   };
 
+  const handleUnlock = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!passwordInput.trim()) return;
+
+    setIsUnlocking(true);
+    try {
+      // Fetch single material with password
+      const materialId = materials[currentMaterialIndex].id;
+      const response = await api.get(`/materials/${materialId}?password=${passwordInput}`);
+
+      if (response.data.success) {
+        const unlockedMaterial = response.data.data;
+
+        // If the backend returns content (meaning unlock successful)
+        // Note: My backend logic returns masked data if password wrong? 
+        // No, `getMaterialById` logic I wrote: if wrong password, return masked.
+        // So I need to check if content is present now.
+        if (unlockedMaterial.content || unlockedMaterial.video_url || unlockedMaterial.file_url || !unlockedMaterial.is_locked) { // weak check if empty content material
+          // Actually, the simplest check is: did we get the data?
+          // Since we don't return `lock_password` even on success (as per my code), we can't check that.
+          // But we can check if content is not null (if it was null before).
+          // Or better: backend should throw error if wrong password?
+          // My backend logic returned the object.
+          // Let's assume if the user typed the right password, the backend returns the full object.
+          // If wrong password, it returns masked object.
+          // So if `unlockedMaterial.content` is null AND the original was locked... wait.
+
+          // Issue: What if the material is empty?
+          // Let's rely on `is_locked`. Wait, `is_locked` remains true in DB.
+          // But the backend masking logic only masks if password is wrong.
+          // If password is correct, strictly speaking `is_locked` is still true in the object, but content is there.
+
+          // Client-side validation:
+          // If I got the content, I update the state.
+          // BUT, how do I know if I got the content vs masked content?
+          // Masked content has `content: null`.
+          // Unlocked content has `content: string` (or empty string).
+          // If I send wrong password, backend returns masked (null).
+          // If I send right password, backend returns real data.
+
+          // So if `unlockedMaterial.content` !== null OR `video_url` !== null...
+          // But a material can interpret 'empty' as null?
+          // Let's refine the backend to return an `unlocked: true` flag transiently? No.
+
+          // Let's just try to update. If it's still "locked" (content null), show error?
+          // PROPOSAL: Update backend to return 403 or 400 if password wrong?
+          // That would be cleaner.
+          // But I already wrote the "return masked" logic. 
+          // Let's update `materials` state.
+
+          const newMaterials = [...materials];
+          // We locally flag it as unlocked to avoid re-asking password in this session
+          // We can add a property `session_unlocked` to the frontend state
+          newMaterials[currentMaterialIndex] = { ...unlockedMaterial, session_unlocked: true };
+          setMaterials(newMaterials);
+          setPasswordInput('');
+          toast.success('Materi terbuka!');
+        } else {
+          // If we are here, it means we likely got the masked data again
+          // Assume wrong password if we still don't have access?
+          // Or maybe the material IS empty.
+          // This handling is tricky without explicit success flag.
+          // Let's assume for now: if password was provided but content is still null (and it's supposed to have content?), it failed.
+          // But checking `response.data.data` is easier?
+
+          // If I re-read my backend code:
+          // `if (material.lock_password && material.lock_password !== password) { return masked }`
+          // So if matches, returns full.
+
+          // Let's verify by just updating state.
+          // If the UI still shows locked, then it failed.
+          // But I want to show a Toast.
+
+          // Let's assume success for now and update state.
+          // If the UI doesn't refresh, the user will know.
+          // But better: Check if keys `content` are strictly equal to `null` while `is_locked` is true.
+          // The backend returns explicit `null` for masked.
+          // If the actual content is empty string `""`, it's different from `null`.
+
+          if (unlockedMaterial.content === null && unlockedMaterial.video_url === null && unlockedMaterial.file_url === null) {
+            toast.error('Password salah!');
+          } else {
+            const newMaterials = [...materials];
+            newMaterials[currentMaterialIndex] = { ...unlockedMaterial, session_unlocked: true };
+            setMaterials(newMaterials);
+            setPasswordInput('');
+            toast.success('Materi terbuka!');
+          }
+        }
+      }
+    } catch (error: any) {
+      toast.error('Gagal membuka materi');
+    } finally {
+      setIsUnlocking(false);
+    }
+  };
+
+  const currentMaterial = materials[currentMaterialIndex];
+
+  // Helper to check if locked
+  const isContentLocked = currentMaterial &&
+    currentMaterial.is_locked &&
+    !(currentMaterial as any).session_unlocked;
+
   const handleMarkComplete = async () => {
-    const currentMaterial = materials[currentMaterialIndex];
-
+    // ... existing logic
     if (!currentMaterial) return;
-
     if (currentMaterial.is_completed) {
       toast('Materi ini sudah ditandai selesai', { icon: 'ℹ️' });
       return;
     }
-
     setIsMarkingComplete(true);
     try {
       const response = await api.post(`/materials/${currentMaterial.id}/complete`);
-
       if (response.data.success) {
         toast.success(response.data.message);
-
-        // Update local state
         const updatedMaterials = [...materials];
         updatedMaterials[currentMaterialIndex].is_completed = true;
         updatedMaterials[currentMaterialIndex].completed_at = new Date().toISOString();
-        updatedMaterials[currentMaterialIndex].completed_at = new Date().toISOString();
-        // updatedMaterials[currentMaterialIndex].user_xp = currentMaterial.xp_reward; // Removed as xp_reward is not in schema
         setMaterials(updatedMaterials);
-
-        // Auto navigate to next material if exists
         if (currentMaterialIndex < materials.length - 1) {
           setTimeout(() => {
             setCurrentMaterialIndex(currentMaterialIndex + 1);
@@ -104,6 +201,8 @@ export default function LearnCoursePage() {
       setIsMarkingComplete(false);
     }
   };
+
+
 
   const handlePrevious = () => {
     if (currentMaterialIndex > 0) {
@@ -158,11 +257,11 @@ export default function LearnCoursePage() {
     );
   }
 
-  const currentMaterial = materials[currentMaterialIndex];
   if (!currentMaterial) return null;
 
   const completedCount = materials.filter(m => m.is_completed).length;
   const progressPercentage = Math.round((completedCount / materials.length) * 100);
+
 
   return (
     <ProtectedRoute allowedRoles={['pelajar']}>
@@ -236,11 +335,19 @@ export default function LearnCoursePage() {
                     >
                       <div className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold border ${material.is_completed
                         ? 'bg-success text-white border-success'
-                        : index === currentMaterialIndex
-                          ? 'bg-primary text-white border-primary'
-                          : 'bg-gray-100 text-gray-500 border-gray-200'
+                        : material.is_locked && !(material as any).session_unlocked
+                          ? 'bg-gray-100 text-gray-500 border-gray-200'
+                          : index === currentMaterialIndex
+                            ? 'bg-primary text-white border-primary'
+                            : 'bg-gray-100 text-gray-500 border-gray-200'
                         }`}>
-                        {material.is_completed ? <CheckCircle className="w-3 h-3" /> : index + 1}
+                        {material.is_completed ? (
+                          <CheckCircle className="w-3 h-3" />
+                        ) : material.is_locked && !(material as any).session_unlocked ? (
+                          <Lock className="w-3 h-3" />
+                        ) : (
+                          index + 1
+                        )}
                       </div>
                       <div>
                         <p className={`text-sm font-medium line-clamp-2 ${index === currentMaterialIndex ? 'text-primary-900' : 'text-gray-700'
@@ -251,6 +358,7 @@ export default function LearnCoursePage() {
                           <span className="text-[10px] text-gray-400 capitalize flex items-center gap-1">
                             {material.video_url ? <PlayCircle className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
                             {material.video_url ? 'Video' : 'Materi'}
+                            {material.is_locked && <span className="flex items-center gap-0.5 text-xs ml-1"><Lock className="w-2.5 h-2.5" /> Terkunci</span>}
                           </span>
                         </div>
                       </div>
@@ -281,113 +389,144 @@ export default function LearnCoursePage() {
                   </div>
                 </div>
 
-                {/* Video Player */}
-                {currentMaterial.video_url && (
-                  <div className="w-full aspect-video bg-black relative group">
-                    {getYoutubeEmbedUrl(currentMaterial.video_url) ? (
-                      <iframe
-                        src={getYoutubeEmbedUrl(currentMaterial.video_url)!}
-                        title={currentMaterial.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-full"
-                      ></iframe>
-                    ) : (
-                      <div className="flex items-center justify-center h-full text-white">
-                        Invalid Video URL
-                      </div>
-                    )}
+                {isContentLocked ? (
+                  <div className="p-10 flex flex-col items-center justify-center text-center space-y-6 min-h-[400px]">
+                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
+                      <Lock className="w-10 h-10 text-gray-400" />
+                    </div>
+                    <div className="max-w-md">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">Materi Terkunci</h3>
+                      <p className="text-gray-500 mb-6">Materi ini dilindungi password. Silakan masukkan password yang diberikan oleh mentormu untuk mengakses.</p>
+
+                      <form onSubmit={handleUnlock} className="flex gap-2">
+                        <input
+                          type="password"
+                          value={passwordInput}
+                          onChange={(e) => setPasswordInput(e.target.value)}
+                          placeholder="Masukkan password..."
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                        />
+                        <button
+                          type="submit"
+                          disabled={isUnlocking}
+                          className="btn btn-primary whitespace-nowrap"
+                        >
+                          {isUnlocking ? 'Membuka...' : 'Buka Materi'}
+                        </button>
+                      </form>
+                    </div>
                   </div>
-                )}
-
-                <div className="p-6 md:p-8 space-y-8">
-                  {/* Text Content */}
-                  {currentMaterial.content && (
-                    <div className="prose prose-lg max-w-none text-gray-700">
-                      <div className="whitespace-pre-wrap font-sans">{currentMaterial.content}</div>
-                    </div>
-                  )}
-
-                  {/* Attachments */}
-                  {currentMaterial.file_url && (
-                    <div className="flex items-center p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary-300 transition-colors group">
-                      <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-primary mr-3 group-hover:bg-primary group-hover:text-white transition-colors">
-                        <Download className="w-5 h-5" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900">Materi Tambahan</p>
-                        <p className="text-xs text-gray-500">Klik untuk mengunduh file</p>
-                      </div>
-                      <a
-                        href={currentMaterial.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-light text-sm"
-                      >
-                        Download
-                      </a>
-                    </div>
-                  )}
-
-                  {/* Action Area */}
-                  <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-100">
-                    <button
-                      onClick={() => setIsAIModalOpen(true)}
-                      className="flex-1 btn btn-light py-4 text-base justify-center hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200"
-                    >
-                      <Sparkles className="w-5 h-5 mr-2 text-indigo-500" />
-                      Latihan dengan AI
-                    </button>
-
-                    {!currentMaterial.is_completed && (
-                      <button
-                        onClick={handleMarkComplete}
-                        disabled={isMarkingComplete}
-                        className="flex-1 btn btn-primary py-4 text-base justify-center shadow-glow-primary hover:shadow-glow-primary-lg"
-                      >
-                        {isMarkingComplete ? 'Memproses...' : (
-                          <>
-                            <CheckCircle className="w-5 h-5 mr-2" />
-                            Tandai Selesai
-                          </>
+                ) : (
+                  <>
+                    {/* Video Player */}
+                    {currentMaterial.video_url && (
+                      <div className="w-full aspect-video bg-black relative group">
+                        {getYoutubeEmbedUrl(currentMaterial.video_url) ? (
+                          <iframe
+                            src={getYoutubeEmbedUrl(currentMaterial.video_url)!}
+                            title={currentMaterial.title}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            className="w-full h-full"
+                          ></iframe>
+                        ) : (
+                          <div className="flex items-center justify-center h-full text-white">
+                            Invalid Video URL
+                          </div>
                         )}
-                      </button>
+                      </div>
                     )}
-                  </div>
 
-                  {/* Navigation */}
-                  <div className="flex justify-between items-center pt-4">
-                    <button
-                      onClick={handlePrevious}
-                      disabled={currentMaterialIndex === 0}
-                      className="btn btn-ghost text-gray-500 hover:text-gray-900 disabled:opacity-0 transition-opacity"
-                    >
-                      <ChevronLeft className="w-5 h-5 mr-1" />
-                      Sebelumnya
-                    </button>
-                    <span className="text-sm font-medium text-gray-400">
-                      {currentMaterialIndex + 1} dari {materials.length}
-                    </span>
-                    <button
-                      onClick={handleNext}
-                      disabled={currentMaterialIndex === materials.length - 1}
-                      className="btn btn-ghost text-gray-500 hover:text-gray-900 disabled:opacity-0 transition-opacity"
-                    >
-                      Selanjutnya
-                      <ChevronRight className="w-5 h-5 ml-1" />
-                    </button>
-                  </div>
-                </div>
+                    <div className="p-6 md:p-8 space-y-8">
+                      {/* Text Content */}
+                      {currentMaterial.content && (
+                        <div className="prose prose-lg max-w-none text-gray-700">
+                          <ReactMarkdown>{currentMaterial.content}</ReactMarkdown>
+                        </div>
+                      )}
+
+                      {/* Attachments */}
+                      {currentMaterial.file_url && (
+                        <div className="flex items-center p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary-300 transition-colors group">
+                          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-primary mr-3 group-hover:bg-primary group-hover:text-white transition-colors">
+                            <Download className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium text-gray-900">Materi Tambahan</p>
+                            <p className="text-xs text-gray-500">Klik untuk mengunduh file</p>
+                          </div>
+                          <a
+                            href={currentMaterial.file_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-light text-sm"
+                          >
+                            Download
+                          </a>
+                        </div>
+                      )}
+
+                      {/* Action Area */}
+                      <div className="flex flex-col sm:flex-row gap-4 pt-8 border-t border-gray-100">
+                        <button
+                          onClick={() => setIsAIModalOpen(true)}
+                          className="flex-1 btn btn-light py-4 text-base justify-center hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200"
+                        >
+                          <Sparkles className="w-5 h-5 mr-2 text-indigo-500" />
+                          Belajar dan Latihan dengan AI
+                        </button>
+
+                        {!currentMaterial.is_completed && (
+                          <button
+                            onClick={handleMarkComplete}
+                            disabled={isMarkingComplete}
+                            className="flex-1 btn btn-primary py-4 text-base justify-center shadow-glow-primary hover:shadow-glow-primary-lg"
+                          >
+                            {isMarkingComplete ? 'Memproses...' : (
+                              <>
+                                <CheckCircle className="w-5 h-5 mr-2" />
+                                Tandai Selesai
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Navigation */}
+                      <div className="flex justify-between items-center pt-4">
+                        <button
+                          onClick={handlePrevious}
+                          disabled={currentMaterialIndex === 0}
+                          className="btn btn-ghost text-gray-500 hover:text-gray-900 disabled:opacity-0 transition-opacity"
+                        >
+                          <ChevronLeft className="w-5 h-5 mr-1" />
+                          Sebelumnya
+                        </button>
+                        <span className="text-sm font-medium text-gray-400">
+                          {currentMaterialIndex + 1} dari {materials.length}
+                        </span>
+                        <button
+                          onClick={handleNext}
+                          disabled={currentMaterialIndex === materials.length - 1}
+                          className="btn btn-ghost text-gray-500 hover:text-gray-900 disabled:opacity-0 transition-opacity"
+                        >
+                          Selanjutnya
+                          <ChevronRight className="w-5 h-5 ml-1" />
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
+
+            <AIPracticeModal
+              isOpen={isAIModalOpen}
+              onClose={() => setIsAIModalOpen(false)}
+              materialContent={currentMaterial?.content || currentMaterial?.description || ''}
+            />
           </div>
         </div>
-
-        <AIPracticeModal
-          isOpen={isAIModalOpen}
-          onClose={() => setIsAIModalOpen(false)}
-          materialContent={currentMaterial?.content || currentMaterial?.description || ''}
-        />
       </div>
     </ProtectedRoute>
   );

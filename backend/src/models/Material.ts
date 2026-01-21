@@ -10,11 +10,13 @@ interface MaterialAttributes {
   video_url?: string;
   file_url?: string;
   order_index: number;
+  is_locked?: boolean;
+  lock_password?: string;
   created_at?: Date;
   updated_at?: Date;
 }
 
-interface MaterialCreationAttributes extends Optional<MaterialAttributes, 'id'> {}
+interface MaterialCreationAttributes extends Optional<MaterialAttributes, 'id'> { }
 
 class Material extends Model<MaterialAttributes, MaterialCreationAttributes> implements MaterialAttributes {
   public id!: number;
@@ -25,6 +27,8 @@ class Material extends Model<MaterialAttributes, MaterialCreationAttributes> imp
   public video_url?: string;
   public file_url?: string;
   public order_index!: number;
+  public is_locked!: boolean;
+  public lock_password?: string;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
 }
@@ -68,6 +72,14 @@ Material.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    is_locked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    lock_password: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     },
     created_at: {
       type: DataTypes.DATE,

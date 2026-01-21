@@ -61,8 +61,9 @@ export const getMaterialById = async (req: Request, res: Response): Promise<void
   try {
     const materialId = parseInt(req.params.id);
     const userId = req.user?.userId;
+    const password = req.query.password as string;
 
-    const material = await materialService.getMaterialById(materialId, userId);
+    const material = await materialService.getMaterialById(materialId, userId, password);
 
     res.status(200).json({
       success: true,

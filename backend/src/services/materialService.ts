@@ -12,6 +12,8 @@ interface CreateMaterialInput {
   video_url?: string;
   file_url?: string;
   order_index: number;
+  is_locked?: boolean;
+  lock_password?: string;
 }
 
 interface UpdateMaterialInput {
@@ -21,12 +23,14 @@ interface UpdateMaterialInput {
   video_url?: string;
   file_url?: string;
   order_index?: number;
+  is_locked?: boolean;
+  lock_password?: string;
 }
 
 // Check if mentor owns the course
 const checkMentorOwnership = async (courseId: number, mentorId: number) => {
   const course = await Course.findByPk(courseId);
-  
+
   if (!course) {
     throw new Error('Kursus tidak ditemukan');
   }
@@ -52,6 +56,34 @@ export const getMaterialsByCourse = async (courseId: number, userId?: number) =>
     order: [['order_index', 'ASC']]
   });
 
+  // Check if requesting user is the mentor (to decide whether to show content of locked materials)
+  let isMentor = false;
+  if (userId) {
+    const course = await Course.findByPk(courseId);
+    if (course && course.mentor_id === userId) {
+      isMentor = true;
+    }
+  }
+
+  // Helper to process material visibility
+  const processMaterial = (material: any, overrides: any = {}) => {
+    const json = material.toJSON ? material.toJSON() : material;
+    const { lock_password, ...rest } = json;
+
+    // If locked and not mentor, mask content
+    if (rest.is_locked && !isMentor) {
+      return {
+        ...rest,
+        ...overrides,
+        content: null,
+        video_url: null,
+        file_url: null
+      };
+    }
+
+    return { ...rest, ...overrides };
+  };
+
   // If user is provided, get progress for each material
   if (userId) {
     const materialsWithProgress = await Promise.all(
@@ -63,23 +95,22 @@ export const getMaterialsByCourse = async (courseId: number, userId?: number) =>
           }
         });
 
-        return {
-          ...material.toJSON(),
+        return processMaterial(material, {
           is_completed: progress?.is_completed || false,
           completed_at: progress?.completed_at || null
-        };
+        });
       })
     );
 
     return materialsWithProgress;
   }
 
-  return materials;
+  return materials.map(m => processMaterial(m));
 };
 
-export const getMaterialById = async (materialId: number, userId?: number) => {
+export const getMaterialById = async (materialId: number, userId?: number, password?: string) => {
   const material = await Material.findByPk(materialId);
-  
+
   if (!material) {
     throw new Error('Materi tidak ditemukan');
   }
@@ -95,8 +126,67 @@ export const getMaterialById = async (materialId: number, userId?: number) => {
     });
   }
 
+  const materialJson = material.toJSON();
+
+  // Check if requesting user is the mentor (owner)
+  let isMentor = false;
+  if (userId) {
+    const course = await Course.findByPk(material.course_id);
+    if (course && course.mentor_id === userId) {
+      isMentor = true;
+    }
+  }
+
+  // If mentor, return everything including password
+  if (isMentor) {
+    return {
+      ...materialJson,
+      is_completed: false, // Mentor doesn't track progress really
+      completed_at: null
+    };
+  }
+
+  // Check locking logic
+  // If user is accessing it, we should check ownership or role, but here we just check password for locking
+  // Ideally we should bypass lock for the course mentor. But `userId` here is generic.
+  // Let's assume for now if it's locked, we require password unless we verify mentor ownership (which is expensive here without more context).
+  // But wait, the frontend student view sends the password.
+
+  // Logic: If locked AND password does not match -> Hide content
+  if (material.is_locked) {
+    if (material.lock_password && material.lock_password !== password) {
+      // Return limited data
+      return {
+        id: material.id,
+        course_id: material.course_id,
+        title: material.title,
+        description: material.description,
+        order_index: material.order_index,
+        is_locked: true,
+        is_completed: progress?.is_completed || false,
+        completed_at: progress?.completed_at || null,
+        // Content masked
+        content: null,
+        video_url: null,
+        file_url: null
+      };
+    }
+  }
+
+  // If unlocked or password match, return full data
+  // But strictly exclude lock_password from response unless needed (e.g. for mentor edit)
+  // For 'learn' page, we don't need the password back.
+  // For 'edit' page, we might.
+  // Let's keep it safe: Don't return lock_password here typically. 
+  // But wait, the "Edit" page uses this too? If so, the mentor needs to see the password.
+  // We can add a flag `isMentor` or similar, but for now let's just return everything if unlocked/matched.
+  // Be careful: if I learn the course, and I input the password, I get the content. Do I get the password back? 
+  // Better not to send `lock_password` back to student.
+
+  const { lock_password, ...rest } = materialJson;
   return {
-    ...material.toJSON(),
+    ...rest,
+    is_locked: false, // Return as unlocked since password matched
     is_completed: progress?.is_completed || false,
     completed_at: progress?.completed_at || null
   };
@@ -108,7 +198,7 @@ export const updateMaterial = async (
   input: UpdateMaterialInput
 ) => {
   const material = await Material.findByPk(materialId);
-  
+
   if (!material) {
     throw new Error('Materi tidak ditemukan');
   }
@@ -122,7 +212,7 @@ export const updateMaterial = async (
 
 export const deleteMaterial = async (materialId: number, mentorId: number) => {
   const material = await Material.findByPk(materialId);
-  
+
   if (!material) {
     throw new Error('Materi tidak ditemukan');
   }
@@ -136,7 +226,7 @@ export const deleteMaterial = async (materialId: number, mentorId: number) => {
 
 export const markMaterialComplete = async (materialId: number, userId: number) => {
   const material = await Material.findByPk(materialId);
-  
+
   if (!material) {
     throw new Error('Materi tidak ditemukan');
   }
@@ -218,23 +308,23 @@ const updateEnrollmentProgress = async (userId: number, courseId: number) => {
     { replacements: [progress, userId, courseId] }
   );
 
-    // If all materials completed, mark course as completed
-    if (progress === 100) {
-      await sequelize.query(
-        'UPDATE enrollments SET completed_at = NOW() WHERE user_id = ? AND course_id = ? AND completed_at IS NULL',
-        { replacements: [userId, courseId] }
-      );
+  // If all materials completed, mark course as completed
+  if (progress === 100) {
+    await sequelize.query(
+      'UPDATE enrollments SET completed_at = NOW() WHERE user_id = ? AND course_id = ? AND completed_at IS NULL',
+      { replacements: [userId, courseId] }
+    );
 
-      // Give bonus XP for completing course (50 XP)
-      await addXP(userId, 50, 'complete_course');
+    // Give bonus XP for completing course (50 XP)
+    await addXP(userId, 50, 'complete_course');
 
-      // Update mission progress for course completion
-      await updateMissionProgress(userId, 'complete_course', 1);
-      
-      // Check and award badges
-      const { checkAndAwardBadges } = await import('./gamificationService');
-      await checkAndAwardBadges(userId);
-    }
+    // Update mission progress for course completion
+    await updateMissionProgress(userId, 'complete_course', 1);
+
+    // Check and award badges
+    const { checkAndAwardBadges } = await import('./gamificationService');
+    await checkAndAwardBadges(userId);
+  }
 };
 
 

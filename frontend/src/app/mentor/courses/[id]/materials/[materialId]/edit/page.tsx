@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import MarkdownEditor from '@/components/MarkdownEditor';
 import { CreateMaterialInput } from '@/types/material';
 import {
   ArrowLeft,
@@ -18,7 +19,8 @@ import {
   AlertCircle,
   Save,
   Loader2,
-  Info
+  Info,
+  Lock
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -31,7 +33,7 @@ export default function EditMaterialPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
 
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<CreateMaterialInput>();
+  const { register, handleSubmit, setValue, watch, control, formState: { errors } } = useForm<CreateMaterialInput>();
 
   const watchVideo = watch('video_url');
   const watchContent = watch('content');
@@ -55,6 +57,8 @@ export default function EditMaterialPage() {
         setValue('content', material.content || '');
         setValue('video_url', material.video_url || '');
         setValue('file_url', material.file_url || '');
+        setValue('is_locked', material.is_locked || false);
+        setValue('lock_password', material.lock_password || '');
       }
     } catch (error: any) {
       toast.error('Gagal memuat data materi');
@@ -191,11 +195,18 @@ export default function EditMaterialPage() {
                       Konten Teks (Markdown)
                     </label>
                   </div>
-                  <textarea
-                    {...register('content')}
-                    rows={8}
-                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
-                    placeholder="Tulis konten pembelajaran di sini..."
+                  <Controller
+                    name="content"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <MarkdownEditor
+                        value={field.value || ''}
+                        onChange={field.onChange}
+                        placeholder="Tulis konten pembelajaran di sini..."
+                        rows={12}
+                      />
+                    )}
                   />
                 </div>
 
@@ -231,6 +242,54 @@ export default function EditMaterialPage() {
                   />
                 </div>
 
+              </div>
+            </div>
+
+            {/* Access Settings */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+              <div className="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
+                <Lock className="w-5 h-5 text-primary" />
+                <h2 className="text-lg font-bold text-gray-900">Pengaturan Akses</h2>
+              </div>
+
+              <div className="space-y-6">
+                <div className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl bg-gray-50">
+                  <input
+                    {...register('is_locked')}
+                    type="checkbox"
+                    id="is_locked"
+                    className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <label htmlFor="is_locked" className="flex-1 cursor-pointer">
+                    <span className="block font-semibold text-gray-700">Kunci Materi Ini</span>
+                    <span className="text-sm text-gray-500">Materi hanya dapat diakses dengan password</span>
+                  </label>
+                </div>
+
+                {watch('is_locked') && (
+                  <div className="animate-in fade-in slide-in-from-top-2 duration-200">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Password Akses <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      {...register('lock_password', {
+                        required: watch('is_locked') ? 'Password wajib diisi jika materi dikunci' : false
+                      })}
+                      type="text"
+                      className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400"
+                      placeholder="Masukkan password untuk membuka materi..."
+                    />
+                    <p className="mt-2 text-sm text-gray-500">
+                      Berikan password ini kepada siswa yang diizinkan mengakses materi ini.
+                    </p>
+                    {errors.lock_password && (
+                      <p className="mt-2 text-sm text-red-500 flex items-center">
+                        <AlertCircle className="w-4 h-4 mr-1" />
+                        {errors.lock_password.message}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 

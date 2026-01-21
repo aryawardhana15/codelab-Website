@@ -28,3 +28,19 @@ export const evaluate = async (req: Request, res: Response) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
+export const chat = async (req: Request, res: Response) => {
+    try {
+        const { message, materialContent, history } = req.body;
+        if (!message) {
+            return res.status(400).json({ success: false, message: 'Message is required' });
+        }
+
+        const { chatWithAI } = require('../services/groqService');
+
+        const response = await chatWithAI(message, materialContent || '', history || []);
+        res.json({ success: true, data: { response } });
+    } catch (error: any) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

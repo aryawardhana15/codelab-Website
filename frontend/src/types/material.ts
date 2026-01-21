@@ -11,6 +11,7 @@ export interface Material {
   completed_at?: string | null;
   created_at: string;
   updated_at: string;
+  is_locked?: boolean;
 }
 
 export interface CreateMaterialInput {
@@ -21,5 +22,7 @@ export interface CreateMaterialInput {
   video_url?: string;
   file_url?: string;
   order_index: number;
+  is_locked?: boolean;
+  lock_password?: string;
 }
 

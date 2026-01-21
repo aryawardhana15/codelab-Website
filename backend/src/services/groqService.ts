@@ -92,3 +92,45 @@ export const evaluateAnswer = async (question: string, answer: string, context: 
         throw new Error('Gagal menghubungi layanan AI');
     }
 };
+
+export const chatWithAI = async (message: string, context: string, history: { role: string, content: string }[] = []) => {
+    try {
+        if (!apiKey) {
+            throw new Error('GROQ_API_KEY is missing in environment variables');
+        }
+
+        const messages: any[] = [
+            {
+                role: 'system',
+                content: `Anda adalah asisten pengajar AI yang ramah dan membantu untuk platform belajar coding "Codelab".
+                
+                Konteks Materi yang sedang dipelajari siswa:
+                ${context}
+
+                Tugas Anda:
+                1. Jawab pertanyaan siswa terkait materi tersebut.
+                2. Jelaskan dengan bahasa yang mudah dimengerti, gunakan analogi jika perlu.
+                3. Jika kode terlibat, berikan contoh potongan kode yang jelas.
+                4. Jika siswa bertanya di luar topik materi pelajaran, arahkan kembali dengan sopan ke materi.
+                5. Jadilah suportif dan menyemangati siswa.
+                `
+            },
+            ...history.map(msg => ({ role: msg.role, content: msg.content })),
+            {
+                role: 'user',
+                content: message
+            }
+        ];
+
+        const completion = await groq.chat.completions.create({
+            messages: messages,
+            model: 'llama-3.3-70b-versatile',
+            temperature: 0.7,
+        });
+
+        return completion.choices[0]?.message?.content || 'Maaf, saya tidak dapat memproses pesan Anda saat ini.';
+    } catch (error) {
+        console.error('Groq API Error:', error);
+        throw new Error('Gagal menghubungi layanan AI');
+    }
+};
