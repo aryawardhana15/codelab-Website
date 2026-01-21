@@ -156,12 +156,6 @@ export const footerLinks = {
     { label: 'Workshop & Event', href: '#programs' },
     { label: 'Trial Class', href: '#programs' },
   ],
-  courses: [
-    { label: 'Web Development', href: '/courses' },
-    { label: 'Mobile Development', href: '/courses' },
-    { label: 'Data Science', href: '/courses' },
-    { label: 'Machine Learning', href: '/courses' },
-  ],
   company: [
     { label: 'Tentang Kami', href: '/about' },
     { label: 'Mentor', href: '/mentors' },

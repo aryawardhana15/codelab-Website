@@ -34,7 +34,7 @@ export default function Footer() {
             className="py-12 bg-light-800 text-light-100"
         >
             <div className="container-app">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                     {/* Brand */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -119,15 +119,17 @@ export default function Footer() {
                         whileInView="visible"
                         viewport={{ once: true }}
                     >
-                        <h4 className="font-bold text-white mb-4">Kursus</h4>
+                        <h4 className="font-bold text-white mb-4">Program</h4>
                         <ul className="space-y-2 text-light-400">
-                            {footerLinks.courses.map((link, i) => (
+                            {footerLinks.program.map((link, i) => (
                                 <motion.li key={i} variants={itemVariants}>
-                                    <motion.span whileHover={{ x: 5 }}>
-                                        <Link href={link.href} className="hover:text-primary transition-colors inline-block">
-                                            {link.label}
-                                        </Link>
-                                    </motion.span>
+                                    <motion.a
+                                        href={link.href}
+                                        whileHover={{ x: 5, color: '#F97316' }}
+                                        className="hover:text-primary transition-colors inline-block"
+                                    >
+                                        {link.label}
+                                    </motion.a>
                                 </motion.li>
                             ))}
                         </ul>
