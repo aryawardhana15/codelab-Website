@@ -37,7 +37,7 @@ const EventIcons: Record<string, React.ReactNode> = {
 };
 
 const stats = [
-    { value: '500+', label: 'Alumni Sukses' },
+    { value: '500+', label: 'Siswa Sukses' },
     { value: '50+', label: 'Expert Mentor' },
     { value: '100+', label: 'Kursus Tersedia' },
     { value: '95%', label: 'Tingkat Kepuasan' },

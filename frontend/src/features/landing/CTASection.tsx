@@ -57,7 +57,7 @@ export default function CTASection() {
                         viewport={{ once: true }}
                         className="text-xl text-white/90 mb-10"
                     >
-                        Bergabung dengan ribuan alumni sukses kami. Daftar sekarang dan dapatkan akses
+                        Bergabung dengan ribuan siswa sukses kami. Daftar sekarang dan dapatkan akses
                         ke kursus gratis untuk pemula!
                     </motion.p>
                     <motion.div

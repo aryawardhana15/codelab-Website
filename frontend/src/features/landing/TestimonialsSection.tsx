@@ -28,7 +28,7 @@ export default function TestimonialsSection() {
                 >
                     <span className="badge badge-primary mb-4">Testimoni</span>
                     <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                        Apa Kata <span className="text-gradient">Alumni</span> Kami?
+                        Apa Kata <span className="text-gradient">Siswa</span> Kami?
                     </h2>
                     <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                         Dengarkan pengalaman mereka yang sudah sukses berkarir di bidang IT.
