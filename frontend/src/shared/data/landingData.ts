@@ -5,7 +5,7 @@ export const programs = [
     id: 'codelab-learning',
     icon: 'book',
     emoji: '🚀',
-    title: 'Private Bimbingan Coding',
+    title: 'Bimbingan IT',
     subtitle: 'Codelab Learning',
     description: 'Belajar coding tidak harus pusing sendirian. Dapatkan bimbingan intensif dari mentor berpengalaman dengan kurikulum yang menyesuaikan kecepatan belajarmu.',
     focus: 'Edukasi, Mentoring, dan Skill Up',
@@ -75,7 +75,7 @@ export const programs = [
       },
       {
         name: 'Trial Class',
-        desc: 'Masih ragu mau ambil kelas private? Ikuti sesi Trial Class kami. Rasakan metode mengajar mentor Codelab dengan materi dasar yang mudah dipahami.',
+        desc: 'Masih ragu mau ambil kelas codelab? Ikuti sesi Trial Class kami. Rasakan metode mengajar mentor Codelab dengan materi dasar yang mudah dipahami.',
         icon: '🎓',
         highlight: 'GRATIS untuk pendaftar tercepat setiap bulannya.',
       },
@@ -151,7 +151,7 @@ export const contactInfo = {
 
 export const footerLinks = {
   program: [
-    { label: 'Private Bimbingan', href: '#programs' },
+    { label: 'Bimbingan IT', href: '#programs' },
     { label: 'Coding Solutions', href: '#programs' },
     { label: 'Workshop & Event', href: '#programs' },
     { label: 'Trial Class', href: '#programs' },
