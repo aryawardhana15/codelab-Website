@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, BookOpen, Code, Lightbulb, CheckCircle, Users, Monitor, Bug, Settings, Send, MessageSquare, Handshake, UserCheck, FileCheck, CheckCircle2, Share2, Video, GraduationCap, TrendingUp } from 'lucide-react';
+import { ArrowRight, BookOpen, Code, Lightbulb, CheckCircle, Users, Monitor, Bug, Settings, Send, MessageSquare, Handshake, UserCheck, FileCheck, CheckCircle2, Share2, Video, GraduationCap, TrendingUp, Gamepad2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, MotionValue, animate } from 'framer-motion';
 import { programs } from '@/shared/data/landingData';
@@ -10,6 +10,12 @@ const ProgramIcons = {
     book: <BookOpen className="w-8 h-8" />,
     code: <Code className="w-8 h-8" />,
     event: <Lightbulb className="w-8 h-8" />,
+};
+
+// Feature icons for Program 1
+const FeatureIcons: Record<string, React.ReactNode> = {
+    '🎮': <Gamepad2 className="w-5 h-5 text-orange-600" />,
+    '✅': <CheckCircle className="w-5 h-5 text-green-600" />,
 };
 
 // Service icons for Program 2
@@ -126,8 +132,8 @@ export default function HeroSection() {
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    // Smooth spring animation for cursor followers - INCREASED DAMPING FOR SMOOTHER FEEL
-    const springConfig = { damping: 40, stiffness: 100 }; // Softer spring to reduce jitter
+    // Smooth spring animation for cursor followers
+    const springConfig = { damping: 40, stiffness: 100 };
     const cursorX = useSpring(mouseX, springConfig);
     const cursorY = useSpring(mouseY, springConfig);
 
@@ -138,12 +144,10 @@ export default function HeroSection() {
     const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
     // Stable random data generation
-    // AGGRESSIVE REDUCTION FOR PERFORMANCE
     const [particleData] = useState(() => {
         const generatePosition = (avoidCenter = false) => {
             let top, left;
             if (avoidCenter) {
-                // Generate positions that are NOT in the center 40% of the screen
                 do {
                     top = Math.random() * 100;
                     left = Math.random() * 100;
@@ -155,7 +159,7 @@ export default function HeroSection() {
             return { top, left };
         };
 
-        const mediumOrbs = Array.from({ length: 4 }, (_, i) => { // Reduced 8 -> 4
+        const mediumOrbs = Array.from({ length: 4 }, (_, i) => {
             const pos = generatePosition(true);
             return {
                 id: i,
@@ -169,7 +173,7 @@ export default function HeroSection() {
             };
         });
 
-        const fastParticles = Array.from({ length: 3 }, (_, i) => { // Reduced 5 -> 3
+        const fastParticles = Array.from({ length: 3 }, (_, i) => {
             const pos = generatePosition(true);
             return {
                 id: i,
@@ -206,7 +210,6 @@ export default function HeroSection() {
     const parallaxX = useTransform(mouseX, [0, windowSize.width || 1000], [-1, 1]);
     const parallaxY = useTransform(mouseY, [0, windowSize.height || 1000], [-1, 1]);
 
-    // Pre-calculate all fixed parallax transforms
     const parallaxX40 = useTransform(parallaxX, (x) => x * -80);
     const parallaxY40 = useTransform(parallaxY, (y) => y * -80);
     const parallaxX30 = useTransform(parallaxX, (x) => x * -60);
@@ -219,8 +222,6 @@ export default function HeroSection() {
     const parallaxY60 = useTransform(parallaxY, (y) => y * -120);
     const parallaxX90 = useTransform(parallaxX, (x) => x * -180);
     const parallaxY90 = useTransform(parallaxY, (y) => y * -180);
-    const parallaxX80 = useTransform(parallaxX, (x) => x * -160);
-    const parallaxY80 = useTransform(parallaxY, (y) => y * -160);
     const parallaxX20 = useTransform(parallaxX, (x) => x * -40);
     const parallaxY20 = useTransform(parallaxY, (y) => y * -40);
     const parallaxX35 = useTransform(parallaxX, (x) => x * -70);
@@ -234,12 +235,10 @@ export default function HeroSection() {
 
     useEffect(() => {
         setMounted(true);
-
         const handleMouseMove = (e: MouseEvent) => {
             mouseX.set(e.clientX);
             mouseY.set(e.clientY);
         };
-
         window.addEventListener('mousemove', handleMouseMove);
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, [mouseX, mouseY]);
@@ -248,7 +247,6 @@ export default function HeroSection() {
         return (
             <section className="relative min-h-screen flex items-center bg-gradient-to-br from-[#FDF8F3] via-[#FFF8E7] to-[#FDF8F3]">
                 <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10 py-20 ">
-                    {/* ... (Loading state content) ... */}
                 </div>
             </section>
         );
@@ -286,20 +284,18 @@ export default function HeroSection() {
 
             {/* Background Parallax Container */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                {/* 1. Large Ambient Gradients (Base Layer) - Increased Opacity */}
                 <motion.div className="absolute top-0 right-0 w-[800px] h-[800px]" style={{ x: parallaxX40, y: parallaxY40, willChange: 'transform' }}>
                     <div className="w-full h-full opacity-30 animate-pulse-slow">
                         <div className="w-full h-full" style={{ background: 'radial-gradient(circle at 70% 30%, #F97316 0%, transparent 60%)', filter: 'blur(60px)' }} />
                     </div>
                 </motion.div>
-                {/* ... (Other parallax elements) ... */}
+
                 <motion.div className="absolute bottom-0 left-0 w-[700px] h-[700px]" style={{ x: parallaxX30, y: parallaxY30, willChange: 'transform' }}>
                     <div className="w-full h-full opacity-30 animate-pulse-slow">
                         <div className="w-full h-full" style={{ background: 'radial-gradient(circle at 30% 70%, #F9A825 0%, transparent 60%)', filter: 'blur(60px)' }} />
                     </div>
                 </motion.div>
 
-                {/* 2. Medium Floating Orbs (Mid Layer) */}
                 {particleData.mediumOrbs.map((orb) => (
                     <ParallaxObject
                         key={`orb-${orb.id}`}
@@ -318,13 +314,12 @@ export default function HeroSection() {
                     />
                 ))}
 
-                {/* 4. Rings (Structural Elements) */}
                 <motion.div className="absolute top-[15%] right-[10%] w-[300px] h-[300px]" style={{ x: parallaxX50, y: parallaxY50, willChange: 'transform' }}>
                     <div className="w-full h-full animate-spin-slow">
                         <div className="w-full h-full rounded-full border-[4px] border-orange-200/60 dashed" style={{ filter: 'blur(1px)' }} />
                     </div>
                 </motion.div>
-                {/* ... More Rings ... */}
+
                 <motion.div className="absolute top-[18%] right-[13%] w-[220px] h-[220px]" style={{ x: parallaxX70, y: parallaxY70, willChange: 'transform' }}>
                     <div className="w-full h-full animate-spin-reverse">
                         <div className="w-full h-full rounded-full border-[3px] border-yellow-300/60" style={{ filter: 'blur(1px)' }} />
@@ -337,7 +332,6 @@ export default function HeroSection() {
                     </div>
                 </motion.div>
 
-                {/* 5. Featured Orbs (Highlights) */}
                 <motion.div className="absolute top-[30%] left-[10%] w-48 h-48" style={{ x: parallaxX60, y: parallaxY60, willChange: 'transform' }}>
                     <div className="w-full h-full rounded-full opacity-60 animate-float-1" style={{ background: 'radial-gradient(circle, #F97316 0%, transparent 70%)', filter: 'blur(30px)' }} />
                 </motion.div>
@@ -346,7 +340,6 @@ export default function HeroSection() {
                     <div className="w-full h-full rounded-full opacity-60 animate-float-2" style={{ background: 'radial-gradient(circle, #EAB308 0%, transparent 70%)', filter: 'blur(30px)' }} />
                 </motion.div>
 
-                {/* 6. Foreground Speed Particles (Depth Cue) */}
                 {particleData.fastParticles.map((p) => (
                     <ParallaxObject
                         key={`fg-particle-${p.id}`}
@@ -366,7 +359,6 @@ export default function HeroSection() {
                     />
                 ))}
 
-                {/* Particles */}
                 <motion.div className="absolute top-[20%] right-[25%] w-2 h-2 rounded-full bg-orange-400/40 animate-twinkle-1" style={{ x: parallaxX20, y: parallaxY20 }} />
                 <motion.div className="absolute top-[40%] left-[30%] w-2 h-2 rounded-full bg-yellow-400/50 animate-twinkle-2" style={{ x: parallaxX35, y: parallaxY35 }} />
                 <motion.div className="absolute top-[55%] right-[35%] w-1.5 h-1.5 rounded-full bg-orange-300/45 animate-twinkle-3" style={{ x: parallaxX45, y: parallaxY45 }} />
@@ -386,7 +378,7 @@ export default function HeroSection() {
                     >
                         <span className="w-2 h-2 rounded-full bg-[#F97316] animate-pulse" />
                         <span className="text-sm font-medium text-[#F97316]">
-                            Platform Edukasi IT #1 di Indonesia
+                            Edukasi, Solusi & Komunitas IT #1
                         </span>
                     </motion.div>
 
@@ -399,7 +391,7 @@ export default function HeroSection() {
                             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
                             className="block text-6xl md:text-7xl lg:text-8xl font-extrabold text-gray-900 mb-2"
                         >
-                            Belajar
+                            Belajar IT
                         </motion.span>
                         <motion.span
                             initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
@@ -415,7 +407,7 @@ export default function HeroSection() {
                                 backgroundClip: 'text',
                             }}
                         >
-                            Coding
+                            Bangun Solusi
                         </motion.span>
                         <motion.span
                             initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
@@ -431,7 +423,7 @@ export default function HeroSection() {
                                 backgroundClip: 'text',
                             }}
                         >
-                            Jadi Mudah
+                            Wujudkan Mimpi
                         </motion.span>
                     </h1>
 
@@ -442,8 +434,8 @@ export default function HeroSection() {
                         transition={{ duration: 0.8, delay: 0.6 }}
                         className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-10"
                     >
-                        Tingkatkan skill IT kamu dengan bimbingan mentor berpengalaman,
-                        kursus terstruktur, dan komunitas developer yang supportive.
+                        Platform ekosistem IT terlengkap. Mulai dari belajar coding dengan gamifikasi,
+                        jasa pembuatan sistem profesional, hingga event & komunitas teknologi yang aktif berbagi ilmu.
                     </motion.p>
 
                     {/* CTA Buttons */}
@@ -570,8 +562,8 @@ export default function HeroSection() {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {program.features?.map((feature, i) => (
                                                     <div key={i} className="flex items-start gap-3 p-4 bg-orange-50/50 rounded-xl">
-                                                        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-                                                            <CheckCircle className="w-5 h-5 text-green-600" />
+                                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${feature.icon === '🎮' ? 'bg-orange-100' : 'bg-green-100'}`}>
+                                                            {FeatureIcons[feature.icon] || <CheckCircle className="w-5 h-5 text-green-600" />}
                                                         </div>
                                                         <div>
                                                             <p className="font-semibold text-gray-900">{feature.text}</p>

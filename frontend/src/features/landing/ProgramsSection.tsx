@@ -22,7 +22,8 @@ import {
     Share2,
     Video,
     GraduationCap,
-    ArrowRight
+    ArrowRight,
+    Gamepad2
 } from 'lucide-react';
 
 // Program Icons mapping
@@ -33,8 +34,9 @@ const ProgramIcons = {
 };
 
 // Feature icons for Program 1
-const FeatureIcons = {
+const FeatureIcons: Record<string, React.ReactNode> = {
     '✅': <CheckCircle className="w-6 h-6 text-success" />,
+    '🎮': <Gamepad2 className="w-6 h-6 text-orange-500" />,
 };
 
 // Service icons for Program 2

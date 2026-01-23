@@ -1,12 +1,12 @@
 // Register Feature Data
 
 export const registerBranding = {
-  title: 'Mulai Perjalananmu!',
-  subtitle: 'Bergabung dengan ribuan pelajar dan mentor untuk mengembangkan skill IT kamu.',
+  title: 'Start Your Game!',
+  subtitle: 'Bergabung di Platform Edukasi IT Berbasis Gamifikasi #1 di Indonesia.',
   features: [
-    'Gratis untuk pendaftaran',
-    'Akses trial class gratis',
-    'Komunitas supportive',
+    'Belajar coding berasa main game',
+    'Selesaikan quest & raih rewards',
+    'Mentor expert siap membantumu',
   ],
 };
 

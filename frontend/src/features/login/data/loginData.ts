@@ -1,12 +1,12 @@
 // Login Feature Data
 
 export const loginBranding = {
-  title: 'Selamat Datang Kembali!',
-  subtitle: 'Tingkatkan skill coding kamu dan wujudkan karir impian di dunia IT.',
+  title: 'Lanjutkan Petualanganmu!',
+  subtitle: 'Login untuk melanjutkan progress belajar & gamifikasi coding-mu.',
   features: [
-    'Akses 100+ kursus berkualitas',
-    'Belajar dari mentor berpengalaman',
-    'Dapatkan sertifikat resmi',
+    'Lanjutkan misi dan raih XP',
+    'Akses materi & interaksi mentor',
+    'Pantau leaderboard & achievement',
   ],
 };
 

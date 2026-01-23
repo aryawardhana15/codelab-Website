@@ -57,8 +57,7 @@ export default function CTASection() {
                         viewport={{ once: true }}
                         className="text-xl text-white/90 mb-10"
                     >
-                        Bergabung dengan ribuan siswa sukses kami. Daftar sekarang dan dapatkan akses
-                        ke kursus gratis untuk pemula!
+                        Mulai langkahmu sekarang! Belajar coding dari nol atau wujudkan ide aplikasi dan website impianmu bersama ahli kami.
                     </motion.p>
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -68,7 +67,7 @@ export default function CTASection() {
                         className="flex flex-col sm:flex-row items-center justify-center gap-4"
                     >
                         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                            <Link href="/register" className="btn btn-light btn-lg">
+                            <Link href="/order" className="btn btn-light btn-lg">
                                 Daftar Sekarang - Gratis!
                             </Link>
                         </motion.div>

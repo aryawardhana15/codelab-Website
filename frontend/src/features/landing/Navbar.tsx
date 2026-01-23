@@ -71,15 +71,9 @@ export default function Navbar() {
                     <div className="hidden md:flex items-center gap-3">
                         <Link
                             href="/login"
-                            className="px-5 py-2.5 text-sm font-semibold text-gray-700 hover:text-primary transition-colors"
-                        >
-                            Masuk
-                        </Link>
-                        <Link
-                            href="/register"
                             className="btn btn-primary btn-sm px-6 shadow-glow-primary hover:scale-105 transition-transform"
                         >
-                            Daftar Gratis
+                            Masuk
                         </Link>
                     </div>
 
@@ -121,17 +115,10 @@ export default function Navbar() {
                             <div className="flex flex-col gap-4 mt-8">
                                 <Link
                                     href="/login"
-                                    className="btn btn-outline w-full justify-center"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                >
-                                    Masuk
-                                </Link>
-                                <Link
-                                    href="/register"
                                     className="btn btn-primary w-full justify-center"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
-                                    Daftar Gratis
+                                    Masuk
                                 </Link>
                             </div>
                         </div>

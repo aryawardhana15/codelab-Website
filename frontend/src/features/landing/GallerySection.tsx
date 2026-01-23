@@ -7,25 +7,25 @@ import { Code, Users, Zap } from 'lucide-react';
 const projects = [
     {
         id: 1,
-        title: 'Modern Code Editor',
-        category: 'Development Environment',
-        image: '/gallery/project-1.png',
+        title: 'Codelab Activity',
+        category: 'Learning Atmosphere',
+        image: '/gallery/galeri (1).jpeg',
         span: 'col-span-1 md:col-span-2 lg:col-span-2 row-span-2',
         icon: <Code className="w-4 h-4" />
     },
     {
         id: 2,
-        title: 'Team Collaboration',
-        category: 'Workflow & Culture',
-        image: '/gallery/project-2.png',
+        title: 'Focus & Discussion',
+        category: 'Mentoring',
+        image: '/gallery/galeri (2).jpeg',
         span: 'col-span-1 md:col-span-1 lg:col-span-1 row-span-1',
         icon: <Users className="w-4 h-4" />
     },
     {
         id: 3,
-        title: 'Mobile UI/UX Design',
-        category: 'Design System',
-        image: '/gallery/project-3.png',
+        title: 'Classroom Vibes',
+        category: 'Daily Activity',
+        image: '/gallery/galeri (3).jpeg',
         span: 'col-span-1 md:col-span-1 lg:col-span-1 row-span-1',
         icon: <Zap className="w-4 h-4" />
     }
@@ -49,13 +49,13 @@ export default function GallerySection() {
                     className="text-center mb-16"
                 >
                     <span className="inline-block py-1 px-4 rounded-full bg-light-700/30 border border-light-600/30 text-primary-300 text-xs font-semibold tracking-wider uppercase mb-6 backdrop-blur-md">
-                        Our Masterpieces
+                        Dokumentasi
                     </span>
                     <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
-                        Karya <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-secondary-300">Terbaik Siswa</span>
+                        Galeri <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-300 to-secondary-300">Codelab</span>
                     </h2>
                     <p className="text-lg text-light-400 max-w-2xl mx-auto leading-relaxed">
-                        Galeri keunggulan yang menampilkan inovasi dan kreativitas tanpa batas dari komunitas kami.
+                        Intip keseruan belajar, hasil karya siswa, dan momen berbagi ilmu di ekosistem Codelab.
                     </p>
                 </motion.div>
 
@@ -101,7 +101,7 @@ export default function GallerySection() {
                                     </h3>
 
                                     <p className="text-sm text-light-400 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 line-clamp-2">
-                                        Hasil karya unggulan yang menggabungkan estetika dan fungsionalitas tingkat tinggi.
+                                        Dokumentasi kegiatan dan karya di lingkungan Codelab Indonesia.
                                     </p>
                                 </div>
                             </div>

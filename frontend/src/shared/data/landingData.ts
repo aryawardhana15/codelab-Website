@@ -10,10 +10,10 @@ export const programs = [
     description: 'Belajar coding tidak harus pusing sendirian. Dapatkan bimbingan intensif dari mentor berpengalaman dengan kurikulum yang menyesuaikan kecepatan belajarmu.',
     focus: 'Edukasi, Mentoring, dan Skill Up',
     features: [
+      { icon: '🎮', text: 'Gamified Learning', desc: 'Selesaikan misi, raih XP, dan naik level biar belajar makin seru!' },
       { icon: '✅', text: 'All Tech Stacks', desc: 'Web, Mobile, Data, hingga persiapan skripsi/tugas.' },
       { icon: '✅', text: 'Student Friendly', desc: 'Harga ramah kantong mahasiswa/pelajar.' },
       { icon: '✅', text: 'Real Monitoring', desc: 'Progres belajarmu terpantau rapi.' },
-      { icon: '✅', text: 'Unlimited Support', desc: 'Bebas tanya jawab di luar jam belajar sampai paham!' },
     ],
     classes: [
       { name: 'Kelas 1 on 1', desc: 'Fokus penuh, materi custom sesuai kebutuhanmu.' },
@@ -125,7 +125,7 @@ export const testimonials = [
     id: 4,
     name: 'Prima Handani',
     role: 'Kelas Web Development',
-    company: 'Mahasiswa',
+    company: 'Mahasiswa Telkom University',
     image: '👩‍🎓',
     rating: 5,
     text: 'Awalnya bingung banget sama tugas kuliah Web Programming, tapi mentor di Codelab sabar banget jelasinnya dari nol. Sekarang gak cuma paham materi kuliah, tapi udah bisa bikin project portfolio sendiri!',
