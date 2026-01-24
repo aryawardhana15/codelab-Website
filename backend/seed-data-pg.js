@@ -7,6 +7,9 @@ const { Client } = require('pg');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
+// Disable SSL for local/docker PostgreSQL
+const isLocalDB = process.env.DB_HOST === 'db' || process.env.DB_HOST === 'localhost';
+
 async function seedDatabase() {
   const client = new Client({
     host: process.env.DB_HOST,
@@ -14,7 +17,7 @@ async function seedDatabase() {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: false }
+    ssl: isLocalDB ? false : { rejectUnauthorized: false }
   });
 
   await client.connect();
@@ -30,12 +33,20 @@ async function seedDatabase() {
     // =====================
     console.log('👤 Seeding users...');
     
-    // Insert admin
-    await client.query(`
-      INSERT INTO users (name, email, password, role, is_verified) 
-      VALUES ($1, $2, $3, $4, $5)
-      ON CONFLICT (email) DO UPDATE SET password = $3
-    `, ['Admin', 'admin@codelab.com', adminPasswordHash, 'admin', true]);
+    // Insert admin accounts
+    const admins = [
+      ['Admin', 'admin@codelab.com', adminPasswordHash, 'admin', true],
+      ['Arya Wardhana', 'aryawardhana1@student.ub.ac.id', adminPasswordHash, 'admin', true],
+      ['Syauqi', 'syauqi.imd@gmail.com', adminPasswordHash, 'admin', true]
+    ];
+
+    for (const admin of admins) {
+      await client.query(`
+        INSERT INTO users (name, email, password, role, is_verified) 
+        VALUES ($1, $2, $3, $4, $5)
+        ON CONFLICT (email) DO UPDATE SET password = $3, role = 'admin'
+      `, admin);
+    }
 
     // Insert mentor users
     const mentors = [
@@ -141,18 +152,20 @@ async function seedDatabase() {
     console.log('✨ Database seeded successfully!');
     console.log('');
     console.log('📋 Test Accounts:');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('| Role    | Email               | Password    |');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('| Admin   | admin@codelab.com   | admin123    |');
-    console.log('| Mentor  | budi@mentor.com     | password123 |');
-    console.log('| Mentor  | siti@mentor.com     | password123 |');
-    console.log('| Mentor  | ahmad@mentor.com    | password123 |');
-    console.log('| Pelajar | andi@pelajar.com    | password123 |');
-    console.log('| Pelajar | dewi@pelajar.com    | password123 |');
-    console.log('| Pelajar | fajar@pelajar.com   | password123 |');
-    console.log('| Pelajar | syauqi@pelajar.com  | password123 |');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('| Role    | Email                           | Password    |');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('| Admin   | admin@codelab.com               | admin123    |');
+    console.log('| Admin   | aryawardhana1@student.ub.ac.id  | admin123    |');
+    console.log('| Admin   | syauqi.imd@gmail.com            | admin123    |');
+    console.log('| Mentor  | budi@mentor.com                 | password123 |');
+    console.log('| Mentor  | siti@mentor.com                 | password123 |');
+    console.log('| Mentor  | ahmad@mentor.com                | password123 |');
+    console.log('| Pelajar | andi@pelajar.com                | password123 |');
+    console.log('| Pelajar | dewi@pelajar.com                | password123 |');
+    console.log('| Pelajar | fajar@pelajar.com               | password123 |');
+    console.log('| Pelajar | syauqi@pelajar.com              | password123 |');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
   } catch (error) {
     console.error('❌ Error seeding database:', error.message);
