@@ -12,7 +12,7 @@ RUN npm ci
 COPY . .
 
 # Set API URL at build time (Next.js requires this during build)
-ENV NEXT_PUBLIC_API_URL=http://srv1293734.hstgr.cloud/api
+ENV NEXT_PUBLIC_API_URL=http://codelabstudio.cloud/api
 
 # Build Next.js app
 RUN npm run build
@@ -23,7 +23,7 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NEXT_PUBLIC_API_URL=http://srv1293734.hstgr.cloud/api
+ENV NEXT_PUBLIC_API_URL=http://codelabstudio.cloud/api
 
 # Copy standalone build
 COPY --from=builder /app/.next/standalone ./
