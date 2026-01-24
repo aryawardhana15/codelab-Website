@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   db:
@@ -7,9 +5,9 @@ services:
     container_name: codelab-db
     restart: always
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: codelab_user
+      POSTGRES_PASSWORD: CodelabSecure123
+      POSTGRES_DB: codelab_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -17,7 +15,7 @@ services:
     networks:
       - codelab-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U codelab_user -d codelab_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,15 +28,15 @@ services:
     container_name: codelab-backend
     restart: always
     environment:
-      PORT: 5000
+      PORT: "5000"
       DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
-      GROQ_API_KEY: ${GROQ_API_KEY}
+      DB_PORT: "5432"
+      DB_USER: codelab_user
+      DB_PASSWORD: CodelabSecure123
+      DB_NAME: codelab_db
+      JWT_SECRET: codelab-jwt-secret-key-2026
+      JWT_EXPIRES_IN: 7d
+      GROQ_API_KEY: YOUR_GROQ_API_KEY_HERE
     ports:
       - "5000:5000"
     depends_on:
@@ -53,11 +51,11 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_API_URL: http://srv1293734.hstgr.cloud/api
     container_name: codelab-frontend
     restart: always
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      NEXT_PUBLIC_API_URL: http://srv1293734.hstgr.cloud/api
     ports:
       - "3000:3000"
     depends_on:
