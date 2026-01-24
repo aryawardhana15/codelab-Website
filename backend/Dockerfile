@@ -26,6 +26,10 @@ RUN npm ci --only=production
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist
 
+# Copy setup and seed scripts
+COPY --from=builder /app/setup-tables-pg.js ./
+COPY --from=builder /app/seed-data-pg.js ./
+
 # Expose port
 EXPOSE 5000
 
