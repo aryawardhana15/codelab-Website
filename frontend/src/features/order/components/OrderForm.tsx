@@ -2,30 +2,72 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, BookOpen, Code, Loader2 } from 'lucide-react';
+import { ArrowRight, BookOpen, Code, Loader2, CheckCircle } from 'lucide-react';
 
 export default function OrderForm() {
     const [serviceType, setServiceType] = useState<'learning' | 'service'>('learning');
     const [isLoading, setIsLoading] = useState(false);
 
+    const [isSuccess, setIsSuccess] = useState(false);
+
     // TODO: GANTI DENGAN ID FORMSPREE ANDA YANG ASLI
     // Contoh: https://formspree.io/f/xyzaabc
-    const FORMSPREE_ENDPOINT = "https://formspree.io/f/mkgowazo";
+    const FORMSPREE_ENDPOINT = "https://formspree.io/f/mwvlbjqv";
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        // We let the form submit naturally or use fetch if we want SPAs, 
-        // but for Formspree simple redirect, we can leave it or intercept.
-        // Let's intercept to show loading state, then submit.
-        // Actually, for simplicity and robustness with Formspree free tier, plain HTML submit is best.
-        // But we want to show loading.
-
-        // Let's use standard onSubmit but simple state.
+        e.preventDefault();
         setIsLoading(true);
-        // Using default submission behavior by returning true or not calling preventDefault 
-        // IF we want page reload/redirect.
-        // But usually we want to stay or show success message.
-        // For now, let's just let it submit to Formspree's captcha/success page.
+
+        const form = e.currentTarget;
+        const data = new FormData(form);
+
+        try {
+            const response = await fetch(FORMSPREE_ENDPOINT, {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                setIsSuccess(true);
+                form.reset();
+            } else {
+                alert('Terjadi kesalahan saat mengirim formulir. Silakan coba lagi.');
+            }
+        } catch (error) {
+            alert('Terjadi kesalahan koneksi. Silakan periksa internet Anda.');
+        } finally {
+            setIsLoading(false);
+        }
     };
+
+    if (isSuccess) {
+        return (
+            <div className="w-full lg:w-1/2 min-h-screen bg-light-50 flex flex-col justify-center items-center p-6 text-center">
+                <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="bg-white p-8 rounded-3xl shadow-xl max-w-sm"
+                >
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <CheckCircle className="w-10 h-10 text-green-500" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Pendaftaran Berhasil!</h3>
+                    <p className="text-gray-600 mb-6">
+                        Terima kasih telah mendaftar. Tim Codelab akan segera menghubungi Anda melalui WhatsApp/Email.
+                    </p>
+                    <button
+                        onClick={() => setIsSuccess(false)}
+                        className="btn btn-primary w-full justify-center"
+                    >
+                        Kembali
+                    </button>
+                </motion.div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full lg:w-1/2 min-h-screen bg-light-50 flex flex-col justify-center items-center p-6 sm:p-12 overflow-y-auto">
@@ -199,8 +241,8 @@ export default function OrderForm() {
                         type="submit"
                         disabled={isLoading}
                         className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transform transition-all hover:scale-[1.02] flex items-center justify-center gap-2 ${serviceType === 'learning'
-                                ? 'bg-gradient-to-r from-orange-500 to-amber-500 shadow-orange-500/30'
-                                : 'bg-gradient-to-r from-blue-600 to-cyan-500 shadow-blue-500/30'
+                            ? 'bg-gradient-to-r from-orange-500 to-amber-500 shadow-orange-500/30'
+                            : 'bg-gradient-to-r from-blue-600 to-cyan-500 shadow-blue-500/30'
                             }`}
                     >
                         {isLoading ? (

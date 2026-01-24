@@ -2,6 +2,7 @@
 
 import { ArrowRight, BookOpen, Code, Lightbulb, CheckCircle, Users, Monitor, Bug, Settings, Send, MessageSquare, Handshake, UserCheck, FileCheck, CheckCircle2, Share2, Video, GraduationCap, TrendingUp, Gamepad2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { motion, useMotionValue, useSpring, useTransform, MotionValue, animate } from 'framer-motion';
 import { programs } from '@/shared/data/landingData';
 
@@ -676,15 +677,36 @@ export default function HeroSection() {
                                 )}
 
                                 {/* CTA */}
-                                <a
-                                    href={program.ctaLink}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white text-sm transition-all duration-300 w-full sm:w-auto justify-center bg-gradient-to-r from-[#F9A825] to-[#F97316] hover:shadow-lg hover:shadow-orange-500/30"
-                                >
-                                    {program.cta}
-                                    <ArrowRight className="w-5 h-5" />
-                                </a>
+                                {program.id !== 'codelab-event' ? (
+                                    <div className="flex flex-col sm:flex-row gap-3">
+                                        <Link
+                                            href="/order"
+                                            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white text-sm transition-all duration-300 w-full sm:w-auto justify-center bg-gradient-to-r from-[#F9A825] to-[#F97316] hover:shadow-lg hover:shadow-orange-500/30"
+                                        >
+                                            Daftar Sekarang
+                                            <ArrowRight className="w-5 h-5" />
+                                        </Link>
+                                        <a
+                                            href="https://wa.me/6281348774066?text=Halo%20MinCode,%20saya%20ingin%20konsultasi%20dulu%20mengenai%20program%20Codelab"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-orange-600 text-sm transition-all duration-300 w-full sm:w-auto justify-center border-2 border-orange-100 hover:border-orange-500 hover:bg-orange-50"
+                                        >
+                                            Konsultasi Dulu
+                                            <MessageSquare className="w-5 h-5" />
+                                        </a>
+                                    </div>
+                                ) : (
+                                    <a
+                                        href={program.ctaLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white text-sm transition-all duration-300 w-full sm:w-auto justify-center bg-gradient-to-r from-[#F9A825] to-[#F97316] hover:shadow-lg hover:shadow-orange-500/30"
+                                    >
+                                        {program.cta}
+                                        <ArrowRight className="w-5 h-5" />
+                                    </a>
+                                )}
                             </div>
                         </div>
                     ))}
