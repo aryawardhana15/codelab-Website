@@ -6,6 +6,9 @@
 const { Client } = require('pg');
 require('dotenv').config();
 
+// Disable SSL for local/docker PostgreSQL
+const isLocalDB = process.env.DB_HOST === 'db' || process.env.DB_HOST === 'localhost';
+
 async function setupTables() {
   const client = new Client({
     host: process.env.DB_HOST,
@@ -13,7 +16,7 @@ async function setupTables() {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl: { rejectUnauthorized: false }
+    ssl: isLocalDB ? false : { rejectUnauthorized: false }
   });
 
   await client.connect();
