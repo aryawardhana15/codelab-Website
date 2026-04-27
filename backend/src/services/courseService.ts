@@ -43,8 +43,10 @@ export const createCourse = async (input: CreateCourseInput) => {
 };
 
 export const getCourseById = async (courseId: number, userId?: number) => {
-  const course = await Course.findByPk(courseId);
-  
+  const course = await Course.findOne({
+    where: { id: courseId, is_deleted: false },
+  });
+
   if (!course) {
     throw new Error('Kursus tidak ditemukan');
   }
@@ -52,14 +54,14 @@ export const getCourseById = async (courseId: number, userId?: number) => {
   // Get mentor info
   const [mentorResult] = await sequelize.query(
     'SELECT id, name, email, photo_url, expertise FROM users WHERE id = ?',
-    { replacements: [course.mentor_id] }
+    { replacements: [course.mentor_id] },
   );
   const mentor = (mentorResult as any)[0];
 
   // Get enrollment count
   const [enrollmentResult] = await sequelize.query(
     'SELECT COUNT(*) as total FROM enrollments WHERE course_id = ?',
-    { replacements: [courseId] }
+    { replacements: [courseId] },
   );
   const enrollmentCount = (enrollmentResult as any)[0].total;
 
@@ -67,7 +69,7 @@ export const getCourseById = async (courseId: number, userId?: number) => {
   let isEnrolled = false;
   if (userId) {
     const enrollment = await Enrollment.findOne({
-      where: { user_id: userId, course_id: courseId }
+      where: { user_id: userId, course_id: courseId },
     });
     isEnrolled = !!enrollment;
   }
@@ -75,7 +77,7 @@ export const getCourseById = async (courseId: number, userId?: number) => {
   // Get materials count
   const [materialsResult] = await sequelize.query(
     'SELECT COUNT(*) as total FROM materials WHERE course_id = ?',
-    { replacements: [courseId] }
+    { replacements: [courseId] },
   );
   const materialsCount = (materialsResult as any)[0].total;
 
@@ -84,13 +86,19 @@ export const getCourseById = async (courseId: number, userId?: number) => {
     mentor,
     enrollmentCount,
     materialsCount,
-    isEnrolled
+    isEnrolled,
   };
 };
 
-export const updateCourse = async (courseId: number, mentorId: number, input: UpdateCourseInput) => {
-  const course = await Course.findByPk(courseId);
-  
+export const updateCourse = async (
+  courseId: number,
+  mentorId: number,
+  input: UpdateCourseInput,
+) => {
+  const course = await Course.findOne({
+    where: { id: courseId, is_deleted: false },
+  });
+
   if (!course) {
     throw new Error('Kursus tidak ditemukan');
   }
@@ -104,8 +112,10 @@ export const updateCourse = async (courseId: number, mentorId: number, input: Up
 };
 
 export const deleteCourse = async (courseId: number, mentorId: number) => {
-  const course = await Course.findByPk(courseId);
-  
+  const course = await Course.findOne({
+    where: { id: courseId, is_deleted: false },
+  });
+
   if (!course) {
     throw new Error('Kursus tidak ditemukan');
   }
@@ -114,14 +124,14 @@ export const deleteCourse = async (courseId: number, mentorId: number) => {
     throw new Error('Anda tidak memiliki akses untuk menghapus kursus ini');
   }
 
-  await course.destroy();
+  await course.update({ is_deleted: true });
   return { message: 'Kursus berhasil dihapus' };
 };
 
 export const getMyCourses = async (mentorId: number) => {
   const courses = await Course.findAll({
-    where: { mentor_id: mentorId },
-    order: [['created_at', 'DESC']]
+    where: { mentor_id: mentorId, is_deleted: false },
+    order: [['created_at', 'DESC']],
   });
 
   // Get enrollment counts for each course
@@ -129,33 +139,44 @@ export const getMyCourses = async (mentorId: number) => {
     courses.map(async (course) => {
       const [enrollmentResult] = await sequelize.query(
         'SELECT COUNT(*) as total FROM enrollments WHERE course_id = ?',
-        { replacements: [course.id] }
+        { replacements: [course.id] },
       );
       const enrollmentCount = (enrollmentResult as any)[0].total;
 
       const [materialsResult] = await sequelize.query(
         'SELECT COUNT(*) as total FROM materials WHERE course_id = ?',
-        { replacements: [course.id] }
+        { replacements: [course.id] },
       );
       const materialsCount = (materialsResult as any)[0].total;
 
       return {
         ...course.toJSON(),
         enrollmentCount,
-        materialsCount
+        materialsCount,
       };
-    })
+    }),
   );
 
   return coursesWithStats;
 };
 
 export const getAllCourses = async (filters: FilterOptions) => {
-  const { category, difficulty, education_level, search, is_published = true, page = 1, limit = 12 } = filters;
+  const {
+    category,
+    difficulty,
+    education_level,
+    search,
+    is_published = true,
+    page = 1,
+    limit = 12,
+  } = filters;
   const offset = (page - 1) * limit;
 
   // Build conditions array for WHERE clause
-  const conditions: string[] = [`c.is_published = ${is_published ? 'TRUE' : 'FALSE'}`];
+  const conditions: string[] = [
+    `c.is_published = ${is_published ? 'TRUE' : 'FALSE'}`,
+    `c.is_deleted = FALSE`,
+  ];
   const replacements: any[] = [];
 
   if (search) {
@@ -194,7 +215,7 @@ export const getAllCourses = async (filters: FilterOptions) => {
     WHERE ${whereClause}
     ORDER BY c.created_at DESC
     LIMIT ? OFFSET ?`,
-    { replacements: [...replacements, limit, offset] }
+    { replacements: [...replacements, limit, offset] },
   );
 
   // Get total count for pagination
@@ -202,7 +223,7 @@ export const getAllCourses = async (filters: FilterOptions) => {
     `SELECT COUNT(*) as total
     FROM courses c
     WHERE ${whereClause}`,
-    { replacements }
+    { replacements },
   );
   const totalCourses = (countResult as any)[0].total;
 
@@ -212,15 +233,17 @@ export const getAllCourses = async (filters: FilterOptions) => {
       currentPage: page,
       totalPages: Math.ceil(totalCourses / limit),
       totalCourses,
-      limit
-    }
+      limit,
+    },
   };
 };
 
 export const enrollCourse = async (userId: number, courseId: number) => {
   // Check if course exists and is published
-  const course = await Course.findByPk(courseId);
-  
+  const course = await Course.findOne({
+    where: { id: courseId, is_deleted: false },
+  });
+
   if (!course) {
     throw new Error('Kursus tidak ditemukan');
   }
@@ -231,7 +254,7 @@ export const enrollCourse = async (userId: number, courseId: number) => {
 
   // Check if already enrolled
   const existingEnrollment = await Enrollment.findOne({
-    where: { user_id: userId, course_id: courseId }
+    where: { user_id: userId, course_id: courseId },
   });
 
   if (existingEnrollment) {
@@ -242,7 +265,7 @@ export const enrollCourse = async (userId: number, courseId: number) => {
   const enrollment = await Enrollment.create({
     user_id: userId,
     course_id: courseId,
-    progress: 0
+    progress: 0,
   });
 
   // Check and award badges (e.g., Dedicated Learner - enroll in 5 courses)
@@ -275,7 +298,7 @@ export const getMyEnrolledCourses = async (userId: number) => {
     JOIN users u ON c.mentor_id = u.id
     WHERE e.user_id = ?
     ORDER BY e.enrolled_at DESC`,
-    { replacements: [userId, userId] }
+    { replacements: [userId, userId] },
   );
 
   return enrolledCourses;
@@ -283,7 +306,7 @@ export const getMyEnrolledCourses = async (userId: number) => {
 
 export const unenrollCourse = async (userId: number, courseId: number) => {
   const enrollment = await Enrollment.findOne({
-    where: { user_id: userId, course_id: courseId }
+    where: { user_id: userId, course_id: courseId },
   });
 
   if (!enrollment) {
@@ -293,4 +316,3 @@ export const unenrollCourse = async (userId: number, courseId: number) => {
   await enrollment.destroy();
   return { message: 'Berhasil keluar dari kursus' };
 };
-
