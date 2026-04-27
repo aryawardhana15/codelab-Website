@@ -40,7 +40,7 @@ export const getDashboardStats = async (): Promise<AdminStats> => {
       COUNT(CASE WHEN role = 'mentor' THEN 1 END) as total_mentor,
       COUNT(*) as total_users
     FROM users 
-    WHERE role != 'admin'`
+    WHERE role != 'admin'`,
   );
   const userStats = (usersResult as any)[0];
 
@@ -49,37 +49,37 @@ export const getDashboardStats = async (): Promise<AdminStats> => {
     `SELECT 
       COUNT(*) as total_courses,
       COUNT(CASE WHEN is_published = TRUE THEN 1 END) as total_courses_published
-    FROM courses`
+    FROM courses`,
   );
   const courseStats = (coursesResult as any)[0];
 
   // Get enrollment count
   const [enrollmentResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM enrollments'
+    'SELECT COUNT(*) as total FROM enrollments',
   );
   const totalEnrollments = (enrollmentResult as any)[0].total;
 
   // Get forum posts count
   const [forumResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM forums'
+    'SELECT COUNT(*) as total FROM forums',
   );
   const totalForumPosts = (forumResult as any)[0].total;
 
   // Get pending reports
   const [reportsResult] = await sequelize.query(
-    "SELECT COUNT(*) as total FROM forum_reports WHERE status = 'pending'"
+    "SELECT COUNT(*) as total FROM forum_reports WHERE status = 'pending'",
   );
   const pendingReports = (reportsResult as any)[0].total;
 
   // Get new users in last 30 days
   const [newUsersResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM users WHERE created_at >= NOW() - INTERVAL \'30 days\''
+    "SELECT COUNT(*) as total FROM users WHERE created_at >= NOW() - INTERVAL '30 days'",
   );
   const newUsersLast30Days = (newUsersResult as any)[0].total;
 
   // Get new courses in last 30 days
   const [newCoursesResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM courses WHERE created_at >= NOW() - INTERVAL \'30 days\''
+    "SELECT COUNT(*) as total FROM courses WHERE created_at >= NOW() - INTERVAL '30 days'",
   );
   const newCoursesLast30Days = (newCoursesResult as any)[0].total;
 
@@ -95,7 +95,7 @@ export const getDashboardStats = async (): Promise<AdminStats> => {
     totalForumPosts,
     pendingReports,
     newUsersLast30Days,
-    newCoursesLast30Days
+    newCoursesLast30Days,
   };
 };
 
@@ -103,13 +103,21 @@ export const getPendingMentors = async (): Promise<PendingMentor[]> => {
   const mentors = await User.findAll({
     where: {
       role: 'mentor',
-      is_verified: false
+      is_verified: false,
     },
-    attributes: ['id', 'name', 'email', 'cv_url', 'expertise', 'experience', 'created_at'],
-    order: [['created_at', 'ASC']]
+    attributes: [
+      'id',
+      'name',
+      'email',
+      'cv_url',
+      'expertise',
+      'experience',
+      'created_at',
+    ],
+    order: [['created_at', 'ASC']],
   });
 
-  return mentors.map(m => {
+  return mentors.map((m) => {
     const mentor = m.toJSON() as any;
     return {
       id: mentor.id,
@@ -118,14 +126,16 @@ export const getPendingMentors = async (): Promise<PendingMentor[]> => {
       cv_url: mentor.cv_url,
       expertise: mentor.expertise,
       experience: mentor.experience,
-      created_at: mentor.created_at ? new Date(mentor.created_at).toISOString() : new Date().toISOString()
+      created_at: mentor.created_at
+        ? new Date(mentor.created_at).toISOString()
+        : new Date().toISOString(),
     } as PendingMentor;
   });
 };
 
 export const verifyMentor = async (mentorId: number, adminId: number) => {
   const mentor = await User.findByPk(mentorId);
-  
+
   if (!mentor) {
     throw new Error('Mentor tidak ditemukan');
   }
@@ -142,21 +152,31 @@ export const verifyMentor = async (mentorId: number, adminId: number) => {
   await mentor.update({ is_verified: true });
 
   // Log admin action
-  await logAdminAction(adminId, 'verify_mentor', 'user', mentorId, `Verified mentor: ${mentor.name}`);
+  await logAdminAction(
+    adminId,
+    'verify_mentor',
+    'user',
+    mentorId,
+    `Verified mentor: ${mentor.name}`,
+  );
 
   // Create notification for mentor
   await sequelize.query(
     `INSERT INTO notifications (user_id, type, title, message, is_read)
     VALUES (?, 'mentor_approved', 'Akun Disetujui!', 'Selamat! Akun mentor Anda telah disetujui oleh admin.', FALSE)`,
-    { replacements: [mentorId] }
+    { replacements: [mentorId] },
   );
 
   return mentor;
 };
 
-export const rejectMentor = async (mentorId: number, adminId: number, reason?: string) => {
+export const rejectMentor = async (
+  mentorId: number,
+  adminId: number,
+  reason?: string,
+) => {
   const mentor = await User.findByPk(mentorId);
-  
+
   if (!mentor) {
     throw new Error('Mentor tidak ditemukan');
   }
@@ -166,17 +186,23 @@ export const rejectMentor = async (mentorId: number, adminId: number, reason?: s
   }
 
   // Log admin action
-  await logAdminAction(adminId, 'reject_mentor', 'user', mentorId, `Rejected mentor: ${mentor.name}. Reason: ${reason || 'N/A'}`);
+  await logAdminAction(
+    adminId,
+    'reject_mentor',
+    'user',
+    mentorId,
+    `Rejected mentor: ${mentor.name}. Reason: ${reason || 'N/A'}`,
+  );
 
   // Create notification for mentor
-  const message = reason 
+  const message = reason
     ? `Mohon maaf, pendaftaran mentor Anda ditolak. Alasan: ${reason}`
     : 'Mohon maaf, pendaftaran mentor Anda ditolak.';
-  
+
   await sequelize.query(
     `INSERT INTO notifications (user_id, type, title, message, is_read)
     VALUES (?, 'mentor_rejected', 'Pendaftaran Ditolak', ?, FALSE)`,
-    { replacements: [mentorId, message] }
+    { replacements: [mentorId, message] },
   );
 
   // Delete the mentor account
@@ -196,12 +222,12 @@ export const getAllUsers = async (filters: {
 
   let whereConditions = "role != 'admin'";
   const replacements: any[] = [];
-  
+
   if (role) {
     whereConditions += ` AND role = ?`;
     replacements.push(role);
   }
-  
+
   if (search) {
     whereConditions += ` AND (name LIKE ? OR email LIKE ?)`;
     const searchPattern = `%${search}%`;
@@ -218,13 +244,13 @@ export const getAllUsers = async (filters: {
     WHERE ${whereConditions}
     ORDER BY u.created_at DESC
     LIMIT ? OFFSET ?`,
-    { replacements: [...replacements, limit, offset] }
+    { replacements: [...replacements, limit, offset] },
   );
 
   // Get total count
   const [countResult] = await sequelize.query(
     `SELECT COUNT(*) as total FROM users WHERE ${whereConditions}`,
-    { replacements }
+    { replacements },
   );
   const totalUsers = (countResult as any)[0].total;
 
@@ -234,14 +260,18 @@ export const getAllUsers = async (filters: {
       currentPage: page,
       totalPages: Math.ceil(totalUsers / limit),
       totalUsers,
-      limit
-    }
+      limit,
+    },
   };
 };
 
-export const suspendUser = async (userId: number, adminId: number, reason?: string) => {
+export const suspendUser = async (
+  userId: number,
+  adminId: number,
+  reason?: string,
+) => {
   const user = await User.findByPk(userId);
-  
+
   if (!user) {
     throw new Error('User tidak ditemukan');
   }
@@ -256,14 +286,20 @@ export const suspendUser = async (userId: number, adminId: number, reason?: stri
 
   // Log admin action
   const action = newSuspendedStatus ? 'suspend_user' : 'unsuspend_user';
-  await logAdminAction(adminId, action, 'user', userId, `${action}: ${user.name}. Reason: ${reason || 'N/A'}`);
+  await logAdminAction(
+    adminId,
+    action,
+    'user',
+    userId,
+    `${action}: ${user.name}. Reason: ${reason || 'N/A'}`,
+  );
 
   // Create notification
   if (newSuspendedStatus) {
     await sequelize.query(
       `INSERT INTO notifications (user_id, type, title, message, is_read)
       VALUES (?, 'account_suspended', 'Akun Ditangguhkan', 'Akun Anda telah ditangguhkan oleh admin.', FALSE)`,
-      { replacements: [userId] }
+      { replacements: [userId] },
     );
   }
 
@@ -272,7 +308,7 @@ export const suspendUser = async (userId: number, adminId: number, reason?: stri
 
 export const deleteUser = async (userId: number, adminId: number) => {
   const user = await User.findByPk(userId);
-  
+
   if (!user) {
     throw new Error('User tidak ditemukan');
   }
@@ -282,7 +318,13 @@ export const deleteUser = async (userId: number, adminId: number) => {
   }
 
   // Log admin action
-  await logAdminAction(adminId, 'delete_user', 'user', userId, `Deleted user: ${user.name}`);
+  await logAdminAction(
+    adminId,
+    'delete_user',
+    'user',
+    userId,
+    `Deleted user: ${user.name}`,
+  );
 
   // Delete user
   await user.destroy();
@@ -301,12 +343,12 @@ export const getAllCourses = async (filters: {
 
   let whereConditions = '1=1';
   const replacements: any[] = [];
-  
+
   if (is_published !== undefined) {
     whereConditions += ` AND c.is_published = ?`;
     replacements.push(is_published);
   }
-  
+
   if (search) {
     whereConditions += ` AND (c.title LIKE ? OR c.description LIKE ?)`;
     const searchPattern = `%${search}%`;
@@ -319,19 +361,19 @@ export const getAllCourses = async (filters: {
       c.*,
       u.name as mentor_name,
       (SELECT COUNT(*) FROM enrollments WHERE course_id = c.id) as enrollment_count,
-      (SELECT COUNT(*) FROM materials WHERE course_id = c.id) as materials_count
+      (SELECT COUNT(*) FROM materials WHERE course_id = c.id AND is_deleted = FALSE) as materials_count
     FROM courses c
     JOIN users u ON c.mentor_id = u.id
     WHERE ${whereConditions}
     ORDER BY c.created_at DESC
     LIMIT ? OFFSET ?`,
-    { replacements: [...replacements, limit, offset] }
+    { replacements: [...replacements, limit, offset] },
   );
 
   // Get total count
   const [countResult] = await sequelize.query(
     `SELECT COUNT(*) as total FROM courses c WHERE ${whereConditions}`,
-    { replacements }
+    { replacements },
   );
   const totalCourses = (countResult as any)[0].total;
 
@@ -341,14 +383,18 @@ export const getAllCourses = async (filters: {
       currentPage: page,
       totalPages: Math.ceil(totalCourses / limit),
       totalCourses,
-      limit
-    }
+      limit,
+    },
   };
 };
 
-export const unpublishCourse = async (courseId: number, adminId: number, reason?: string) => {
+export const unpublishCourse = async (
+  courseId: number,
+  adminId: number,
+  reason?: string,
+) => {
   const course = await Course.findByPk(courseId);
-  
+
   if (!course) {
     throw new Error('Kursus tidak ditemukan');
   }
@@ -359,14 +405,25 @@ export const unpublishCourse = async (courseId: number, adminId: number, reason?
 
   // Log admin action
   const action = newPublishedStatus ? 'publish_course' : 'unpublish_course';
-  await logAdminAction(adminId, action, 'course', courseId, `${action}: ${course.title}. Reason: ${reason || 'N/A'}`);
+  await logAdminAction(
+    adminId,
+    action,
+    'course',
+    courseId,
+    `${action}: ${course.title}. Reason: ${reason || 'N/A'}`,
+  );
 
   // Notify mentor
   if (!newPublishedStatus) {
     await sequelize.query(
       `INSERT INTO notifications (user_id, type, title, message, is_read)
       VALUES (?, 'course_unpublished', 'Kursus Di-unpublish', ?, FALSE)`,
-      { replacements: [course.mentor_id, `Kursus "${course.title}" telah di-unpublish oleh admin.`] }
+      {
+        replacements: [
+          course.mentor_id,
+          `Kursus "${course.title}" telah di-unpublish oleh admin.`,
+        ],
+      },
     );
   }
 
@@ -375,19 +432,30 @@ export const unpublishCourse = async (courseId: number, adminId: number, reason?
 
 export const deleteCourse = async (courseId: number, adminId: number) => {
   const course = await Course.findByPk(courseId);
-  
+
   if (!course) {
     throw new Error('Kursus tidak ditemukan');
   }
 
   // Log admin action
-  await logAdminAction(adminId, 'delete_course', 'course', courseId, `Deleted course: ${course.title}`);
+  await logAdminAction(
+    adminId,
+    'delete_course',
+    'course',
+    courseId,
+    `Deleted course: ${course.title}`,
+  );
 
   // Notify mentor
   await sequelize.query(
     `INSERT INTO notifications (user_id, type, title, message, is_read)
     VALUES (?, 'course_deleted', 'Kursus Dihapus', ?, FALSE)`,
-    { replacements: [course.mentor_id, `Kursus "${course.title}" telah dihapus oleh admin.`] }
+    {
+      replacements: [
+        course.mentor_id,
+        `Kursus "${course.title}" telah dihapus oleh admin.`,
+      ],
+    },
   );
 
   // Delete course
@@ -396,7 +464,10 @@ export const deleteCourse = async (courseId: number, adminId: number) => {
   return { message: 'Kursus berhasil dihapus' };
 };
 
-export const getPendingReports = async (page: number = 1, limit: number = 20) => {
+export const getPendingReports = async (
+  page: number = 1,
+  limit: number = 20,
+) => {
   const offset = (page - 1) * limit;
 
   const [reports] = await sequelize.query(
@@ -421,12 +492,12 @@ export const getPendingReports = async (page: number = 1, limit: number = 20) =>
     WHERE fr.status = 'pending'
     ORDER BY fr.created_at DESC
     LIMIT ? OFFSET ?`,
-    { replacements: [limit, offset] }
+    { replacements: [limit, offset] },
   );
 
   // Get total count
   const [countResult] = await sequelize.query(
-    "SELECT COUNT(*) as total FROM forum_reports WHERE status = 'pending'"
+    "SELECT COUNT(*) as total FROM forum_reports WHERE status = 'pending'",
   );
   const totalReports = (countResult as any)[0].total;
 
@@ -436,8 +507,8 @@ export const getPendingReports = async (page: number = 1, limit: number = 20) =>
       currentPage: page,
       totalPages: Math.ceil(totalReports / limit),
       totalReports,
-      limit
-    }
+      limit,
+    },
   };
 };
 
@@ -445,10 +516,10 @@ export const resolveReport = async (
   reportId: number,
   adminId: number,
   action: 'delete_content' | 'dismiss',
-  reason?: string
+  reason?: string,
 ) => {
   const report = await ForumReport.findByPk(reportId);
-  
+
   if (!report) {
     throw new Error('Laporan tidak ditemukan');
   }
@@ -462,13 +533,25 @@ export const resolveReport = async (
     if (report.forum_id) {
       const forum = await Forum.findByPk(report.forum_id);
       if (forum) {
-        await logAdminAction(adminId, 'delete_forum', 'forum', report.forum_id, `Deleted reported forum: ${forum.title}`);
+        await logAdminAction(
+          adminId,
+          'delete_forum',
+          'forum',
+          report.forum_id,
+          `Deleted reported forum: ${forum.title}`,
+        );
         await forum.destroy();
       }
     } else if (report.reply_id) {
       const reply = await ForumReply.findByPk(report.reply_id);
       if (reply) {
-        await logAdminAction(adminId, 'delete_reply', 'reply', report.reply_id, `Deleted reported reply`);
+        await logAdminAction(
+          adminId,
+          'delete_reply',
+          'reply',
+          report.reply_id,
+          `Deleted reported reply`,
+        );
         await reply.destroy();
       }
     }
@@ -477,17 +560,23 @@ export const resolveReport = async (
     await report.update({
       status: 'resolved',
       resolved_at: new Date(),
-      resolved_by: adminId
+      resolved_by: adminId,
     });
   } else {
     // Dismiss report
     await report.update({
       status: 'dismissed',
       resolved_at: new Date(),
-      resolved_by: adminId
+      resolved_by: adminId,
     });
 
-    await logAdminAction(adminId, 'dismiss_report', 'report', reportId, `Dismissed report. Reason: ${reason || 'N/A'}`);
+    await logAdminAction(
+      adminId,
+      'dismiss_report',
+      'report',
+      reportId,
+      `Dismissed report. Reason: ${reason || 'N/A'}`,
+    );
   }
 
   return report;
@@ -507,12 +596,12 @@ export const getAdminLogs = async (page: number = 1, limit: number = 50) => {
       JOIN users u ON al.admin_id = u.id
       ORDER BY al.created_at DESC
       LIMIT ? OFFSET ?`,
-      { replacements: [limit, offset] }
+      { replacements: [limit, offset] },
     );
 
     // Get total count
     const [countResult] = await sequelize.query(
-      'SELECT COUNT(*) as total FROM admin_logs'
+      'SELECT COUNT(*) as total FROM admin_logs',
     );
     const totalLogs = (countResult as any)[0].total;
 
@@ -522,8 +611,8 @@ export const getAdminLogs = async (page: number = 1, limit: number = 50) => {
         currentPage: page,
         totalPages: Math.ceil(totalLogs / limit),
         totalLogs,
-        limit
-      }
+        limit,
+      },
     };
   } catch (error) {
     // If table doesn't exist, return empty
@@ -533,8 +622,8 @@ export const getAdminLogs = async (page: number = 1, limit: number = 50) => {
         currentPage: page,
         totalPages: 0,
         totalLogs: 0,
-        limit
-      }
+        limit,
+      },
     };
   }
 };
@@ -544,18 +633,17 @@ const logAdminAction = async (
   action: string,
   targetType: string,
   targetId: number,
-  description: string
+  description: string,
 ) => {
   try {
     // Try to insert into admin_logs table
     await sequelize.query(
       `INSERT INTO admin_logs (admin_id, action, target_type, target_id, description, created_at)
       VALUES (?, ?, ?, ?, ?, NOW())`,
-      { replacements: [adminId, action, targetType, targetId, description] }
+      { replacements: [adminId, action, targetType, targetId, description] },
     );
   } catch (error) {
     // If table doesn't exist, just log to console
     console.log(`[ADMIN ACTION] ${action} by admin ${adminId}: ${description}`);
   }
 };
-

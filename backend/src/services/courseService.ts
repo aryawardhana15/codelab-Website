@@ -76,7 +76,7 @@ export const getCourseById = async (courseId: number, userId?: number) => {
 
   // Get materials count
   const [materialsResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM materials WHERE course_id = ?',
+    'SELECT COUNT(*) as total FROM materials WHERE course_id = ? AND is_deleted = FALSE',
     { replacements: [courseId] },
   );
   const materialsCount = (materialsResult as any)[0].total;
@@ -144,7 +144,7 @@ export const getMyCourses = async (mentorId: number) => {
       const enrollmentCount = (enrollmentResult as any)[0].total;
 
       const [materialsResult] = await sequelize.query(
-        'SELECT COUNT(*) as total FROM materials WHERE course_id = ?',
+        'SELECT COUNT(*) as total FROM materials WHERE course_id = ? AND is_deleted = FALSE',
         { replacements: [course.id] },
       );
       const materialsCount = (materialsResult as any)[0].total;
@@ -209,7 +209,7 @@ export const getAllCourses = async (filters: FilterOptions) => {
       u.name as mentor_name,
       u.photo_url as mentor_photo,
       (SELECT COUNT(*) FROM enrollments WHERE course_id = c.id) as enrollment_count,
-      (SELECT COUNT(*) FROM materials WHERE course_id = c.id) as materials_count
+      (SELECT COUNT(*) FROM materials WHERE course_id = c.id AND is_deleted = FALSE) as materials_count
     FROM courses c
     JOIN users u ON c.mentor_id = u.id
     WHERE ${whereClause}
@@ -289,10 +289,10 @@ export const getMyEnrolledCourses = async (userId: number) => {
       e.progress,
       u.name as mentor_name,
       u.photo_url as mentor_photo,
-      (SELECT COUNT(*) FROM materials WHERE course_id = c.id) as materials_count,
+      (SELECT COUNT(*) FROM materials WHERE course_id = c.id AND is_deleted = FALSE) as materials_count,
       (SELECT COUNT(*) FROM material_progress mp 
        JOIN materials m ON mp.material_id = m.id 
-       WHERE m.course_id = c.id AND mp.user_id = ? AND mp.is_completed = TRUE) as completed_materials
+       WHERE m.course_id = c.id AND mp.user_id = ? AND mp.is_completed = TRUE AND m.is_deleted = FALSE) as completed_materials
     FROM enrollments e
     JOIN courses c ON e.course_id = c.id
     JOIN users u ON c.mentor_id = u.id
