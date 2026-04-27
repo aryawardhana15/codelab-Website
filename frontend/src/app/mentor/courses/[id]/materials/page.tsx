@@ -20,7 +20,7 @@ import {
   Pencil,
   Trash2,
   Loader2,
-  File
+  File,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -44,7 +44,13 @@ export default function CourseMaterialsPage() {
     try {
       const response = await api.get(`/courses/${courseId}`);
       if (response.data.success) {
-        setCourse(response.data.data);
+        const courseData = response.data.data;
+        if (courseData.mentor_id !== user?.id) {
+          router.replace('/mentor/courses');
+          return;
+        }
+
+        setCourse(courseData);
       }
     } catch (error: any) {
       toast.error('Gagal memuat data kursus');
@@ -87,7 +93,8 @@ export default function CourseMaterialsPage() {
   const getMaterialIcon = (material: Material) => {
     if (material.video_url) return <Video className="w-5 h-5 text-red-500" />;
     if (material.file_url) return <File className="w-5 h-5 text-blue-500" />;
-    if (material.content) return <AlignLeft className="w-5 h-5 text-purple-500" />;
+    if (material.content)
+      return <AlignLeft className="w-5 h-5 text-purple-500" />;
     return <BookOpen className="w-5 h-5 text-gray-500" />;
   };
 
@@ -123,14 +130,18 @@ export default function CourseMaterialsPage() {
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Materi Kursus</h1>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                  Materi Kursus
+                </h1>
                 <p className="text-gray-600 max-w-2xl">
                   {course?.title || 'Loading...'}
                 </p>
               </div>
 
               <button
-                onClick={() => router.push(`/mentor/courses/${courseId}/materials/create`)}
+                onClick={() =>
+                  router.push(`/mentor/courses/${courseId}/materials/create`)
+                }
                 className="btn btn-primary"
               >
                 <Plus className="w-5 h-5 mr-2" />
@@ -146,11 +157,11 @@ export default function CourseMaterialsPage() {
               </span>
               <span className="flex items-center gap-2 px-3 py-1 bg-white rounded-full border border-gray-200">
                 <Video className="w-4 h-4 text-red-500" />
-                {materials.filter(m => m.video_url).length} Video
+                {materials.filter((m) => m.video_url).length} Video
               </span>
               <span className="flex items-center gap-2 px-3 py-1 bg-white rounded-full border border-gray-200">
                 <File className="w-4 h-4 text-blue-500" />
-                {materials.filter(m => m.file_url).length} File
+                {materials.filter((m) => m.file_url).length} File
               </span>
             </div>
           </div>
@@ -161,12 +172,16 @@ export default function CourseMaterialsPage() {
               <div className="inline-block p-6 bg-light-100 rounded-full mb-4">
                 <BookOpen className="w-12 h-12 text-gray-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Belum Ada Materi</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                Belum Ada Materi
+              </h3>
               <p className="text-gray-600 mb-6 max-w-md mx-auto">
                 Silakan tambahkan materi pembelajaran pertama untuk kursus ini.
               </p>
               <button
-                onClick={() => router.push(`/mentor/courses/${courseId}/materials/create`)}
+                onClick={() =>
+                  router.push(`/mentor/courses/${courseId}/materials/create`)
+                }
                 className="btn btn-primary"
               >
                 <Plus className="w-5 h-5 mr-2" />
@@ -206,7 +221,11 @@ export default function CourseMaterialsPage() {
                     {/* Actions */}
                     <div className="flex items-center gap-2 pl-4 border-l border-gray-100">
                       <button
-                        onClick={() => router.push(`/mentor/courses/${courseId}/materials/${material.id}/edit`)}
+                        onClick={() =>
+                          router.push(
+                            `/mentor/courses/${courseId}/materials/${material.id}/edit`,
+                          )
+                        }
                         className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                         title="Edit"
                       >
