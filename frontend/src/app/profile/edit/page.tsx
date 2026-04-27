@@ -8,7 +8,20 @@ import Navbar from '@/components/Navbar';
 import BadgeCard from '@/components/BadgeCard';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { UserStats, Badge } from '@/types/gamification';
-import { User, Mail, FileText, Image, Target, Briefcase, Save, X, Trophy, Star, Award, TrendingUp } from 'lucide-react';
+import {
+  User,
+  Mail,
+  FileText,
+  Image,
+  Target,
+  Briefcase,
+  Save,
+  X,
+  Trophy,
+  Star,
+  Award,
+  TrendingUp,
+} from 'lucide-react';
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -19,10 +32,13 @@ export default function EditProfilePage() {
     bio: '',
     photo_url: '',
     expertise: '',
-    experience: ''
+    experience: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [validationErrors, setValidationErrors] = useState<
+    { path: string; msg: string }[]
+  >([]);
   const [success, setSuccess] = useState('');
   const [stats, setStats] = useState<UserStats | null>(null);
   const [badges, setBadges] = useState<Badge[]>([]);
@@ -36,7 +52,7 @@ export default function EditProfilePage() {
         bio: user.bio || '',
         photo_url: user.photo_url || '',
         expertise: user.expertise || '',
-        experience: user.experience || ''
+        experience: user.experience || '',
       });
 
       // Fetch gamification data for pelajar
@@ -49,8 +65,12 @@ export default function EditProfilePage() {
   const fetchGamificationData = async () => {
     try {
       const [statsResponse, badgesResponse] = await Promise.all([
-        api.get('/gamification/stats').catch(() => ({ data: { success: false } })),
-        api.get('/gamification/badges').catch(() => ({ data: { success: false } }))
+        api
+          .get('/gamification/stats')
+          .catch(() => ({ data: { success: false } })),
+        api
+          .get('/gamification/badges')
+          .catch(() => ({ data: { success: false } })),
       ]);
 
       if (statsResponse.data.success) {
@@ -64,17 +84,20 @@ export default function EditProfilePage() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setValidationErrors([]);
     setSuccess('');
     setIsLoading(true);
 
@@ -90,13 +113,17 @@ export default function EditProfilePage() {
         }, 2000);
       }
     } catch (error: any) {
-      setError(error.response?.data?.message || 'Gagal memperbarui profile');
+      const data = error.response?.data;
+      setError(data?.message || 'Gagal memperbarui profile');
+      if (Array.isArray(data?.errors) && data.errors.length > 0) {
+        setValidationErrors(data.errors);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const earnedBadges = badges.filter(b => b.earned);
+  const earnedBadges = badges.filter((b) => b.earned);
   const getRankEmoji = (rank: number) => {
     if (rank === 1) return '🥇';
     if (rank === 2) return '🥈';
@@ -144,7 +171,11 @@ export default function EditProfilePage() {
                     {user?.name || 'User'}
                   </h1>
                   <p className="text-xl text-white/90 mb-4 capitalize">
-                    {user?.role === 'pelajar' ? '🎓 Pelajar' : user?.role === 'mentor' ? '👨‍🏫 Mentor' : '👑 Admin'}
+                    {user?.role === 'pelajar'
+                      ? '🎓 Pelajar'
+                      : user?.role === 'mentor'
+                        ? '👨‍🏫 Mentor'
+                        : '👑 Admin'}
                   </p>
 
                   {/* Level & Rank for Pelajar */}
@@ -156,8 +187,12 @@ export default function EditProfilePage() {
                             <Target className="h-5 w-5 text-primary" />
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Level</p>
-                            <p className="text-xl font-black text-gray-900">{stats.current_level}</p>
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                              Level
+                            </p>
+                            <p className="text-xl font-black text-gray-900">
+                              {stats.current_level}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -168,8 +203,12 @@ export default function EditProfilePage() {
                             <Star className="h-5 w-5 text-secondary-600" />
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">XP</p>
-                            <p className="text-xl font-black text-gray-900">{stats.total_xp.toLocaleString()}</p>
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                              XP
+                            </p>
+                            <p className="text-xl font-black text-gray-900">
+                              {stats.total_xp.toLocaleString()}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -177,10 +216,16 @@ export default function EditProfilePage() {
                       {stats.rank > 0 && (
                         <div className="bg-white shadow-lg rounded-xl px-5 py-3 border border-white/50 transform hover:scale-105 transition-transform">
                           <div className="flex items-center gap-3">
-                            <span className="text-3xl filter drop-shadow-sm">{getRankEmoji(stats.rank)}</span>
+                            <span className="text-3xl filter drop-shadow-sm">
+                              {getRankEmoji(stats.rank)}
+                            </span>
                             <div>
-                              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Ranking</p>
-                              <p className="text-xl font-black text-gray-900">#{stats.rank}</p>
+                              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                Ranking
+                              </p>
+                              <p className="text-xl font-black text-gray-900">
+                                #{stats.rank}
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -192,8 +237,12 @@ export default function EditProfilePage() {
                             <Trophy className="h-5 w-5 text-red-500" />
                           </div>
                           <div>
-                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Badges</p>
-                            <p className="text-xl font-black text-gray-900">{earnedBadges.length}</p>
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                              Badges
+                            </p>
+                            <p className="text-xl font-black text-gray-900">
+                              {earnedBadges.length}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -243,7 +292,8 @@ export default function EditProfilePage() {
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-xs font-bold text-gray-700 z-10">
-                    {stats.level_progress}% menuju Level {stats.current_level + 1}
+                    {stats.level_progress}% menuju Level{' '}
+                    {stats.current_level + 1}
                   </span>
                 </div>
               </div>
@@ -296,6 +346,16 @@ export default function EditProfilePage() {
               {error && (
                 <div className="mb-6 p-4 bg-error/10 border-2 border-error/30 rounded-xl">
                   <p className="text-error text-sm font-medium">{error}</p>
+                  {validationErrors.length > 0 && (
+                    <ul className="mt-2 space-y-1 list-disc list-inside">
+                      {validationErrors.map((ve, i) => (
+                        <li key={i} className="text-error text-xs">
+                          <span className="font-semibold">{ve.path}</span>:{' '}
+                          {ve.msg}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               )}
 
@@ -308,7 +368,10 @@ export default function EditProfilePage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name */}
                 <div>
-                  <label htmlFor="name" className="input-label flex items-center gap-2">
+                  <label
+                    htmlFor="name"
+                    className="input-label flex items-center gap-2"
+                  >
                     <User className="h-4 w-4 text-primary" />
                     Nama Lengkap
                   </label>
@@ -326,7 +389,10 @@ export default function EditProfilePage() {
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="input-label flex items-center gap-2">
+                  <label
+                    htmlFor="email"
+                    className="input-label flex items-center gap-2"
+                  >
                     <Mail className="h-4 w-4 text-primary" />
                     Email
                   </label>
@@ -344,7 +410,10 @@ export default function EditProfilePage() {
 
                 {/* Bio */}
                 <div>
-                  <label htmlFor="bio" className="input-label flex items-center gap-2">
+                  <label
+                    htmlFor="bio"
+                    className="input-label flex items-center gap-2"
+                  >
                     <FileText className="h-4 w-4 text-primary" />
                     Bio
                   </label>
@@ -361,7 +430,10 @@ export default function EditProfilePage() {
 
                 {/* Photo URL */}
                 <div>
-                  <label htmlFor="photo_url" className="input-label flex items-center gap-2">
+                  <label
+                    htmlFor="photo_url"
+                    className="input-label flex items-center gap-2"
+                  >
                     <Image className="h-4 w-4 text-primary" />
                     URL Foto Profil
                   </label>
@@ -379,7 +451,10 @@ export default function EditProfilePage() {
                 {/* Expertise (for mentor) */}
                 {user?.role === 'mentor' && (
                   <div>
-                    <label htmlFor="expertise" className="input-label flex items-center gap-2">
+                    <label
+                      htmlFor="expertise"
+                      className="input-label flex items-center gap-2"
+                    >
                       <Target className="h-4 w-4 text-primary" />
                       Keahlian
                     </label>
@@ -398,7 +473,10 @@ export default function EditProfilePage() {
                 {/* Experience (for mentor) */}
                 {user?.role === 'mentor' && (
                   <div>
-                    <label htmlFor="experience" className="input-label flex items-center gap-2">
+                    <label
+                      htmlFor="experience"
+                      className="input-label flex items-center gap-2"
+                    >
                       <Briefcase className="h-4 w-4 text-primary" />
                       Pengalaman
                     </label>
