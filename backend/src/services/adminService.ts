@@ -49,7 +49,8 @@ export const getDashboardStats = async (): Promise<AdminStats> => {
     `SELECT 
       COUNT(*) as total_courses,
       COUNT(CASE WHEN is_published = TRUE THEN 1 END) as total_courses_published
-    FROM courses`,
+    FROM courses
+    WHERE is_deleted = FALSE`,
   );
   const courseStats = (coursesResult as any)[0];
 
@@ -79,7 +80,7 @@ export const getDashboardStats = async (): Promise<AdminStats> => {
 
   // Get new courses in last 30 days
   const [newCoursesResult] = await sequelize.query(
-    "SELECT COUNT(*) as total FROM courses WHERE created_at >= NOW() - INTERVAL '30 days'",
+    "SELECT COUNT(*) as total FROM courses WHERE is_deleted = FALSE AND created_at >= NOW() - INTERVAL '30 days'",
   );
   const newCoursesLast30Days = (newCoursesResult as any)[0].total;
 
@@ -239,7 +240,7 @@ export const getAllUsers = async (filters: {
     `SELECT 
       u.*,
       (SELECT COUNT(*) FROM enrollments WHERE user_id = u.id) as total_enrollments,
-      (SELECT COUNT(*) FROM courses WHERE mentor_id = u.id) as total_courses
+      (SELECT COUNT(*) FROM courses WHERE mentor_id = u.id AND is_deleted = FALSE) as total_courses
     FROM users u
     WHERE ${whereConditions}
     ORDER BY u.created_at DESC
@@ -341,7 +342,7 @@ export const getAllCourses = async (filters: {
   const { search, is_published, page = 1, limit = 20 } = filters;
   const offset = (page - 1) * limit;
 
-  let whereConditions = '1=1';
+  let whereConditions = 'c.is_deleted = FALSE';
   const replacements: any[] = [];
 
   if (is_published !== undefined) {

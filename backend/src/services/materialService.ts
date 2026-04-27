@@ -29,7 +29,9 @@ interface UpdateMaterialInput {
 
 // Check if mentor owns the course
 const checkMentorOwnership = async (courseId: number, mentorId: number) => {
-  const course = await Course.findByPk(courseId);
+  const course = await Course.findOne({
+    where: { id: courseId, is_deleted: false },
+  });
 
   if (!course) {
     throw new Error('Kursus tidak ditemukan');
@@ -65,7 +67,9 @@ export const getMaterialsByCourse = async (
   // Check if requesting user is the mentor (to decide whether to show content of locked materials)
   let isMentor = false;
   if (userId) {
-    const course = await Course.findByPk(courseId);
+    const course = await Course.findOne({
+      where: { id: courseId, is_deleted: false },
+    });
     if (course && course.mentor_id === userId) {
       isMentor = true;
     }
@@ -143,7 +147,9 @@ export const getMaterialById = async (
   // Check if requesting user is the mentor (owner)
   let isMentor = false;
   if (userId) {
-    const course = await Course.findByPk(material.course_id);
+    const course = await Course.findOne({
+      where: { id: material.course_id, is_deleted: false },
+    });
     if (course && course.mentor_id === userId) {
       isMentor = true;
     }

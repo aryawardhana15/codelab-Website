@@ -37,8 +37,10 @@ interface SubmitQuizInput {
 
 // Check if mentor owns the course
 const checkMentorOwnership = async (courseId: number, mentorId: number) => {
-  const course = await Course.findByPk(courseId);
-  
+  const course = await Course.findOne({
+    where: { id: courseId, is_deleted: false },
+  });
+
   if (!course) {
     throw new Error('Kursus tidak ditemukan');
   }
@@ -50,7 +52,10 @@ const checkMentorOwnership = async (courseId: number, mentorId: number) => {
   return course;
 };
 
-export const createAssignment = async (input: CreateAssignmentInput, mentorId: number) => {
+export const createAssignment = async (
+  input: CreateAssignmentInput,
+  mentorId: number,
+) => {
   // Check ownership
   await checkMentorOwnership(input.course_id, mentorId);
 
@@ -61,7 +66,7 @@ export const createAssignment = async (input: CreateAssignmentInput, mentorId: n
     description: input.description,
     type: input.type,
     deadline: input.deadline,
-    max_score: input.max_score || 100
+    max_score: input.max_score || 100,
   });
 
   // If type is kuis and questions provided, create questions
@@ -74,7 +79,7 @@ export const createAssignment = async (input: CreateAssignmentInput, mentorId: n
       option_c: q.option_c,
       option_d: q.option_d,
       correct_answer: q.correct_answer,
-      order_index: index
+      order_index: index,
     }));
 
     await QuizQuestion.bulkCreate(questionsData);
@@ -83,10 +88,13 @@ export const createAssignment = async (input: CreateAssignmentInput, mentorId: n
   return assignment;
 };
 
-export const getAssignmentsByCourse = async (courseId: number, userId?: number) => {
+export const getAssignmentsByCourse = async (
+  courseId: number,
+  userId?: number,
+) => {
   const assignments = await Assignment.findAll({
     where: { course_id: courseId },
-    order: [['created_at', 'DESC']]
+    order: [['created_at', 'DESC']],
   });
 
   // If user provided, check submission status
@@ -96,20 +104,22 @@ export const getAssignmentsByCourse = async (courseId: number, userId?: number) 
         const submission = await Submission.findOne({
           where: {
             assignment_id: assignment.id,
-            user_id: userId
-          }
+            user_id: userId,
+          },
         });
 
         return {
           ...assignment.toJSON(),
           submitted: !!submission,
-          submission: submission ? {
-            id: submission.id,
-            score: submission.score,
-            graded: !!submission.graded_at
-          } : null
+          submission: submission
+            ? {
+                id: submission.id,
+                score: submission.score,
+                graded: !!submission.graded_at,
+              }
+            : null,
         };
-      })
+      }),
     );
 
     return assignmentsWithStatus;
@@ -118,26 +128,31 @@ export const getAssignmentsByCourse = async (courseId: number, userId?: number) 
   return assignments;
 };
 
-export const getAssignmentById = async (assignmentId: number, userId?: number) => {
+export const getAssignmentById = async (
+  assignmentId: number,
+  userId?: number,
+) => {
   const assignment = await Assignment.findByPk(assignmentId);
-  
+
   if (!assignment) {
     throw new Error('Assignment tidak ditemukan');
   }
 
   let submission = null;
   let isMentor = false;
-  
+
   if (userId) {
     submission = await Submission.findOne({
       where: {
         assignment_id: assignmentId,
-        user_id: userId
-      }
+        user_id: userId,
+      },
     });
 
     // Check if user is the mentor of this course
-    const course = await Course.findByPk(assignment.course_id);
+    const course = await Course.findOne({
+      where: { id: assignment.course_id, is_deleted: false },
+    });
     if (course && course.mentor_id === userId) {
       isMentor = true;
     }
@@ -145,7 +160,7 @@ export const getAssignmentById = async (assignmentId: number, userId?: number) =
     // If quiz submission exists, get answers
     if (submission && assignment.type === 'kuis') {
       const answers = await QuizAnswer.findAll({
-        where: { submission_id: submission.id }
+        where: { submission_id: submission.id },
       });
       (submission as any).answers = answers;
     }
@@ -157,32 +172,49 @@ export const getAssignmentById = async (assignmentId: number, userId?: number) =
     // 1. User is the mentor of the course, OR
     // 2. User has already submitted the quiz
     const shouldShowCorrectAnswer = isMentor || !!submission;
-    
+
     const attributes = shouldShowCorrectAnswer
-      ? ['id', 'question_text', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_answer', 'order_index']
-      : ['id', 'question_text', 'option_a', 'option_b', 'option_c', 'option_d', 'order_index'];
-    
+      ? [
+          'id',
+          'question_text',
+          'option_a',
+          'option_b',
+          'option_c',
+          'option_d',
+          'correct_answer',
+          'order_index',
+        ]
+      : [
+          'id',
+          'question_text',
+          'option_a',
+          'option_b',
+          'option_c',
+          'option_d',
+          'order_index',
+        ];
+
     questions = await QuizQuestion.findAll({
       where: { assignment_id: assignmentId },
       order: [['order_index', 'ASC']],
-      attributes: attributes
+      attributes: attributes,
     });
   }
 
   return {
     ...assignment.toJSON(),
     questions,
-    submission
+    submission,
   };
 };
 
 export const updateAssignment = async (
   assignmentId: number,
   mentorId: number,
-  input: Partial<CreateAssignmentInput>
+  input: Partial<CreateAssignmentInput>,
 ) => {
   const assignment = await Assignment.findByPk(assignmentId);
-  
+
   if (!assignment) {
     throw new Error('Assignment tidak ditemukan');
   }
@@ -195,7 +227,7 @@ export const updateAssignment = async (
     title: input.title,
     description: input.description,
     deadline: input.deadline,
-    max_score: input.max_score
+    max_score: input.max_score,
   });
 
   // If questions provided for kuis, update them
@@ -212,7 +244,7 @@ export const updateAssignment = async (
       option_c: q.option_c,
       option_d: q.option_d,
       correct_answer: q.correct_answer,
-      order_index: index
+      order_index: index,
     }));
 
     await QuizQuestion.bulkCreate(questionsData);
@@ -221,9 +253,12 @@ export const updateAssignment = async (
   return assignment;
 };
 
-export const deleteAssignment = async (assignmentId: number, mentorId: number) => {
+export const deleteAssignment = async (
+  assignmentId: number,
+  mentorId: number,
+) => {
   const assignment = await Assignment.findByPk(assignmentId);
-  
+
   if (!assignment) {
     throw new Error('Assignment tidak ditemukan');
   }
@@ -238,10 +273,10 @@ export const deleteAssignment = async (assignmentId: number, mentorId: number) =
 export const submitAssignment = async (
   assignmentId: number,
   userId: number,
-  input: SubmitAssignmentInput
+  input: SubmitAssignmentInput,
 ) => {
   const assignment = await Assignment.findByPk(assignmentId);
-  
+
   if (!assignment) {
     throw new Error('Assignment tidak ditemukan');
   }
@@ -254,8 +289,8 @@ export const submitAssignment = async (
   const existingSubmission = await Submission.findOne({
     where: {
       assignment_id: assignmentId,
-      user_id: userId
-    }
+      user_id: userId,
+    },
   });
 
   if (existingSubmission) {
@@ -273,7 +308,7 @@ export const submitAssignment = async (
     user_id: userId,
     answer_text: input.answer_text,
     file_url: input.file_url,
-    submitted_at: new Date()
+    submitted_at: new Date(),
   });
 
   // Give XP for submission
@@ -288,10 +323,10 @@ export const submitAssignment = async (
 export const submitQuiz = async (
   assignmentId: number,
   userId: number,
-  input: SubmitQuizInput
+  input: SubmitQuizInput,
 ) => {
   const assignment = await Assignment.findByPk(assignmentId);
-  
+
   if (!assignment) {
     throw new Error('Assignment tidak ditemukan');
   }
@@ -304,8 +339,8 @@ export const submitQuiz = async (
   const existingSubmission = await Submission.findOne({
     where: {
       assignment_id: assignmentId,
-      user_id: userId
-    }
+      user_id: userId,
+    },
   });
 
   if (existingSubmission) {
@@ -319,46 +354,54 @@ export const submitQuiz = async (
 
   // Get all questions with correct answers
   const questions = await QuizQuestion.findAll({
-    where: { assignment_id: assignmentId }
+    where: { assignment_id: assignmentId },
   });
 
   // Create submission
   const submission = await Submission.create({
     assignment_id: assignmentId,
     user_id: userId,
-    submitted_at: new Date()
+    submitted_at: new Date(),
   });
 
   // Process answers and calculate score
   let correctCount = 0;
   const answersData = input.answers.map((answer) => {
-    const question = questions.find(q => q.id === answer.question_id);
-    const isCorrect = question ? question.correct_answer === answer.selected_answer : false;
-    
+    const question = questions.find((q) => q.id === answer.question_id);
+    const isCorrect = question
+      ? question.correct_answer === answer.selected_answer
+      : false;
+
     if (isCorrect) correctCount++;
 
     return {
       submission_id: submission.id,
       question_id: answer.question_id,
       selected_answer: answer.selected_answer,
-      is_correct: isCorrect
+      is_correct: isCorrect,
     };
   });
 
   await QuizAnswer.bulkCreate(answersData);
 
   // Calculate score
-  const score = Math.round((correctCount / questions.length) * assignment.max_score);
+  const score = Math.round(
+    (correctCount / questions.length) * assignment.max_score,
+  );
 
   // Auto-grade quiz
   await submission.update({
     score,
-    graded_at: new Date()
+    graded_at: new Date(),
   });
 
   // Give XP based on score
   const xpReward = score === assignment.max_score ? 50 : 20; // Bonus for perfect score
-  await addXP(userId, xpReward, score === assignment.max_score ? 'perfect_quiz' : 'submit_assignment');
+  await addXP(
+    userId,
+    xpReward,
+    score === assignment.max_score ? 'perfect_quiz' : 'submit_assignment',
+  );
 
   // Update mission progress
   await updateMissionProgress(userId, 'submit_assignment', 1);
@@ -375,13 +418,16 @@ export const submitQuiz = async (
     ...submission.toJSON(),
     correctCount,
     totalQuestions: questions.length,
-    percentage: Math.round((correctCount / questions.length) * 100)
+    percentage: Math.round((correctCount / questions.length) * 100),
   };
 };
 
-export const getSubmissionsByAssignment = async (assignmentId: number, mentorId: number) => {
+export const getSubmissionsByAssignment = async (
+  assignmentId: number,
+  mentorId: number,
+) => {
   const assignment = await Assignment.findByPk(assignmentId);
-  
+
   if (!assignment) {
     throw new Error('Assignment tidak ditemukan');
   }
@@ -400,7 +446,7 @@ export const getSubmissionsByAssignment = async (assignmentId: number, mentorId:
     JOIN users u ON s.user_id = u.id
     WHERE s.assignment_id = ?
     ORDER BY s.submitted_at DESC`,
-    { replacements: [assignmentId] }
+    { replacements: [assignmentId] },
   );
 
   return submissions;
@@ -410,10 +456,10 @@ export const gradeSubmission = async (
   submissionId: number,
   mentorId: number,
   score: number,
-  feedback?: string
+  feedback?: string,
 ) => {
   const submission = await Submission.findByPk(submissionId);
-  
+
   if (!submission) {
     throw new Error('Submission tidak ditemukan');
   }
@@ -436,14 +482,18 @@ export const gradeSubmission = async (
     score,
     feedback,
     graded_at: new Date(),
-    graded_by: mentorId
+    graded_by: mentorId,
   });
 
   // Give XP if not already given (for tugas)
   if (assignment.type === 'tugas') {
     const xpReward = score === assignment.max_score ? 50 : 20;
-    await addXP(submission.user_id, xpReward, score === assignment.max_score ? 'perfect_score' : 'graded_assignment');
-    
+    await addXP(
+      submission.user_id,
+      xpReward,
+      score === assignment.max_score ? 'perfect_score' : 'graded_assignment',
+    );
+
     // Check badges (Top Scorer for average 90+ on 5 assignments)
     // Note: perfect_quiz mission is only for kuis, not tugas
     const { checkAndAwardBadges } = await import('./gamificationService');
@@ -460,5 +510,3 @@ export const gradeSubmission = async (
 
   return submission;
 };
-
-

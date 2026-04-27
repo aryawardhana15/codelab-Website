@@ -296,7 +296,7 @@ export const getMyEnrolledCourses = async (userId: number) => {
     FROM enrollments e
     JOIN courses c ON e.course_id = c.id
     JOIN users u ON c.mentor_id = u.id
-    WHERE e.user_id = ?
+    WHERE e.user_id = ? AND c.is_deleted = FALSE
     ORDER BY e.enrolled_at DESC`,
     { replacements: [userId, userId] },
   );

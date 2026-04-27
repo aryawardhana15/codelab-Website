@@ -49,14 +49,14 @@ export const getPelajarStats = async (userId: number) => {
 export const getMentorStats = async (userId: number) => {
   // Get total courses created
   const [coursesResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM courses WHERE mentor_id = ?',
+    'SELECT COUNT(*) as total FROM courses WHERE mentor_id = ? AND is_deleted = FALSE',
     { replacements: [userId] },
   );
   const totalCourses = (coursesResult as any)[0].total;
 
   // Get published courses
   const [publishedResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM courses WHERE mentor_id = ? AND is_published = TRUE',
+    'SELECT COUNT(*) as total FROM courses WHERE mentor_id = ? AND is_published = TRUE AND is_deleted = FALSE',
     { replacements: [userId] },
   );
   const totalPublished = (publishedResult as any)[0].total;
@@ -66,7 +66,7 @@ export const getMentorStats = async (userId: number) => {
     `SELECT COUNT(DISTINCT e.user_id) as total 
      FROM enrollments e 
      JOIN courses c ON e.course_id = c.id 
-     WHERE c.mentor_id = ?`,
+     WHERE c.mentor_id = ? AND c.is_deleted = FALSE`,
     { replacements: [userId] },
   );
   const totalStudents = (studentsResult as any)[0].total;
@@ -101,6 +101,7 @@ export const getMentorStudentChartData = async (userId: number) => {
     FROM enrollments e
     JOIN courses c ON e.course_id = c.id
     WHERE c.mentor_id = ? 
+      AND c.is_deleted = FALSE
       AND e.enrolled_at >= ?
     GROUP BY DATE_FORMAT(e.enrolled_at, '%Y-%m')
     ORDER BY month ASC`,
@@ -115,7 +116,7 @@ export const getMentorStudentChartData = async (userId: number) => {
       COUNT(DISTINCT e.user_id) as student_count
     FROM courses c
     LEFT JOIN enrollments e ON c.id = e.course_id
-    WHERE c.mentor_id = ?
+    WHERE c.mentor_id = ? AND c.is_deleted = FALSE
     GROUP BY c.id, c.title
     ORDER BY student_count DESC
     LIMIT 10`,
@@ -131,6 +132,7 @@ export const getMentorStudentChartData = async (userId: number) => {
      FROM enrollments e
      JOIN courses c ON e.course_id = c.id
      WHERE c.mentor_id = ?
+       AND c.is_deleted = FALSE
        AND e.enrolled_at >= ?`,
     { replacements: [userId, thirtyDaysAgo] },
   );
@@ -140,7 +142,7 @@ export const getMentorStudentChartData = async (userId: number) => {
     `SELECT COUNT(DISTINCT e.user_id) as total
      FROM enrollments e
      JOIN courses c ON e.course_id = c.id
-     WHERE c.mentor_id = ?`,
+     WHERE c.mentor_id = ? AND c.is_deleted = FALSE`,
     { replacements: [userId] },
   );
   const totalStudents = (totalStudentsResult as any)[0].total;
@@ -207,7 +209,7 @@ export const getAdminStats = async () => {
 
   // Get total courses
   const [coursesResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM courses',
+    'SELECT COUNT(*) as total FROM courses WHERE is_deleted = FALSE',
   );
   const totalCourses = (coursesResult as any)[0].total;
 
