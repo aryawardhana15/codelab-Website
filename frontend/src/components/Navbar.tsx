@@ -5,7 +5,19 @@ import { useRouter, usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import api from '@/lib/api';
-import { Home, BookOpen, FolderOpen, Award, Users, ShieldCheck, MessageSquare, Bell, LogOut, Menu, X } from 'lucide-react';
+import {
+  Home,
+  BookOpen,
+  FolderOpen,
+  Award,
+  Users,
+  ShieldCheck,
+  MessageSquare,
+  Bell,
+  LogOut,
+  Menu,
+  X,
+} from 'lucide-react';
 
 export default function Navbar() {
   const router = useRouter();
@@ -83,19 +95,18 @@ export default function Navbar() {
                   className="object-contain"
                 />
               </div>
-              <span className="text-xl font-bold text-gradient">
-                Codelab
-              </span>
+              <span className="text-xl font-bold text-gradient">Codelab</span>
             </button>
 
             {/* Navigation Links */}
             <div className="hidden lg:ml-8 lg:flex lg:space-x-1">
               <a
                 href="/dashboard"
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${isActive('/dashboard')
-                  ? 'text-primary bg-primary-50'
-                  : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                  }`}
+                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                  isActive('/dashboard')
+                    ? 'text-primary bg-primary-50'
+                    : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                }`}
               >
                 <span className="flex items-center gap-2">
                   <Home className="w-4 h-4" />
@@ -107,10 +118,11 @@ export default function Navbar() {
                 <>
                   <a
                     href="/courses"
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${isActive('/courses')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive('/courses')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <span className="flex items-center gap-2">
                       <BookOpen className="w-4 h-4" />
@@ -119,10 +131,11 @@ export default function Navbar() {
                   </a>
                   <a
                     href="/my-courses"
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${isActive('/my-courses')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive('/my-courses')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <span className="flex items-center gap-2">
                       <FolderOpen className="w-4 h-4" />
@@ -131,10 +144,11 @@ export default function Navbar() {
                   </a>
                   <a
                     href="/gamification/stats"
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${isActive('/gamification')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive('/gamification')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <span className="flex items-center gap-2">
                       <Award className="w-4 h-4" />
@@ -148,10 +162,11 @@ export default function Navbar() {
                 <>
                   <a
                     href="/mentor/courses"
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${isActive('/mentor/courses')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive('/mentor/courses')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <span className="flex items-center gap-2">
                       <FolderOpen className="w-4 h-4" />
@@ -165,10 +180,11 @@ export default function Navbar() {
                 <>
                   <a
                     href="/admin/users"
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${isActive('/admin/users')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive('/admin/users')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <span className="flex items-center gap-2">
                       <Users className="w-4 h-4" />
@@ -177,10 +193,11 @@ export default function Navbar() {
                   </a>
                   <a
                     href="/admin/courses"
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${isActive('/admin/courses')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive('/admin/courses')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <span className="flex items-center gap-2">
                       <BookOpen className="w-4 h-4" />
@@ -189,10 +206,11 @@ export default function Navbar() {
                   </a>
                   <a
                     href="/admin/mentors"
-                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${isActive('/admin/mentors')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive('/admin/mentors')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <span className="flex items-center gap-2">
                       <ShieldCheck className="w-4 h-4" />
@@ -209,7 +227,11 @@ export default function Navbar() {
             {/* Chat Icon with Unread Count - Hidden on mobile */}
             {(user?.role === 'pelajar' || user?.role === 'mentor') && (
               <button
-                onClick={() => router.push(user?.role === 'pelajar' ? '/chat/mentors' : '/mentor/chat')}
+                onClick={() =>
+                  router.push(
+                    user?.role === 'pelajar' ? '/chat/mentors' : '/mentor/chat',
+                  )
+                }
                 className="hidden lg:flex relative p-2.5 text-gray-500 hover:text-primary hover:bg-primary-50 rounded-lg transition-all duration-200 group"
               >
                 <MessageSquare className="h-5 w-5" />
@@ -222,9 +244,9 @@ export default function Navbar() {
             )}
 
             {/* Notifications Bell - Hidden on mobile */}
-            <button className="hidden lg:flex relative p-2.5 text-gray-500 hover:text-primary hover:bg-primary-50 rounded-lg transition-all duration-200 group">
+            {/* <button className="hidden lg:flex relative p-2.5 text-gray-500 hover:text-primary hover:bg-primary-50 rounded-lg transition-all duration-200 group">
               <Bell className="h-5 w-5" />
-            </button>
+            </button> */}
 
             {/* User Menu - Hidden on mobile */}
             <div className="hidden lg:flex items-center space-x-3 pl-3 border-l border-primary-100">
@@ -233,8 +255,12 @@ export default function Navbar() {
                 className="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer group"
               >
                 <div className="hidden sm:block text-right">
-                  <p className="text-sm font-semibold text-gray-900 group-hover:text-primary transition-colors">{user?.name}</p>
-                  <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+                  <p className="text-sm font-semibold text-gray-900 group-hover:text-primary transition-colors">
+                    {user?.name}
+                  </p>
+                  <p className="text-xs text-gray-500 capitalize">
+                    {user?.role}
+                  </p>
                 </div>
                 <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-white font-semibold shadow-lg group-hover:shadow-lg transition-shadow">
                   {user?.photo_url ? (
@@ -248,10 +274,7 @@ export default function Navbar() {
                   )}
                 </div>
               </button>
-              <button
-                onClick={handleLogout}
-                className="btn btn-primary !py-2"
-              >
+              <button onClick={handleLogout} className="btn btn-primary !py-2">
                 <LogOut className="w-4 h-4 mr-1" />
                 Logout
               </button>
@@ -275,8 +298,11 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'max-h-[calc(100vh-4rem)] opacity-100' : 'max-h-0 opacity-0'
-          }`}
+        className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen
+            ? 'max-h-[calc(100vh-4rem)] opacity-100'
+            : 'max-h-0 opacity-0'
+        }`}
       >
         <div className="bg-white border-t border-primary-100/50 shadow-lg">
           <div className="px-4 py-4 space-y-3">
@@ -290,7 +316,9 @@ export default function Navbar() {
                     className="w-full h-full rounded-full object-cover"
                   />
                 ) : (
-                  <span className="text-lg">{user?.name?.charAt(0).toUpperCase() || 'U'}</span>
+                  <span className="text-lg">
+                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                  </span>
                 )}
               </div>
               <div>
@@ -303,10 +331,11 @@ export default function Navbar() {
             <div className="space-y-1">
               <button
                 onClick={() => handleMobileNavigation('/dashboard')}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive('/dashboard')
-                  ? 'text-primary bg-primary-50'
-                  : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                  }`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                  isActive('/dashboard')
+                    ? 'text-primary bg-primary-50'
+                    : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                }`}
               >
                 <Home className="w-5 h-5" />
                 <span className="font-medium">Beranda</span>
@@ -316,30 +345,35 @@ export default function Navbar() {
                 <>
                   <button
                     onClick={() => handleMobileNavigation('/courses')}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive('/courses')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive('/courses')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <BookOpen className="w-5 h-5" />
                     <span className="font-medium">Kursus</span>
                   </button>
                   <button
                     onClick={() => handleMobileNavigation('/my-courses')}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive('/my-courses')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive('/my-courses')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <FolderOpen className="w-5 h-5" />
                     <span className="font-medium">Kursus Saya</span>
                   </button>
                   <button
-                    onClick={() => handleMobileNavigation('/gamification/stats')}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive('/gamification')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    onClick={() =>
+                      handleMobileNavigation('/gamification/stats')
+                    }
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive('/gamification')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <Award className="w-5 h-5" />
                     <span className="font-medium">Pencapaian</span>
@@ -350,10 +384,11 @@ export default function Navbar() {
               {user?.role === 'mentor' && (
                 <button
                   onClick={() => handleMobileNavigation('/mentor/courses')}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive('/mentor/courses')
-                    ? 'text-primary bg-primary-50'
-                    : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                    }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isActive('/mentor/courses')
+                      ? 'text-primary bg-primary-50'
+                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                  }`}
                 >
                   <FolderOpen className="w-5 h-5" />
                   <span className="font-medium">Kursus Saya</span>
@@ -364,30 +399,33 @@ export default function Navbar() {
                 <>
                   <button
                     onClick={() => handleMobileNavigation('/admin/users')}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive('/admin/users')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive('/admin/users')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <Users className="w-5 h-5" />
                     <span className="font-medium">Users</span>
                   </button>
                   <button
                     onClick={() => handleMobileNavigation('/admin/courses')}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive('/admin/courses')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive('/admin/courses')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <BookOpen className="w-5 h-5" />
                     <span className="font-medium">Kursus</span>
                   </button>
                   <button
                     onClick={() => handleMobileNavigation('/admin/mentors')}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive('/admin/mentors')
-                      ? 'text-primary bg-primary-50'
-                      : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
-                      }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive('/admin/mentors')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
                   >
                     <ShieldCheck className="w-5 h-5" />
                     <span className="font-medium">Verifikasi Mentor</span>
@@ -401,7 +439,13 @@ export default function Navbar() {
               {/* Chat Button */}
               {(user?.role === 'pelajar' || user?.role === 'mentor') && (
                 <button
-                  onClick={() => handleMobileNavigation(user?.role === 'pelajar' ? '/chat/mentors' : '/mentor/chat')}
+                  onClick={() =>
+                    handleMobileNavigation(
+                      user?.role === 'pelajar'
+                        ? '/chat/mentors'
+                        : '/mentor/chat',
+                    )
+                  }
                   className="w-full flex items-center justify-between px-4 py-3 text-gray-600 hover:text-primary hover:bg-primary-50/50 rounded-lg transition-all duration-200"
                 >
                   <div className="flex items-center gap-3">
