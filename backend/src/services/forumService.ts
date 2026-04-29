@@ -5,6 +5,8 @@ import ForumReport from '../models/ForumReport';
 import Course from '../models/Course';
 import sequelize from '../config/database';
 import { addXP, updateMissionProgress } from './gamificationService';
+import { getCurrentUser } from './authService';
+import { getCourseById } from './courseService';
 
 interface CreateForumInput {
   course_id: number;
@@ -27,6 +29,17 @@ interface FilterOptions {
 
 // Check if user is enrolled in course
 const checkEnrollment = async (userId: number, courseId: number) => {
+  const user = await getCurrentUser(userId);
+  const course = await getCourseById(courseId);
+
+  if (!course) {
+    throw new Error('Kursus tidak ditemukan');
+  }
+
+  if (user.role === 'mentor' && course.mentor_id === userId) {
+    return; // Mentors can access their own courses
+  }
+
   const [enrollmentResult] = await sequelize.query(
     'SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?',
     { replacements: [userId, courseId] },
@@ -94,6 +107,7 @@ export const getForumsByCourse = async (
   filters: FilterOptions,
 ) => {
   // Check enrollment
+
   await checkEnrollment(userId, courseId);
 
   const { tags, user_id, search, page = 1, limit = 20 } = filters;
