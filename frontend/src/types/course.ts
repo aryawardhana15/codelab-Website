@@ -13,8 +13,8 @@ export interface Course {
   updated_at: string;
   mentor_name?: string;
   mentor_photo?: string;
-  enrollment_count?: number;
-  materials_count?: number;
+  enrollmentCount?: number;
+  materialsCount?: number;
   isEnrolled?: boolean;
   mentor?: {
     id: number;
@@ -51,4 +51,3 @@ export interface Pagination {
   totalCourses: number;
   limit: number;
 }
-
