@@ -21,6 +21,8 @@ import {
   Trash2,
   Loader2,
   File,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -32,6 +34,7 @@ export default function CourseMaterialsPage() {
   const [course, setCourse] = useState<Course | null>(null);
   const [materials, setMaterials] = useState<Material[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isReordering, setIsReordering] = useState(false);
 
   useEffect(() => {
     if (courseId) {
@@ -71,6 +74,31 @@ export default function CourseMaterialsPage() {
       toast.error('Gagal memuat materi');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleReorder = async (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= materials.length) return;
+
+    const current = materials[index];
+    const target = materials[targetIndex];
+
+    setIsReordering(true);
+    try {
+      await Promise.all([
+        api.put(`/materials/${current.id}`, {
+          order_index: target.order_index,
+        }),
+        api.put(`/materials/${target.id}`, {
+          order_index: current.order_index,
+        }),
+      ]);
+      await fetchMaterials();
+    } catch (error: any) {
+      toast.error('Gagal mengubah urutan materi');
+    } finally {
+      setIsReordering(false);
     }
   };
 
@@ -219,7 +247,27 @@ export default function CourseMaterialsPage() {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center gap-2 pl-4 border-l border-gray-100">
+                    <div className="flex items-center gap-1 pl-4 border-l border-gray-100">
+                      <div className="flex flex-col">
+                        <button
+                          onClick={() => handleReorder(index, 'up')}
+                          disabled={index === 0 || isReordering}
+                          className="p-1 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-md transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Pindah ke atas"
+                        >
+                          <ChevronUp className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleReorder(index, 'down')}
+                          disabled={
+                            index === materials.length - 1 || isReordering
+                          }
+                          className="p-1 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-md transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                          title="Pindah ke bawah"
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                      </div>
                       <button
                         onClick={() =>
                           router.push(
