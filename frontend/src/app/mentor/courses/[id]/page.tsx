@@ -178,12 +178,12 @@ export default function MentorCourseDashboard() {
                                 </div>
                             </div>
 
-                            <div className="flex gap-3">
+                            {/* <div className="flex gap-3">
                                 <button className="btn btn-outline">
                                     <Settings className="w-4 h-4 mr-2" />
                                     Settings
                                 </button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
