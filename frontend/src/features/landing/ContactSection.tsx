@@ -1,7 +1,19 @@
 'use client';
 
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { contactInfo } from '@/shared/data/landingData';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import api from '@/lib/api';
+
+interface ContactFormInput {
+    full_name: string;
+    email: string;
+    subject: string;
+    message: string;
+}
+
+type AlertState = { type: 'success' | 'error'; message: string } | null;
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -23,6 +35,45 @@ const itemVariants = {
 };
 
 export default function ContactSection() {
+    const [alert, setAlert] = useState<AlertState>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<ContactFormInput>();
+
+    const onSubmit = async (data: ContactFormInput) => {
+        setIsSubmitting(true);
+        setAlert(null);
+        try {
+            const response = await api.post('/contacts', data);
+            if (response.data.success) {
+                setAlert({
+                    type: 'success',
+                    message: response.data.message || 'Pesan berhasil dikirim!',
+                });
+                reset();
+            } else {
+                setAlert({
+                    type: 'error',
+                    message: response.data.message || 'Gagal mengirim pesan',
+                });
+            }
+        } catch (error: any) {
+            setAlert({
+                type: 'error',
+                message:
+                    error.response?.data?.message ||
+                    'Gagal mengirim pesan. Silakan coba lagi.',
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <section id="contact" className="py-20 bg-light-50">
             <div className="container-app">
@@ -148,43 +199,107 @@ export default function ContactSection() {
                         className="card"
                     >
                         <h3 className="text-2xl font-bold text-gray-900 mb-6">Kirim Pesan</h3>
+
+                        <AnimatePresence>
+                            {alert && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.25 }}
+                                    role="alert"
+                                    className={`mb-4 px-4 py-3 rounded-lg border text-sm ${
+                                        alert.type === 'success'
+                                            ? 'bg-green-50 border-green-200 text-green-700'
+                                            : 'bg-red-50 border-red-200 text-red-700'
+                                    }`}
+                                >
+                                    {alert.message}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
                         <motion.form
+                            onSubmit={handleSubmit(onSubmit)}
                             variants={containerVariants}
                             initial="hidden"
                             whileInView="visible"
                             viewport={{ once: true }}
                             className="space-y-4"
+                            noValidate
                         >
                             <motion.div variants={itemVariants}>
                                 <label className="input-label">Nama Lengkap</label>
-                                <input type="text" className="input" placeholder="Masukkan nama lengkap" />
+                                <input
+                                    type="text"
+                                    className="input"
+                                    placeholder="Masukkan nama lengkap"
+                                    {...register('full_name', {
+                                        required: 'Nama lengkap wajib diisi',
+                                    })}
+                                />
+                                {errors.full_name && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.full_name.message}</p>
+                                )}
                             </motion.div>
                             <motion.div variants={itemVariants}>
                                 <label className="input-label">Email</label>
-                                <input type="email" className="input" placeholder="email@example.com" />
+                                <input
+                                    type="email"
+                                    className="input"
+                                    placeholder="email@example.com"
+                                    {...register('email', {
+                                        required: 'Email wajib diisi',
+                                        pattern: {
+                                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                            message: 'Email tidak valid',
+                                        },
+                                    })}
+                                />
+                                {errors.email && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                                )}
                             </motion.div>
                             <motion.div variants={itemVariants}>
                                 <label className="input-label">Subjek</label>
-                                <select className="select">
+                                <select
+                                    className="select"
+                                    {...register('subject', {
+                                        required: 'Subjek wajib dipilih',
+                                    })}
+                                >
                                     <option value="">Pilih subjek</option>
                                     <option value="learning">Konsultasi Belajar</option>
                                     <option value="solutions">Jasa Coding</option>
                                     <option value="event">Info Event</option>
                                     <option value="other">Lainnya</option>
                                 </select>
+                                {errors.subject && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.subject.message}</p>
+                                )}
                             </motion.div>
                             <motion.div variants={itemVariants}>
                                 <label className="input-label">Pesan</label>
-                                <textarea className="input min-h-[120px]" placeholder="Tulis pesan kamu..."></textarea>
+                                <textarea
+                                    className="input min-h-[120px]"
+                                    placeholder="Tulis pesan kamu..."
+                                    {...register('message', {
+                                        required: 'Pesan wajib diisi',
+                                    })}
+                                />
+                                {errors.message && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>
+                                )}
                             </motion.div>
                             <motion.button
                                 variants={itemVariants}
                                 type="submit"
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="btn btn-primary w-full"
+                                disabled={isSubmitting}
+                                whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                                whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                                className="btn btn-primary w-full disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                                Kirim Pesan
+                                {isSubmitting ? 'Mengirim...' : 'Kirim Pesan'}
                             </motion.button>
                         </motion.form>
                     </motion.div>

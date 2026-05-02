@@ -12,6 +12,7 @@ import {
   Award,
   Users,
   ShieldCheck,
+  Mail,
   MessageSquare,
   Bell,
   LogOut,
@@ -215,6 +216,19 @@ export default function Navbar() {
                     <span className="flex items-center gap-2">
                       <ShieldCheck className="w-4 h-4" />
                       Verifikasi Mentor
+                    </span>
+                  </a>
+                  <a
+                    href="/admin/contacts"
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive('/admin/contacts')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      Pesan Kontak
                     </span>
                   </a>
                 </>
@@ -429,6 +443,17 @@ export default function Navbar() {
                   >
                     <ShieldCheck className="w-5 h-5" />
                     <span className="font-medium">Verifikasi Mentor</span>
+                  </button>
+                  <button
+                    onClick={() => handleMobileNavigation('/admin/contacts')}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive('/admin/contacts')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
+                  >
+                    <Mail className="w-5 h-5" />
+                    <span className="font-medium">Pesan Kontak</span>
                   </button>
                 </>
               )}
