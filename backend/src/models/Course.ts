@@ -12,13 +12,20 @@ interface CourseAttributes {
   price: number;
   thumbnail_url?: string;
   is_published: boolean;
+  is_deleted: boolean;
   created_at?: Date;
   updated_at?: Date;
 }
 
-interface CourseCreationAttributes extends Optional<CourseAttributes, 'id' | 'is_published' | 'price'> {}
+interface CourseCreationAttributes extends Optional<
+  CourseAttributes,
+  'id' | 'is_published' | 'is_deleted' | 'price'
+> {}
 
-class Course extends Model<CourseAttributes, CourseCreationAttributes> implements CourseAttributes {
+class Course
+  extends Model<CourseAttributes, CourseCreationAttributes>
+  implements CourseAttributes
+{
   public id!: number;
   public mentor_id!: number;
   public title!: string;
@@ -29,6 +36,7 @@ class Course extends Model<CourseAttributes, CourseCreationAttributes> implement
   public price!: number;
   public thumbnail_url?: string;
   public is_published!: boolean;
+  public is_deleted!: boolean;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
 }
@@ -38,65 +46,68 @@ Course.init(
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
+      primaryKey: true,
     },
     mentor_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'users',
-        key: 'id'
-      }
+        key: 'id',
+      },
     },
     title: {
       type: DataTypes.STRING(255),
-      allowNull: false
+      allowNull: false,
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true
+      allowNull: true,
     },
     category: {
       type: DataTypes.STRING(100),
-      allowNull: true
+      allowNull: true,
     },
     difficulty: {
       type: DataTypes.ENUM('beginner', 'intermediate', 'advanced'),
-      defaultValue: 'beginner'
+      defaultValue: 'beginner',
     },
     education_level: {
       type: DataTypes.ENUM('SD', 'SMP', 'SMA', 'Kuliah'),
-      allowNull: true
+      allowNull: true,
     },
     price: {
       type: DataTypes.DECIMAL(10, 2),
-      defaultValue: 0
+      defaultValue: 0,
     },
     thumbnail_url: {
       type: DataTypes.STRING(255),
-      allowNull: true
+      allowNull: true,
     },
     is_published: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false
+      defaultValue: false,
+    },
+    is_deleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     created_at: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
+      defaultValue: DataTypes.NOW,
     },
     updated_at: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
-    }
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     sequelize,
     tableName: 'courses',
     timestamps: true,
     createdAt: 'created_at',
-    updatedAt: 'updated_at'
-  }
+    updatedAt: 'updated_at',
+  },
 );
 
 export default Course;
-

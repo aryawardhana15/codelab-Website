@@ -29,7 +29,9 @@ interface UpdateMaterialInput {
 
 // Check if mentor owns the course
 const checkMentorOwnership = async (courseId: number, mentorId: number) => {
-  const course = await Course.findByPk(courseId);
+  const course = await Course.findOne({
+    where: { id: courseId, is_deleted: false },
+  });
 
   if (!course) {
     throw new Error('Kursus tidak ditemukan');
@@ -42,7 +44,10 @@ const checkMentorOwnership = async (courseId: number, mentorId: number) => {
   return course;
 };
 
-export const createMaterial = async (input: CreateMaterialInput, mentorId: number) => {
+export const createMaterial = async (
+  input: CreateMaterialInput,
+  mentorId: number,
+) => {
   // Check ownership
   await checkMentorOwnership(input.course_id, mentorId);
 
@@ -50,16 +55,21 @@ export const createMaterial = async (input: CreateMaterialInput, mentorId: numbe
   return material;
 };
 
-export const getMaterialsByCourse = async (courseId: number, userId?: number) => {
+export const getMaterialsByCourse = async (
+  courseId: number,
+  userId?: number,
+) => {
   const materials = await Material.findAll({
-    where: { course_id: courseId },
-    order: [['order_index', 'ASC']]
+    where: { course_id: courseId, is_deleted: false },
+    order: [['order_index', 'ASC']],
   });
 
   // Check if requesting user is the mentor (to decide whether to show content of locked materials)
   let isMentor = false;
   if (userId) {
-    const course = await Course.findByPk(courseId);
+    const course = await Course.findOne({
+      where: { id: courseId, is_deleted: false },
+    });
     if (course && course.mentor_id === userId) {
       isMentor = true;
     }
@@ -77,7 +87,7 @@ export const getMaterialsByCourse = async (courseId: number, userId?: number) =>
         ...overrides,
         content: null,
         video_url: null,
-        file_url: null
+        file_url: null,
       };
     }
 
@@ -91,25 +101,31 @@ export const getMaterialsByCourse = async (courseId: number, userId?: number) =>
         const progress = await MaterialProgress.findOne({
           where: {
             user_id: userId,
-            material_id: material.id
-          }
+            material_id: material.id,
+          },
         });
 
         return processMaterial(material, {
           is_completed: progress?.is_completed || false,
-          completed_at: progress?.completed_at || null
+          completed_at: progress?.completed_at || null,
         });
-      })
+      }),
     );
 
     return materialsWithProgress;
   }
 
-  return materials.map(m => processMaterial(m));
+  return materials.map((m) => processMaterial(m));
 };
 
-export const getMaterialById = async (materialId: number, userId?: number, password?: string) => {
-  const material = await Material.findByPk(materialId);
+export const getMaterialById = async (
+  materialId: number,
+  userId?: number,
+  password?: string,
+) => {
+  const material = await Material.findOne({
+    where: { id: materialId, is_deleted: false },
+  });
 
   if (!material) {
     throw new Error('Materi tidak ditemukan');
@@ -121,8 +137,8 @@ export const getMaterialById = async (materialId: number, userId?: number, passw
     progress = await MaterialProgress.findOne({
       where: {
         user_id: userId,
-        material_id: materialId
-      }
+        material_id: materialId,
+      },
     });
   }
 
@@ -131,7 +147,9 @@ export const getMaterialById = async (materialId: number, userId?: number, passw
   // Check if requesting user is the mentor (owner)
   let isMentor = false;
   if (userId) {
-    const course = await Course.findByPk(material.course_id);
+    const course = await Course.findOne({
+      where: { id: material.course_id, is_deleted: false },
+    });
     if (course && course.mentor_id === userId) {
       isMentor = true;
     }
@@ -142,7 +160,7 @@ export const getMaterialById = async (materialId: number, userId?: number, passw
     return {
       ...materialJson,
       is_completed: false, // Mentor doesn't track progress really
-      completed_at: null
+      completed_at: null,
     };
   }
 
@@ -168,7 +186,7 @@ export const getMaterialById = async (materialId: number, userId?: number, passw
         // Content masked
         content: null,
         video_url: null,
-        file_url: null
+        file_url: null,
       };
     }
   }
@@ -177,10 +195,10 @@ export const getMaterialById = async (materialId: number, userId?: number, passw
   // But strictly exclude lock_password from response unless needed (e.g. for mentor edit)
   // For 'learn' page, we don't need the password back.
   // For 'edit' page, we might.
-  // Let's keep it safe: Don't return lock_password here typically. 
+  // Let's keep it safe: Don't return lock_password here typically.
   // But wait, the "Edit" page uses this too? If so, the mentor needs to see the password.
   // We can add a flag `isMentor` or similar, but for now let's just return everything if unlocked/matched.
-  // Be careful: if I learn the course, and I input the password, I get the content. Do I get the password back? 
+  // Be careful: if I learn the course, and I input the password, I get the content. Do I get the password back?
   // Better not to send `lock_password` back to student.
 
   const { lock_password, ...rest } = materialJson;
@@ -188,16 +206,18 @@ export const getMaterialById = async (materialId: number, userId?: number, passw
     ...rest,
     is_locked: false, // Return as unlocked since password matched
     is_completed: progress?.is_completed || false,
-    completed_at: progress?.completed_at || null
+    completed_at: progress?.completed_at || null,
   };
 };
 
 export const updateMaterial = async (
   materialId: number,
   mentorId: number,
-  input: UpdateMaterialInput
+  input: UpdateMaterialInput,
 ) => {
-  const material = await Material.findByPk(materialId);
+  const material = await Material.findOne({
+    where: { id: materialId, is_deleted: false },
+  });
 
   if (!material) {
     throw new Error('Materi tidak ditemukan');
@@ -211,7 +231,9 @@ export const updateMaterial = async (
 };
 
 export const deleteMaterial = async (materialId: number, mentorId: number) => {
-  const material = await Material.findByPk(materialId);
+  const material = await Material.findOne({
+    where: { id: materialId, is_deleted: false },
+  });
 
   if (!material) {
     throw new Error('Materi tidak ditemukan');
@@ -220,12 +242,17 @@ export const deleteMaterial = async (materialId: number, mentorId: number) => {
   // Check ownership
   await checkMentorOwnership(material.course_id, mentorId);
 
-  await material.destroy();
+  await material.update({ is_deleted: true });
   return { message: 'Materi berhasil dihapus' };
 };
 
-export const markMaterialComplete = async (materialId: number, userId: number) => {
-  const material = await Material.findByPk(materialId);
+export const markMaterialComplete = async (
+  materialId: number,
+  userId: number,
+) => {
+  const material = await Material.findOne({
+    where: { id: materialId, is_deleted: false },
+  });
 
   if (!material) {
     throw new Error('Materi tidak ditemukan');
@@ -234,7 +261,7 @@ export const markMaterialComplete = async (materialId: number, userId: number) =
   // Check if user is enrolled in the course
   const [enrollmentResult] = await sequelize.query(
     'SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?',
-    { replacements: [userId, material.course_id] }
+    { replacements: [userId, material.course_id] },
   );
 
   if (!enrollmentResult || (enrollmentResult as any[]).length === 0) {
@@ -245,15 +272,15 @@ export const markMaterialComplete = async (materialId: number, userId: number) =
   let progress = await MaterialProgress.findOne({
     where: {
       user_id: userId,
-      material_id: materialId
-    }
+      material_id: materialId,
+    },
   });
 
   if (progress) {
     // Update existing progress
     await progress.update({
       is_completed: true,
-      completed_at: new Date()
+      completed_at: new Date(),
     });
   } else {
     // Create new progress
@@ -261,7 +288,7 @@ export const markMaterialComplete = async (materialId: number, userId: number) =
       user_id: userId,
       material_id: materialId,
       is_completed: true,
-      completed_at: new Date()
+      completed_at: new Date(),
     });
   }
 
@@ -285,8 +312,8 @@ export const markMaterialComplete = async (materialId: number, userId: number) =
 const updateEnrollmentProgress = async (userId: number, courseId: number) => {
   // Get total materials count
   const [totalResult] = await sequelize.query(
-    'SELECT COUNT(*) as total FROM materials WHERE course_id = ?',
-    { replacements: [courseId] }
+    'SELECT COUNT(*) as total FROM materials WHERE course_id = ? AND is_deleted = FALSE',
+    { replacements: [courseId] },
   );
   const totalMaterials = (totalResult as any)[0].total;
 
@@ -294,25 +321,28 @@ const updateEnrollmentProgress = async (userId: number, courseId: number) => {
   const [completedResult] = await sequelize.query(
     `SELECT COUNT(*) as total FROM material_progress mp
      JOIN materials m ON mp.material_id = m.id
-     WHERE mp.user_id = ? AND m.course_id = ? AND mp.is_completed = TRUE`,
-    { replacements: [userId, courseId] }
+     WHERE mp.user_id = ? AND m.course_id = ? AND mp.is_completed = TRUE AND m.is_deleted = FALSE`,
+    { replacements: [userId, courseId] },
   );
   const completedMaterials = (completedResult as any)[0].total;
 
   // Calculate progress percentage
-  const progress = totalMaterials > 0 ? Math.round((completedMaterials / totalMaterials) * 100) : 0;
+  const progress =
+    totalMaterials > 0
+      ? Math.round((completedMaterials / totalMaterials) * 100)
+      : 0;
 
   // Update enrollment
   await sequelize.query(
     'UPDATE enrollments SET progress = ? WHERE user_id = ? AND course_id = ?',
-    { replacements: [progress, userId, courseId] }
+    { replacements: [progress, userId, courseId] },
   );
 
   // If all materials completed, mark course as completed
   if (progress === 100) {
     await sequelize.query(
       'UPDATE enrollments SET completed_at = NOW() WHERE user_id = ? AND course_id = ? AND completed_at IS NULL',
-      { replacements: [userId, courseId] }
+      { replacements: [userId, courseId] },
     );
 
     // Give bonus XP for completing course (50 XP)
@@ -327,11 +357,10 @@ const updateEnrollmentProgress = async (userId: number, courseId: number) => {
   }
 };
 
-
 export const reorderMaterials = async (
   courseId: number,
   mentorId: number,
-  materialOrders: { id: number; order_index: number }[]
+  materialOrders: { id: number; order_index: number }[],
 ) => {
   // Check ownership
   await checkMentorOwnership(courseId, mentorId);
@@ -341,11 +370,10 @@ export const reorderMaterials = async (
     materialOrders.map(async (order) => {
       await Material.update(
         { order_index: order.order_index },
-        { where: { id: order.id, course_id: courseId } }
+        { where: { id: order.id, course_id: courseId } },
       );
-    })
+    }),
   );
 
   return { message: 'Urutan materi berhasil diupdate' };
 };
-

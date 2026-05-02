@@ -9,9 +9,18 @@ import Navbar from '@/components/Navbar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Course } from '@/types/course';
 import {
-  ArrowLeft, BookOpen, Clock, Users, Star, Award,
-  CheckCircle, Play, Lock, ChevronRight, User as UserIcon,
-  Sparkles
+  ArrowLeft,
+  BookOpen,
+  Clock,
+  Users,
+  Star,
+  Award,
+  CheckCircle,
+  Play,
+  Lock,
+  ChevronRight,
+  User as UserIcon,
+  Sparkles,
 } from 'lucide-react';
 
 export default function CourseDetailPage() {
@@ -37,7 +46,9 @@ export default function CourseDetailPage() {
         setCourse(response.data.data);
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Gagal memuat detail kursus');
+      toast.error(
+        error.response?.data?.message || 'Gagal memuat detail kursus',
+      );
       router.push('/courses');
     } finally {
       setIsLoading(false);
@@ -63,7 +74,9 @@ export default function CourseDetailPage() {
         fetchCourse(); // Refresh to update enrollment status
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Gagal bergabung dengan kursus');
+      toast.error(
+        error.response?.data?.message || 'Gagal bergabung dengan kursus',
+      );
     }
   };
 
@@ -92,20 +105,20 @@ export default function CourseDetailPage() {
       bg: 'bg-success/10',
       text: 'text-success',
       label: 'Pemula',
-      border: 'border-success/20'
+      border: 'border-success/20',
     },
     intermediate: {
       bg: 'bg-secondary/10',
       text: 'text-secondary-700',
       label: 'Menengah',
-      border: 'border-secondary/20'
+      border: 'border-secondary/20',
     },
     advanced: {
       bg: 'bg-error/10',
       text: 'text-error',
       label: 'Mahir',
-      border: 'border-error/20'
-    }
+      border: 'border-error/20',
+    },
   };
 
   const config = difficultyConfig[course.difficulty];
@@ -124,9 +137,16 @@ export default function CourseDetailPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-sm text-gray-500 mb-8">
-              <button onClick={() => router.push('/courses')} className="hover:text-primary transition-colors">Courses</button>
+              <button
+                onClick={() => router.push('/courses')}
+                className="hover:text-primary transition-colors"
+              >
+                Courses
+              </button>
               <ChevronRight className="w-4 h-4" />
-              <span className="text-gray-900 font-medium truncate">{course.title}</span>
+              <span className="text-gray-900 font-medium truncate">
+                {course.title}
+              </span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
@@ -138,7 +158,9 @@ export default function CourseDetailPage() {
                       {course.category}
                     </span>
                   )}
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${config.bg} ${config.text} ${config.border}`}>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${config.bg} ${config.text} ${config.border}`}
+                  >
                     {config.label}
                   </span>
                   {course.education_level && (
@@ -163,14 +185,18 @@ export default function CourseDetailPage() {
                       <Users className="w-4 h-4" />
                       <span>Pelajar</span>
                     </div>
-                    <p className="text-xl font-bold text-gray-900">{course.enrollment_count || 0}</p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {course.enrollmentCount || 0}
+                    </p>
                   </div>
                   <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
                     <div className="flex items-center gap-2 mb-1 text-gray-500 text-sm">
                       <BookOpen className="w-4 h-4" />
                       <span>Materi</span>
                     </div>
-                    <p className="text-xl font-bold text-gray-900">{course.materials_count || 0}</p>
+                    <p className="text-xl font-bold text-gray-900">
+                      {course.materialsCount || 0}
+                    </p>
                   </div>
                   {/* Add more stats if available */}
                 </div>
@@ -180,19 +206,31 @@ export default function CourseDetailPage() {
                   <div className="w-16 h-16 rounded-full p-0.5 bg-gradient-primary shrink-0 mr-4">
                     <div className="w-full h-full rounded-full bg-white overflow-hidden p-0.5">
                       {course.mentor?.photo_url ? (
-                        <img src={course.mentor.photo_url} alt={course.mentor.name} className="w-full h-full object-cover rounded-full" />
+                        <img
+                          src={course.mentor.photo_url}
+                          alt={course.mentor.name}
+                          className="w-full h-full object-cover rounded-full"
+                        />
                       ) : (
                         <div className="w-full h-full bg-primary-50 flex items-center justify-center text-xl font-bold text-primary rounded-full">
-                          {(course.mentor?.name || course.mentor_name || 'M').charAt(0).toUpperCase()}
+                          {(course.mentor?.name || course.mentor_name || 'M')
+                            .charAt(0)
+                            .toUpperCase()}
                         </div>
                       )}
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">Mentor Instruktur</p>
-                    <h3 className="text-lg font-bold text-gray-900">{course.mentor?.name || course.mentor_name || 'Unknown'}</h3>
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">
+                      Mentor Instruktur
+                    </p>
+                    <h3 className="text-lg font-bold text-gray-900">
+                      {course.mentor?.name || course.mentor_name || 'Unknown'}
+                    </h3>
                     {course.mentor?.expertise && (
-                      <p className="text-sm text-gray-500">{course.mentor.expertise}</p>
+                      <p className="text-sm text-gray-500">
+                        {course.mentor.expertise}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -209,7 +247,9 @@ export default function CourseDetailPage() {
                           src={course.thumbnail_url}
                           alt={course.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
@@ -221,9 +261,13 @@ export default function CourseDetailPage() {
 
                       {/* Price Tag Floating */}
                       <div className="absolute bottom-4 left-4 right-4 bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
-                        <span className="text-xs text-white/80 uppercase font-bold tracking-wider block mb-1">Total Biaya</span>
+                        <span className="text-xs text-white/80 uppercase font-bold tracking-wider block mb-1">
+                          Total Biaya
+                        </span>
                         <span className="text-2xl font-black text-white">
-                          {course.price > 0 ? `Rp ${Number(course.price).toLocaleString('id-ID')}` : 'GRATIS'}
+                          {course.price > 0
+                            ? `Rp ${Number(course.price).toLocaleString('id-ID')}`
+                            : 'GRATIS'}
                         </span>
                       </div>
                     </div>
@@ -232,7 +276,9 @@ export default function CourseDetailPage() {
                       {course.isEnrolled ? (
                         <>
                           <button
-                            onClick={() => router.push(`/courses/${course.id}/learn`)}
+                            onClick={() =>
+                              router.push(`/courses/${course.id}/learn`)
+                            }
                             className="w-full btn btn-primary py-4 text-lg justify-center shadow-glow-primary hover:shadow-glow-primary-lg"
                           >
                             <Play className="w-5 h-5 mr-2 fill-current" />
@@ -253,7 +299,9 @@ export default function CourseDetailPage() {
                             className="w-full btn btn-primary py-4 text-lg justify-center shadow-glow-primary hover:shadow-glow-primary-lg disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             <UserIcon className="w-5 h-5 mr-2" />
-                            {user?.role === 'pelajar' ? 'Gabung Sekarang' : 'Login sebagai Pelajar'}
+                            {user?.role === 'pelajar'
+                              ? 'Gabung Sekarang'
+                              : 'Login sebagai Pelajar'}
                           </button>
                           {user?.role !== 'pelajar' && (
                             <p className="text-xs text-center text-orange-500 font-medium">
@@ -275,7 +323,9 @@ export default function CourseDetailPage() {
                           </div>
                           <div className="flex items-center gap-3 text-sm text-gray-600">
                             <CheckCircle className="w-4 h-4 text-green-500" />
-                            <span>{course.materials_count || 0} Materi video & teks</span>
+                            <span>
+                              {course.materialsCount || 0} Materi video & teks
+                            </span>
                           </div>
                         </div>
                       </div>

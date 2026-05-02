@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import * as adminService from '../services/adminService';
+import * as contactService from '../services/contactService';
 
 export const getDashboardStats = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -299,6 +300,30 @@ export const resolveReport = async (req: Request, res: Response): Promise<void> 
     res.status(400).json({
       success: false,
       message: error.message || 'Gagal memproses laporan'
+    });
+  }
+};
+
+export const getAllContacts = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const filters = {
+      search: req.query.search as string,
+      page: parseInt(req.query.page as string) || 1,
+      limit: parseInt(req.query.limit as string) || 20
+    };
+
+    const result = await contactService.getAllContacts(filters);
+
+    res.status(200).json({
+      success: true,
+      message: 'Contacts retrieved',
+      data: result.contacts,
+      pagination: result.pagination
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to get contacts'
     });
   }
 };

@@ -15,10 +15,14 @@ import {
     ChevronDown,
     FileText,
     Briefcase,
-    Award
+    Award,
 } from 'lucide-react';
 import { useRegister } from '../hooks/useRegister';
-import { registerFormConfig, roleOptions, mentorFieldsConfig } from '../data/registerData';
+import {
+    registerFormConfig,
+    roleOptions,
+    mentorFieldsConfig,
+} from '../data/registerData';
 
 export default function RegisterForm() {
     const {
@@ -51,7 +55,9 @@ export default function RegisterForm() {
                                 className="object-contain"
                             />
                         </div>
-                        <span className="text-2xl font-bold text-gray-900">Codelab</span>
+                        <span className="text-2xl font-bold text-gray-900">
+                            Codelab
+                        </span>
                     </Link>
                 </div>
 
@@ -62,7 +68,10 @@ export default function RegisterForm() {
                     </h2>
                     <p className="text-gray-600">
                         {registerFormConfig.loginLink.text}{' '}
-                        <Link href={registerFormConfig.loginLink.href} className="text-primary font-semibold hover:text-primary-600 transition-colors">
+                        <Link
+                            href={registerFormConfig.loginLink.href}
+                            className="text-primary font-semibold hover:text-primary-600 transition-colors"
+                        >
                             {registerFormConfig.loginLink.linkText}
                         </Link>
                     </p>
@@ -70,7 +79,10 @@ export default function RegisterForm() {
 
                 {/* Register Card */}
                 <div className="card">
-                    <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+                    <form
+                        className="space-y-5"
+                        onSubmit={handleSubmit(onSubmit)}
+                    >
                         {/* Role Selection - Dropdown */}
                         <div>
                             <label className="input-label flex items-center gap-2">
@@ -79,11 +91,18 @@ export default function RegisterForm() {
                             </label>
                             <select
                                 value={role}
-                                onChange={(e) => setRole(e.target.value as 'pelajar' | 'mentor')}
+                                onChange={(e) =>
+                                    setRole(
+                                        e.target.value as 'pelajar' | 'mentor',
+                                    )
+                                }
                                 className="select"
                             >
                                 {roleOptions.map((option) => (
-                                    <option key={option.value} value={option.value}>
+                                    <option
+                                        key={option.value}
+                                        value={option.value}
+                                    >
                                         {option.label}
                                     </option>
                                 ))}
@@ -104,7 +123,9 @@ export default function RegisterForm() {
                                 placeholder="John Doe"
                             />
                             {errors.name && (
-                                <p className="input-error-text">{errors.name.message}</p>
+                                <p className="input-error-text">
+                                    {errors.name.message}
+                                </p>
                             )}
                         </div>
 
@@ -122,7 +143,9 @@ export default function RegisterForm() {
                                 placeholder="nama@email.com"
                             />
                             {errors.email && (
-                                <p className="input-error-text">{errors.email.message}</p>
+                                <p className="input-error-text">
+                                    {errors.email.message}
+                                </p>
                             )}
                         </div>
 
@@ -142,14 +165,22 @@ export default function RegisterForm() {
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
                                     className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
                                 >
-                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    {showPassword ? (
+                                        <EyeOff className="w-5 h-5" />
+                                    ) : (
+                                        <Eye className="w-5 h-5" />
+                                    )}
                                 </button>
                             </div>
                             {errors.password && (
-                                <p className="input-error-text">{errors.password.message}</p>
+                                <p className="input-error-text">
+                                    {errors.password.message}
+                                </p>
                             )}
                         </div>
 
@@ -162,21 +193,35 @@ export default function RegisterForm() {
                             <div className="relative">
                                 <input
                                     {...register('confirmPassword')}
-                                    type={showConfirmPassword ? 'text' : 'password'}
+                                    type={
+                                        showConfirmPassword
+                                            ? 'text'
+                                            : 'password'
+                                    }
                                     autoComplete="new-password"
                                     className={`input pr-12 ${errors.confirmPassword ? 'input-error' : ''}`}
                                     placeholder="••••••••"
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    onClick={() =>
+                                        setShowConfirmPassword(
+                                            !showConfirmPassword,
+                                        )
+                                    }
                                     className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
                                 >
-                                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    {showConfirmPassword ? (
+                                        <EyeOff className="w-5 h-5" />
+                                    ) : (
+                                        <Eye className="w-5 h-5" />
+                                    )}
                                 </button>
                             </div>
                             {errors.confirmPassword && (
-                                <p className="input-error-text">{errors.confirmPassword.message}</p>
+                                <p className="input-error-text">
+                                    {errors.confirmPassword.message}
+                                </p>
                             )}
                         </div>
 
@@ -185,15 +230,23 @@ export default function RegisterForm() {
                             <div className="p-4 bg-primary/5 rounded-xl border border-primary/20">
                                 <button
                                     type="button"
-                                    onClick={() => setShowMentorFields(!showMentorFields)}
+                                    onClick={() =>
+                                        setShowMentorFields(!showMentorFields)
+                                    }
                                     className="w-full flex items-center justify-between text-left"
                                 >
                                     <div className="flex items-center gap-2">
                                         <Award className="w-5 h-5 text-primary" />
-                                        <span className="font-semibold text-gray-900">{mentorFieldsConfig.title}</span>
-                                        <span className="text-xs text-gray-500">{mentorFieldsConfig.optional}</span>
+                                        <span className="font-semibold text-gray-900">
+                                            {mentorFieldsConfig.title}
+                                        </span>
+                                        <span className="text-xs text-gray-500">
+                                            {mentorFieldsConfig.optional}
+                                        </span>
                                     </div>
-                                    <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform ${showMentorFields ? 'rotate-180' : ''}`} />
+                                    <ChevronDown
+                                        className={`w-5 h-5 text-gray-500 transition-transform ${showMentorFields ? 'rotate-180' : ''}`}
+                                    />
                                 </button>
 
                                 {showMentorFields && (
@@ -201,41 +254,69 @@ export default function RegisterForm() {
                                         <div>
                                             <label className="input-label flex items-center gap-2">
                                                 <FileText className="w-4 h-4 text-primary" />
-                                                {mentorFieldsConfig.fields.cv_url.label}
+                                                {
+                                                    mentorFieldsConfig.fields
+                                                        .cv_url.label
+                                                }
                                             </label>
                                             <input
                                                 {...register('cv_url')}
                                                 type="url"
                                                 className="input"
-                                                placeholder={mentorFieldsConfig.fields.cv_url.placeholder}
+                                                placeholder={
+                                                    mentorFieldsConfig.fields
+                                                        .cv_url.placeholder
+                                                }
                                             />
-                                            <p className="input-helper">{mentorFieldsConfig.fields.cv_url.helper}</p>
+                                            <p className="input-helper">
+                                                {
+                                                    mentorFieldsConfig.fields
+                                                        .cv_url.helper
+                                                }
+                                            </p>
                                         </div>
 
                                         <div>
                                             <label className="input-label flex items-center gap-2">
                                                 <Code className="w-4 h-4 text-primary" />
-                                                {mentorFieldsConfig.fields.expertise.label}
+                                                {
+                                                    mentorFieldsConfig.fields
+                                                        .expertise.label
+                                                }
                                             </label>
                                             <input
                                                 {...register('expertise')}
                                                 type="text"
                                                 className="input"
-                                                placeholder={mentorFieldsConfig.fields.expertise.placeholder}
+                                                placeholder={
+                                                    mentorFieldsConfig.fields
+                                                        .expertise.placeholder
+                                                }
                                             />
-                                            <p className="input-helper">{mentorFieldsConfig.fields.expertise.helper}</p>
+                                            <p className="input-helper">
+                                                {
+                                                    mentorFieldsConfig.fields
+                                                        .expertise.helper
+                                                }
+                                            </p>
                                         </div>
 
                                         <div>
                                             <label className="input-label flex items-center gap-2">
                                                 <Briefcase className="w-4 h-4 text-primary" />
-                                                {mentorFieldsConfig.fields.experience.label}
+                                                {
+                                                    mentorFieldsConfig.fields
+                                                        .experience.label
+                                                }
                                             </label>
                                             <textarea
                                                 {...register('experience')}
                                                 rows={3}
                                                 className="input min-h-[80px]"
-                                                placeholder={mentorFieldsConfig.fields.experience.placeholder}
+                                                placeholder={
+                                                    mentorFieldsConfig.fields
+                                                        .experience.placeholder
+                                                }
                                             />
                                         </div>
                                     </div>
@@ -251,9 +332,25 @@ export default function RegisterForm() {
                         >
                             {isLoading ? (
                                 <>
-                                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    <svg
+                                        className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            className="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                        ></circle>
+                                        <path
+                                            className="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        ></path>
                                     </svg>
                                     {registerFormConfig.loadingText}
                                 </>
@@ -267,17 +364,17 @@ export default function RegisterForm() {
                     </form>
 
                     {/* Divider */}
-                    <div className="relative my-6">
+                    {/* <div className="relative my-6">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-light-200"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
                             <span className="px-2 bg-white text-gray-500">{registerFormConfig.socialLoginText}</span>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Social Login */}
-                    <div className="space-y-3">
+                    {/* <div className="space-y-3">
                         <button className="btn btn-outline-dark w-full">
                             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -287,15 +384,19 @@ export default function RegisterForm() {
                             </svg>
                             {registerFormConfig.googleButtonText}
                         </button>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Footer */}
                 <p className="text-center text-xs text-gray-500 mt-6">
                     {registerFormConfig.termsText.prefix}{' '}
-                    <a href="#" className="text-primary hover:text-primary-600">{registerFormConfig.termsText.terms}</a>
-                    {' '}{registerFormConfig.termsText.and}{' '}
-                    <a href="#" className="text-primary hover:text-primary-600">{registerFormConfig.termsText.privacy}</a>
+                    <a href="#" className="text-primary hover:text-primary-600">
+                        {registerFormConfig.termsText.terms}
+                    </a>{' '}
+                    {registerFormConfig.termsText.and}{' '}
+                    <a href="#" className="text-primary hover:text-primary-600">
+                        {registerFormConfig.termsText.privacy}
+                    </a>
                 </p>
             </div>
         </div>

@@ -17,7 +17,7 @@ import {
   BarChart2,
   ArrowRight,
   TrendingUp,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -30,7 +30,11 @@ interface MentorStats {
 
 interface ChartData {
   monthlyEnrollments: Array<{ month: string; count: number }>;
-  studentsPerCourse: Array<{ id: number; title: string; student_count: number }>;
+  studentsPerCourse: Array<{
+    id: number;
+    title: string;
+    student_count: number;
+  }>;
   activeStudents: number;
   totalStudents: number;
 }
@@ -117,7 +121,8 @@ export default function MentorDashboardPage() {
                       Halo, {user?.name}! 👋
                     </h1>
                     <p className="text-white/90 text-lg max-w-2xl">
-                      Siap berbagi ilmu hari ini? Pantau perkembangan kursus dan siswamu di sini.
+                      Siap berbagi ilmu hari ini? Pantau perkembangan kursus dan
+                      siswamu di sini.
                     </p>
                   </div>
 
@@ -137,9 +142,13 @@ export default function MentorDashboardPage() {
                       <div className="p-2 bg-orange-100 rounded-lg">
                         <BookOpen className="w-5 h-5 text-orange-600" />
                       </div>
-                      <span className="text-2xl font-bold text-gray-900">{stats?.totalCourses || 0}</span>
+                      <span className="text-2xl font-bold text-gray-900">
+                        {stats?.totalCourses || 0}
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-600 font-medium">Total Kursus</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      Total Kursus
+                    </p>
                   </div>
 
                   <div className="bg-white rounded-2xl p-4 shadow-lg border border-yellow-100 transform hover:scale-105 transition-all duration-300">
@@ -147,9 +156,13 @@ export default function MentorDashboardPage() {
                       <div className="p-2 bg-green-100 rounded-lg">
                         <CheckCircle className="w-5 h-5 text-green-600" />
                       </div>
-                      <span className="text-2xl font-bold text-gray-900">{stats?.totalPublished || 0}</span>
+                      <span className="text-2xl font-bold text-gray-900">
+                        {stats?.totalPublished || 0}
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-600 font-medium">Published</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      Published
+                    </p>
                   </div>
 
                   <div className="bg-white rounded-2xl p-4 shadow-lg border border-yellow-100 transform hover:scale-105 transition-all duration-300">
@@ -157,9 +170,13 @@ export default function MentorDashboardPage() {
                       <div className="p-2 bg-blue-100 rounded-lg">
                         <Users className="w-5 h-5 text-blue-600" />
                       </div>
-                      <span className="text-2xl font-bold text-gray-900">{stats?.totalStudents || 0}</span>
+                      <span className="text-2xl font-bold text-gray-900">
+                        {stats?.totalStudents || 0}
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-600 font-medium">Total Siswa</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      Total Siswa
+                    </p>
                   </div>
 
                   <div className="bg-white rounded-2xl p-4 shadow-lg border border-yellow-100 transform hover:scale-105 transition-all duration-300">
@@ -167,7 +184,9 @@ export default function MentorDashboardPage() {
                       <div className="p-2 bg-purple-100 rounded-lg">
                         <FileText className="w-5 h-5 text-purple-600" />
                       </div>
-                      <span className="text-2xl font-bold text-gray-900">{stats?.totalMaterials || 0}</span>
+                      <span className="text-2xl font-bold text-gray-900">
+                        {stats?.totalMaterials || 0}
+                      </span>
                     </div>
                     <p className="text-sm text-gray-600 font-medium">Materi</p>
                   </div>
@@ -188,7 +207,9 @@ export default function MentorDashboardPage() {
                         <TrendingUp className="w-5 h-5 text-primary" />
                         Aktivitas Siswa
                       </h2>
-                      <p className="text-sm text-gray-500">Statistik pendaftaran dan keaktifan siswa</p>
+                      <p className="text-sm text-gray-500">
+                        Statistik pendaftaran dan keaktifan siswa
+                      </p>
                     </div>
                   </div>
                   <StudentCharts
@@ -218,7 +239,9 @@ export default function MentorDashboardPage() {
                       <Plus className="w-5 h-5" />
                     </div>
                     <div className="ml-4 flex-1">
-                      <p className="text-sm font-bold text-gray-900">Buat Kursus</p>
+                      <p className="text-sm font-bold text-gray-900">
+                        Buat Kursus
+                      </p>
                       <p className="text-xs text-gray-500">Mulai materi baru</p>
                     </div>
                     <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
@@ -232,7 +255,9 @@ export default function MentorDashboardPage() {
                       <BookOpen className="w-5 h-5" />
                     </div>
                     <div className="ml-4 flex-1">
-                      <p className="text-sm font-bold text-gray-900">Kelola Kursus</p>
+                      <p className="text-sm font-bold text-gray-900">
+                        Kelola Kursus
+                      </p>
                       <p className="text-xs text-gray-500">Update konten</p>
                     </div>
                     <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
@@ -246,13 +271,15 @@ export default function MentorDashboardPage() {
                       <MessageSquare className="w-5 h-5" />
                     </div>
                     <div className="ml-4 flex-1">
-                      <p className="text-sm font-bold text-gray-900">Pesan Masuk</p>
+                      <p className="text-sm font-bold text-gray-900">
+                        Pesan Masuk
+                      </p>
                       <p className="text-xs text-gray-500">Chat dengan siswa</p>
                     </div>
                     <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
                   </Link>
 
-                  <Link
+                  {/* <Link
                     href="/mentor/students"
                     className="flex items-center p-4 rounded-xl border border-gray-100 hover:border-primary-200 hover:bg-primary-50/50 transition-all group"
                   >
@@ -264,15 +291,18 @@ export default function MentorDashboardPage() {
                       <p className="text-xs text-gray-500">Pantau progress</p>
                     </div>
                     <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
 
               {/* Tips Card */}
               <div className="bg-gradient-to-br from-primary-50 to-secondary-50 p-6 rounded-2xl border border-primary-100">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Tips Mentor 💡</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-3">
+                  Tips Mentor 💡
+                </h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  "Sapa siswa barumu dan berikan semangat! Interaksi yang baik meningkatkan motivasi belajar."
+                  "Sapa siswa barumu dan berikan semangat! Interaksi yang baik
+                  meningkatkan motivasi belajar."
                 </p>
                 <Link
                   href="/mentor/chat"

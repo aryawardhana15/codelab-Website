@@ -31,7 +31,9 @@ export default function LoginForm() {
                                 className="object-contain"
                             />
                         </div>
-                        <span className="text-2xl font-bold text-gray-900">Codelab</span>
+                        <span className="text-2xl font-bold text-gray-900">
+                            Codelab
+                        </span>
                     </Link>
                 </div>
 
@@ -42,7 +44,10 @@ export default function LoginForm() {
                     </h2>
                     <p className="text-gray-600">
                         {loginFormConfig.registerLink.text}{' '}
-                        <Link href={loginFormConfig.registerLink.href} className="text-primary font-semibold hover:text-primary-600 transition-colors">
+                        <Link
+                            href={loginFormConfig.registerLink.href}
+                            className="text-primary font-semibold hover:text-primary-600 transition-colors"
+                        >
                             {loginFormConfig.registerLink.linkText}
                         </Link>
                     </p>
@@ -50,7 +55,10 @@ export default function LoginForm() {
 
                 {/* Login Card */}
                 <div className="card">
-                    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                    <form
+                        className="space-y-6"
+                        onSubmit={handleSubmit(onSubmit)}
+                    >
                         {/* Email */}
                         <div>
                             <label className="input-label flex items-center gap-2">
@@ -65,7 +73,9 @@ export default function LoginForm() {
                                 placeholder="nama@email.com"
                             />
                             {errors.email && (
-                                <p className="input-error-text">{errors.email.message}</p>
+                                <p className="input-error-text">
+                                    {errors.email.message}
+                                </p>
                             )}
                         </div>
 
@@ -85,14 +95,22 @@ export default function LoginForm() {
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() =>
+                                        setShowPassword(!showPassword)
+                                    }
                                     className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
                                 >
-                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                    {showPassword ? (
+                                        <EyeOff className="w-5 h-5" />
+                                    ) : (
+                                        <Eye className="w-5 h-5" />
+                                    )}
                                 </button>
                             </div>
                             {errors.password && (
-                                <p className="input-error-text">{errors.password.message}</p>
+                                <p className="input-error-text">
+                                    {errors.password.message}
+                                </p>
                             )}
                         </div>
 
@@ -105,13 +123,19 @@ export default function LoginForm() {
                                     type="checkbox"
                                     className="h-4 w-4 text-primary focus:ring-primary border-light-300 rounded"
                                 />
-                                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                                <label
+                                    htmlFor="remember-me"
+                                    className="ml-2 block text-sm text-gray-700"
+                                >
                                     {loginFormConfig.rememberMeText}
                                 </label>
                             </div>
 
                             <div className="text-sm">
-                                <a href="#" className="text-primary font-medium hover:text-primary-600 transition-colors">
+                                <a
+                                    href="#"
+                                    className="text-primary font-medium hover:text-primary-600 transition-colors"
+                                >
                                     {loginFormConfig.forgotPasswordText}
                                 </a>
                             </div>
@@ -125,9 +149,25 @@ export default function LoginForm() {
                         >
                             {isLoading ? (
                                 <>
-                                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    <svg
+                                        className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            className="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                        ></circle>
+                                        <path
+                                            className="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        ></path>
                                     </svg>
                                     {loginFormConfig.loadingText}
                                 </>
@@ -141,17 +181,17 @@ export default function LoginForm() {
                     </form>
 
                     {/* Divider */}
-                    <div className="relative my-6">
+                    {/* <div className="relative my-6">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-light-200"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
                             <span className="px-2 bg-white text-gray-500">{loginFormConfig.socialLoginText}</span>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Social Login */}
-                    <div className="space-y-3">
+                    {/* <div className="space-y-3">
                         <button className="btn btn-outline-dark w-full">
                             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -161,15 +201,19 @@ export default function LoginForm() {
                             </svg>
                             {loginFormConfig.googleButtonText}
                         </button>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Footer */}
                 <p className="text-center text-xs text-gray-500 mt-6">
                     {loginFormConfig.termsText.prefix}{' '}
-                    <a href="#" className="text-primary hover:text-primary-600">{loginFormConfig.termsText.terms}</a>
-                    {' '}{loginFormConfig.termsText.and}{' '}
-                    <a href="#" className="text-primary hover:text-primary-600">{loginFormConfig.termsText.privacy}</a>
+                    <a href="#" className="text-primary hover:text-primary-600">
+                        {loginFormConfig.termsText.terms}
+                    </a>{' '}
+                    {loginFormConfig.termsText.and}{' '}
+                    <a href="#" className="text-primary hover:text-primary-600">
+                        {loginFormConfig.termsText.privacy}
+                    </a>
                 </p>
             </div>
         </div>

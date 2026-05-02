@@ -56,6 +56,9 @@ router.post(
   adminController.resolveReport
 );
 
+// Contact messages
+router.get('/contacts', adminController.getAllContacts);
+
 // Admin logs
 router.get('/logs', adminController.getAdminLogs);
 
