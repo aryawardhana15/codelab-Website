@@ -8,3 +8,4 @@ export { default as CTASection } from './CTASection';
 export { default as ContactSection } from './ContactSection';
 export { default as Footer } from './Footer';
 export { default as GallerySection } from './GallerySection';
+export { default as EventsSection } from './EventsSection';

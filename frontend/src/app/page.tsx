@@ -1,6 +1,7 @@
 import {
   Navbar,
   HeroSection,
+  EventsSection,
   GallerySection,
   TestimonialsSection,
   CTASection,
@@ -13,6 +14,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-light-50">
       <Navbar />
       <HeroSection />
+      <EventsSection />
       <GallerySection />
       <TestimonialsSection />
       <CTASection />
