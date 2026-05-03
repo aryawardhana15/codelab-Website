@@ -151,7 +151,7 @@ export const programs = [
         ],
         cta: 'Lihat Jadwal Event Terdekat',
         // ctaLink: '/events',
-        ctaLink: '/coming-soon', // Placeholder until events page is ready
+        ctaLink: '#events', // Placeholder until events page is ready
     },
 ];
 

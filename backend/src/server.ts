@@ -14,6 +14,7 @@ import gamificationRoutes from './routes/gamificationRoutes';
 import adminRoutes from './routes/adminRoutes';
 import aiRoutes from './routes/aiRoutes';
 import contactRoutes from './routes/contactRoutes';
+import eventRoutes from './routes/eventRoutes';
 
 
 dotenv.config();
@@ -40,6 +41,7 @@ app.use('/api/gamification', gamificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/contacts', contactRoutes);
+app.use('/api/events', eventRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

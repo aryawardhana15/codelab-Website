@@ -13,6 +13,7 @@ import {
   Users,
   ShieldCheck,
   Mail,
+  CalendarDays,
   MessageSquare,
   Bell,
   LogOut,
@@ -229,6 +230,19 @@ export default function Navbar() {
                     <span className="flex items-center gap-2">
                       <Mail className="w-4 h-4" />
                       Pesan Kontak
+                    </span>
+                  </a>
+                  <a
+                    href="/admin/events"
+                    className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive('/admin/events')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4" />
+                      Events
                     </span>
                   </a>
                 </>
@@ -454,6 +468,17 @@ export default function Navbar() {
                   >
                     <Mail className="w-5 h-5" />
                     <span className="font-medium">Pesan Kontak</span>
+                  </button>
+                  <button
+                    onClick={() => handleMobileNavigation('/admin/events')}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isActive('/admin/events')
+                        ? 'text-primary bg-primary-50'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary-50/50'
+                    }`}
+                  >
+                    <CalendarDays className="w-5 h-5" />
+                    <span className="font-medium">Events</span>
                   </button>
                 </>
               )}
