@@ -17,7 +17,14 @@ export default function EditEventPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
-  const [defaults, setDefaults] = useState<Partial<EventFormValues> | null>(null);
+  const [defaults, setDefaults] = useState<{
+    title?: string;
+    description?: string;
+    date?: string | null;
+    thumbnail_image_url?: string | null;
+    meeting_url?: string | null;
+    published?: boolean;
+  } | null>(null);
 
   useEffect(() => {
     if (eventId) fetchEvent();
@@ -49,7 +56,15 @@ export default function EditEventPage() {
   const onSubmit = async (data: EventFormValues) => {
     setIsLoading(true);
     try {
-      const response = await api.put(`/events/${eventId}`, data);
+      const formData = new FormData();
+      if (data.title !== undefined) formData.append('title', data.title);
+      if (data.description !== undefined) formData.append('description', data.description);
+      if (data.date) formData.append('date', data.date);
+      if (data.thumbnail_image) formData.append('thumbnail_image', data.thumbnail_image);
+      if (data.meeting_url) formData.append('meeting_url', data.meeting_url);
+      if (data.published !== undefined) formData.append('published', String(data.published));
+
+      const response = await api.put(`/events/${eventId}`, formData);
       if (response.data.success) {
         toast.success('Event berhasil diupdate');
         router.push('/admin/events');

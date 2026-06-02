@@ -17,7 +17,15 @@ export default function CreateEventPage() {
   const onSubmit = async (data: EventFormValues) => {
     setIsLoading(true);
     try {
-      const response = await api.post('/events', data);
+      const formData = new FormData();
+      formData.append('title', data.title);
+      formData.append('description', data.description);
+      if (data.date) formData.append('date', data.date);
+      if (data.thumbnail_image) formData.append('thumbnail_image', data.thumbnail_image);
+      if (data.meeting_url) formData.append('meeting_url', data.meeting_url);
+      formData.append('published', String(data.published));
+
+      const response = await api.post('/events', formData);
       if (response.data.success) {
         toast.success('Event berhasil dibuat');
         router.push('/admin/events');

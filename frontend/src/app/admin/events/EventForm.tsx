@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   AlertCircle,
@@ -10,19 +11,28 @@ import {
   Video,
   CalendarClock,
   Eye,
+  UploadCloud,
+  X,
 } from 'lucide-react';
 
 export interface EventFormValues {
   title: string;
   description: string;
   date?: string | null;
-  thumbnail_image_url?: string | null;
+  thumbnail_image?: File | null;
   meeting_url?: string | null;
   published: boolean;
 }
 
 interface EventFormProps {
-  defaultValues?: Partial<EventFormValues>;
+  defaultValues?: {
+    title?: string;
+    description?: string;
+    date?: string | null;
+    thumbnail_image_url?: string | null;
+    meeting_url?: string | null;
+    published?: boolean;
+  };
   isSubmitting: boolean;
   submitLabel: string;
   onSubmit: (data: EventFormValues) => void | Promise<void>;
@@ -48,22 +58,42 @@ export default function EventForm({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<EventFormValues>({
+  } = useForm<Omit<EventFormValues, 'thumbnail_image'>>({
     defaultValues: {
       title: defaultValues?.title ?? '',
       description: defaultValues?.description ?? '',
       date: toDatetimeLocalValue(defaultValues?.date ?? null),
-      thumbnail_image_url: defaultValues?.thumbnail_image_url ?? '',
       meeting_url: defaultValues?.meeting_url ?? '',
       published: defaultValues?.published ?? true,
     },
   });
 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    defaultValues?.thumbnail_image_url ?? null,
+  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    if (!file) return;
+    if (previewUrl && selectedFile) URL.revokeObjectURL(previewUrl);
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const clearFile = () => {
+    if (selectedFile && previewUrl) URL.revokeObjectURL(previewUrl);
+    setSelectedFile(null);
+    setPreviewUrl(defaultValues?.thumbnail_image_url ?? null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   const submit = handleSubmit((data) => {
     const payload: EventFormValues = {
       ...data,
       date: data.date ? new Date(data.date).toISOString() : null,
-      thumbnail_image_url: data.thumbnail_image_url?.trim() ? data.thumbnail_image_url : null,
+      thumbnail_image: selectedFile,
       meeting_url: data.meeting_url?.trim() ? data.meeting_url : null,
     };
     return onSubmit(payload);
@@ -137,27 +167,60 @@ export default function EventForm({
         </div>
 
         <div className="space-y-6">
+          {/* Thumbnail file upload */}
           <div className="p-5 bg-gray-50 rounded-xl border border-gray-100">
             <div className="flex items-center gap-2 mb-3">
               <ImageIcon className="w-5 h-5 text-blue-500" />
-              <label className="text-sm font-bold text-gray-700">Thumbnail Image URL</label>
+              <label className="text-sm font-bold text-gray-700">Thumbnail Image</label>
             </div>
+
             <input
-              {...register('thumbnail_image_url', {
-                pattern: {
-                  value: /^https?:\/\/.+/i,
-                  message: 'URL thumbnail tidak valid',
-                },
-              })}
-              type="url"
-              className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400"
-              placeholder="https://example.com/image.jpg"
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
             />
-            {errors.thumbnail_image_url && (
-              <p className="mt-2 text-sm text-red-500 flex items-center">
-                <AlertCircle className="w-4 h-4 mr-1" />
-                {errors.thumbnail_image_url.message}
-              </p>
+
+            {previewUrl ? (
+              <div className="relative">
+                <img
+                  src={previewUrl}
+                  alt="Thumbnail preview"
+                  className="w-full max-h-56 object-cover rounded-xl border border-gray-200"
+                />
+                <div className="absolute top-2 right-2 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-semibold px-3 py-1.5 rounded-lg shadow hover:bg-white transition-all border border-gray-200"
+                  >
+                    Ganti
+                  </button>
+                  {selectedFile && (
+                    <button
+                      type="button"
+                      onClick={clearFile}
+                      className="bg-white/90 backdrop-blur-sm text-gray-700 p-1.5 rounded-lg shadow hover:bg-white transition-all border border-gray-200"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                {selectedFile && (
+                  <p className="mt-2 text-xs text-gray-500 truncate">{selectedFile.name}</p>
+                )}
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full flex flex-col items-center justify-center gap-2 py-8 border-2 border-dashed border-gray-300 rounded-xl hover:border-primary hover:bg-primary/5 transition-all text-gray-400 hover:text-primary"
+              >
+                <UploadCloud className="w-8 h-8" />
+                <span className="text-sm font-medium">Klik untuk upload gambar</span>
+                <span className="text-xs">PNG, JPG, WEBP (maks. 10MB)</span>
+              </button>
             )}
           </div>
 
