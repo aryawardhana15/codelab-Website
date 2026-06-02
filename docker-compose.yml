@@ -15,7 +15,11 @@ services:
     networks:
       - codelab-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-codelab_user} -d ${DB_NAME:-codelab_db}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DB_USER:-codelab_user} -d ${DB_NAME:-codelab_db}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -77,9 +81,27 @@ services:
       - backend
     networks:
       - codelab-network
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z-cpuv1
+    container_name: codelab-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_SERVER_URL: ${MINIO_SERVER_URL:-http://localhost:9000}
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_BROWSER_REDIRECT_URL:-http://localhost:9000/dashboard}
+    volumes:
+      - minio-data:/data
+    networks:
+      - codelab-network
+    ports:
+      - "127.0.0.1:9000:9000" # S3 API
+      - "127.0.0.1:9001:9001" # Web console
 
 volumes:
   postgres_data:
+  minio-data:
 
 networks:
   codelab-network:
