@@ -109,6 +109,8 @@ export default function TestimonialsSection() {
                             <motion.button
                                 key={index}
                                 onClick={() => setActiveTestimonial(index)}
+                                aria-label={`Lihat testimoni ${index + 1}`}
+                                aria-current={activeTestimonial === index}
                                 whileHover={{ scale: 1.2 }}
                                 whileTap={{ scale: 0.9 }}
                                 className={`h-3 rounded-full transition-all ${activeTestimonial === index

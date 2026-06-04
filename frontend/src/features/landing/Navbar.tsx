@@ -44,6 +44,8 @@ export default function Navbar() {
                                 src="/codelab-icon-transparent.png"
                                 alt="Codelab Logo"
                                 fill
+                                sizes="40px"
+                                priority
                                 className="object-contain"
                             />
                         </div>
@@ -80,6 +82,8 @@ export default function Navbar() {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        aria-label={isMobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
+                        aria-expanded={isMobileMenuOpen}
                         className="md:hidden p-2 text-gray-600 hover:text-primary transition-colors"
                     >
                         {isMobileMenuOpen ? <X /> : <Menu />}

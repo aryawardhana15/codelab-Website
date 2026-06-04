@@ -52,6 +52,7 @@ export default function Footer() {
                                     src="/codelab-icon-transparent.png"
                                     alt="Codelab Logo"
                                     fill
+                                    sizes="40px"
                                     className="object-contain"
                                 />
                             </div>
@@ -65,6 +66,8 @@ export default function Footer() {
                                 href={contactInfo.linkedinLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                aria-label="LinkedIn Codelab Indonesia"
+                                title="LinkedIn"
                                 whileHover={{ scale: 1.1, y: -3 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="w-10 h-10 bg-light-700 rounded-lg flex items-center justify-center hover:bg-primary transition-colors"
@@ -77,6 +80,8 @@ export default function Footer() {
                                 href={contactInfo.instagramLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                aria-label="Instagram Codelab Indonesia"
+                                title="Instagram"
                                 whileHover={{ scale: 1.1, y: -3 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="w-10 h-10 bg-light-700 rounded-lg flex items-center justify-center hover:bg-primary transition-colors"

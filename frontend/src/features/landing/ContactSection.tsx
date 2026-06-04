@@ -264,6 +264,7 @@ export default function ContactSection() {
                                 <label className="input-label">Subjek</label>
                                 <select
                                     className="select"
+                                    aria-label="Subjek"
                                     {...register('subject', {
                                         required: 'Subjek wajib dipilih',
                                     })}

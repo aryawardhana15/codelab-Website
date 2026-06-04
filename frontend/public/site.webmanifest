@@ -1,0 +1,14 @@
+{
+  "name": "Codelab — Belajar IT, Bangun Solusi, Wujudkan Mimpi",
+  "short_name": "Codelab",
+  "description": "Platform ekosistem IT terlengkap di Indonesia. Belajar coding dengan gamifikasi, jasa pembuatan sistem profesional, hingga event & komunitas teknologi.",
+  "icons": [
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "theme_color": "#F97316",
+  "background_color": "#FFF8E7",
+  "display": "standalone",
+  "start_url": "/",
+  "lang": "id"
+}
