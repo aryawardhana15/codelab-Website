@@ -58,6 +58,9 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [siteConfig.ogImage],
   },
+  verification: {
+    google: 'mFJTdrp11LgOs8FgjBnFtpjLHQE5xzrlq7CgwkrmRTA',
+  },
   robots: {
     index: true,
     follow: true,
