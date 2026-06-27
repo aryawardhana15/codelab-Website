@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   CalendarDays,
   Calendar as CalendarIcon,
@@ -9,8 +9,9 @@ import {
   Video,
   X,
   ArrowRight,
-} from 'lucide-react';
-import api from '@/lib/api';
+  Send,
+} from "lucide-react";
+import api from "@/lib/api";
 
 interface EventItem {
   id: number;
@@ -24,20 +25,20 @@ interface EventItem {
 }
 
 const formatDate = (raw: string | null) => {
-  if (!raw) return 'Tanggal akan diumumkan';
-  return new Date(raw).toLocaleDateString('id-ID', {
-    weekday: 'long',
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
+  if (!raw) return "Tanggal akan diumumkan";
+  return new Date(raw).toLocaleDateString("id-ID", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
   });
 };
 
 const formatTime = (raw: string | null) => {
   if (!raw) return null;
-  return new Date(raw).toLocaleTimeString('id-ID', {
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(raw).toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
@@ -55,7 +56,7 @@ export default function EventsSection() {
     let mounted = true;
     (async () => {
       try {
-        const response = await api.get('/events?limit=12');
+        const response = await api.get("/events?limit=12");
         if (mounted && response.data.success) {
           setEvents(response.data.data);
         }
@@ -72,12 +73,12 @@ export default function EventsSection() {
 
   useEffect(() => {
     if (selected) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [selected]);
 
@@ -170,17 +171,17 @@ export default function EventsSection() {
                       <span
                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md ${
                           upcoming
-                            ? 'bg-success/90 text-white border-success'
+                            ? "bg-success/90 text-white border-success"
                             : event.date
-                              ? 'bg-gray-900/70 text-white border-gray-700'
-                              : 'bg-primary/90 text-white border-primary'
+                              ? "bg-gray-900/70 text-white border-gray-700"
+                              : "bg-primary/90 text-white border-primary"
                         }`}
                       >
                         {upcoming
-                          ? 'Upcoming'
+                          ? "Upcoming"
                           : event.date
-                            ? 'Selesai'
-                            : 'Coming Soon'}
+                            ? "Selesai"
+                            : "Coming Soon"}
                       </span>
                     </div>
                   </div>
@@ -241,7 +242,7 @@ export default function EventsSection() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
               className="relative bg-white w-full max-w-2xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
@@ -301,7 +302,7 @@ export default function EventsSection() {
                       <p className="text-sm font-semibold text-gray-900">
                         {formatTime(selected.date)
                           ? `${formatTime(selected.date)} WIB`
-                          : 'TBA'}
+                          : "TBA"}
                       </p>
                     </div>
                   </div>
@@ -341,8 +342,8 @@ export default function EventsSection() {
                         rel="noopener noreferrer"
                         className="btn btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2"
                       >
-                        <Video className="w-5 h-5" />
-                        Gabung Meeting
+                        <Send className="w-5 h-5" />
+                        Lihat Postingan Event
                       </a>
                     );
                   })()}

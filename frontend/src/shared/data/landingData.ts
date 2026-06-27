@@ -206,7 +206,7 @@ export const testimonials = [
 ];
 
 export const stats = [
-  { number: "20+", label: "Siswa Sukses" },
+  { number: "500+", label: "Siswa Sukses" },
   { number: "10+", label: "Expert Mentor" },
   { number: "10+", label: "Kursus Tersedia" },
   { number: "85%", label: "Tingkat Kepuasan" },
